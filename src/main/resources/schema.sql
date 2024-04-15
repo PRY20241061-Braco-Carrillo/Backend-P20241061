@@ -6,8 +6,8 @@ CREATE TABLE "user" (
                         email varchar(255)  NOT NULL,
                         password varchar(255)  NOT NULL,
                         roles varchar(255)  NOT NULL,
-                        cancel_reservation boolean, -- Cambiado a boolean para compatibilidad con PostgreSQL
-                        accept_reservation boolean, -- Cambiado a boolean para compatibilidad con PostgreSQL
+                        cancel_reservation int,
+                        accept_reservation int,
                         CONSTRAINT user_pk PRIMARY KEY (user_id)
 );
 
