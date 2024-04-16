@@ -1,5 +1,6 @@
 package com.p20241061.security.core.repositories;
 
+import com.p20241061.security.api.config.JwtAuthenticationManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

@@ -11,7 +11,7 @@ import java.util.Collection;
 import java.util.UUID;
 import java.util.stream.Stream;
 
-@Table
+@Table("\"user\"")
 @Getter
 @Setter
 @AllArgsConstructor

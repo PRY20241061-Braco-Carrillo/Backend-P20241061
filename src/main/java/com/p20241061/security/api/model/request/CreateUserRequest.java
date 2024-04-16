@@ -1,7 +1,7 @@
 package com.p20241061.security.api.model.request;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,4 +23,7 @@ public class CreateUserRequest {
 
     @NotBlank(message = "Password is required")
     private String password;
+
+    @NotBlank(message = "Password is required")
+    private String role;
 }

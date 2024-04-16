@@ -18,6 +18,10 @@ public class DbConfig extends AbstractR2dbcConfiguration {
 
     @Value("${spring.r2dbc.url}")
     private String dbUrl;
+
+    @Value("${app.db.execute-script}")
+    private boolean executeScript;
+
     @Override
     public ConnectionFactory connectionFactory() {
         return ConnectionFactories.get(dbUrl);
@@ -28,9 +32,13 @@ public class DbConfig extends AbstractR2dbcConfiguration {
         ConnectionFactoryInitializer initializer = new ConnectionFactoryInitializer();
         initializer.setConnectionFactory(connectionFactory);
 
-        CompositeDatabasePopulator populator = new CompositeDatabasePopulator();
-        populator.addPopulators(new ResourceDatabasePopulator(new ClassPathResource("schema.sql")));
-        initializer.setDatabasePopulator(populator);
+        if (executeScript) {
+            log.info("Executing schema.sql");
+            CompositeDatabasePopulator populator = new CompositeDatabasePopulator();
+            populator.addPopulators(new ResourceDatabasePopulator(new ClassPathResource("schema.sql")));
+            initializer.setDatabasePopulator(populator);
+            log.info("schema.sql executed successfully");
+        }
 
         return initializer;
     }

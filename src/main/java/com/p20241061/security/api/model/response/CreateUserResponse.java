@@ -11,10 +11,13 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class LoginResponse {
+public class CreateUserResponse {
+
     private UUID userId;
+    private String names;
+    private String lastNames;
+    private String email;
     private String roles;
     private Integer cancelReservation;
     private Integer acceptReservation;
-    private String token;
 }
