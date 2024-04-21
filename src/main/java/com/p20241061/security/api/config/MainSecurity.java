@@ -21,7 +21,8 @@ public class MainSecurity {
         return http
                 .cors().and()
                 .authorizeExchange()
-                .pathMatchers("/api/auth/**").permitAll()
+                //.pathMatchers("/api/auth/**").permitAll()
+                .pathMatchers("/**").permitAll()
                 .anyExchange().permitAll()
                 .and()
                 .addFilterAfter(jwtFilter, SecurityWebFiltersOrder.FIRST)

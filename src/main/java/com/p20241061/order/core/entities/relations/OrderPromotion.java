@@ -14,7 +14,7 @@ import java.util.UUID;
 @Builder
 public class OrderPromotion {
     @Id
+    private UUID orderPromotionId;
     private UUID promotionId;
-    @Id
     private UUID orderRequestId;
 }

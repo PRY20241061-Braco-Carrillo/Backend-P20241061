@@ -14,7 +14,7 @@ import java.util.UUID;
 @Builder
 public class OrderMenu {
     @Id
+    private UUID orderMenuId;
     private UUID menuId;
-    @Id
     private UUID orderRequestId;
 }

@@ -14,7 +14,7 @@ import java.util.UUID;
 @Builder
 public class ProductMenu {
     @Id
+    private UUID productMenuId;
     private UUID productId;
-    @Id
     private UUID menuId;
 }

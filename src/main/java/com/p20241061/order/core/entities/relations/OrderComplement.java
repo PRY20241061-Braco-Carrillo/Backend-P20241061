@@ -14,7 +14,7 @@ import java.util.UUID;
 @Builder
 public class OrderComplement {
     @Id
+    private UUID orderComplementId;
     private UUID productComplementId;
-    @Id
     private UUID orderRequestId;
 }

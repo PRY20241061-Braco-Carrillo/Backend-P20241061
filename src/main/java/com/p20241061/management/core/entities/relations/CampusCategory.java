@@ -14,7 +14,7 @@ import java.util.UUID;
 @Builder
 public class CampusCategory {
     @Id
+    private UUID campusCategoryId;
     private UUID categoryId;
-    @Id
     private UUID campusId;
 }

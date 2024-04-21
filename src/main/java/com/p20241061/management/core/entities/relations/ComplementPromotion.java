@@ -14,7 +14,7 @@ import java.util.UUID;
 @Builder
 public class ComplementPromotion {
     @Id
+    private UUID complementPromotionId;
     private UUID complementId;
-    @Id
     private UUID promotionId;
 }
