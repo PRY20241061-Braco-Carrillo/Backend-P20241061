@@ -54,6 +54,7 @@ public class ComplementService implements IComplementService {
     @Override
     public Mono<GeneralResponse<ComplementResponse>> update(UpdateComplementRequest request, UUID complementId) {
         return complementRepository.findById(complementId)
+                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Complement with id " + complementId + " not found")))
                 .flatMap(complement -> {
                     complement.setName(request.getName());
                     complement.setPrice(request.getPrice());

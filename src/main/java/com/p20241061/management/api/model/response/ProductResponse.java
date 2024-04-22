@@ -1,5 +1,7 @@
 package com.p20241061.management.api.model.response;
 
+import com.p20241061.management.core.entities.Category;
+import com.p20241061.management.core.entities.NutritionalInformation;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,7 +23,7 @@ public class ProductResponse {
     private Boolean isDinner;
     private String urlImage;
     private Integer freeSauce;
-    private UUID nutritionalInformationId;
-    private UUID categoryId ;
+    private NutritionalInformation nutritionalInformation;
+    private Category category ;
     private Boolean isAvailable;
 }

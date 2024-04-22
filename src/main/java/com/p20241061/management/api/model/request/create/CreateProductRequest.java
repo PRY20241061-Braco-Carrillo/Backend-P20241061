@@ -33,4 +33,6 @@ public class CreateProductRequest {
     private UUID nutritionalInformationId;
     @NotNull(message = "Category id is required")
     private UUID categoryId;
+    @NotNull(message = "Nutritional information is required")
+    private CreateNutritionalInformationRequest nutritionalInformation;
 }
