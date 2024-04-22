@@ -1,6 +1,7 @@
 package com.p20241061.management.api.routers;
 
 import com.p20241061.management.api.handlers.CampusHandler;
+import com.p20241061.management.api.handlers.CategoryHandler;
 import com.p20241061.management.api.handlers.RestaurantHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -15,6 +16,7 @@ public class ManagementRouter {
 
     private static final String PATH_CAMPUS = "/api/campus";
     private static final String PATH_RESTAURANT = "/api/restaurant";
+    private static final String PATH_CATEGORY = "/api/category";
 
     @Bean
     RouterFunction<ServerResponse> campusRtr(CampusHandler handler) {
@@ -31,6 +33,15 @@ public class ManagementRouter {
                 .POST(PATH_RESTAURANT, handler::create)
                 .PUT(PATH_RESTAURANT + "/{restaurantId}", handler::update)
                 .DELETE(PATH_RESTAURANT + "/{restaurantId}", handler::delete)
+                .build();
+    }
+
+    @Bean
+    RouterFunction<ServerResponse> categoryRtr(CategoryHandler handler) {
+        return RouterFunctions.route()
+                .POST(PATH_CATEGORY, handler::create)
+                .PUT(PATH_CATEGORY + "/{categoryId}", handler::update)
+                .DELETE(PATH_CATEGORY + "/{categoryId}", handler::delete)
                 .build();
     }
 }

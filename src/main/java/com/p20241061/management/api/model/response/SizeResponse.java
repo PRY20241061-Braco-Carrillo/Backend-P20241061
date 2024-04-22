@@ -1,4 +1,4 @@
-package com.p20241061.management.api.model.request;
+package com.p20241061.management.api.model.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CookingTypeRequest {
+public class SizeResponse {
     private String name;
+    private Boolean isAvailable;
 }
