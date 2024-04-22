@@ -16,4 +16,5 @@ public class ComplementResponse {
     private String name;
     private Double price;
     private Boolean isSauce;
+    private Boolean isAvailable;
 }
