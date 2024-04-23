@@ -1,5 +1,6 @@
 package com.p20241061.management.infrastructure.services;
 
+import com.p20241061.management.api.mapping.CategoryMapper;
 import com.p20241061.management.api.model.request.create.CreateCategoryRequest;
 import com.p20241061.management.api.model.request.update.UpdateCategoryRequest;
 import com.p20241061.management.api.model.response.CategoryResponse;
@@ -23,30 +24,17 @@ import java.util.UUID;
 public class CategoryService implements ICategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final CategoryMapper categoryMapper;
 
 
     @Override
     public Mono<GeneralResponse<CategoryResponse>> create(CreateCategoryRequest request) {
 
-        Category category = Category.builder()
-                .name(request.getName())
-                .urlImage(request.getUrlImage())
-                .build();
-
-        return categoryRepository.save(category)
-                .flatMap(createdCategory -> {
-
-                    CategoryResponse categoryResponse = CategoryResponse.builder()
-                            .categoryId(createdCategory.getCategoryId())
-                            .name(createdCategory.getName())
-                            .urlImage(createdCategory.getUrlImage())
-                            .build();
-
-                    return Mono.just(GeneralResponse.<CategoryResponse>builder()
-                            .code(SuccessCode.CREATED.name())
-                            .data(categoryResponse)
-                            .build());
-                });
+        return categoryRepository.save(categoryMapper.createRequestToModel(request))
+                .flatMap(createdCategory -> Mono.just(GeneralResponse.<CategoryResponse>builder()
+                        .code(SuccessCode.CREATED.name())
+                        .data(categoryMapper.modelToResponse(createdCategory))
+                        .build()));
     }
 
     @Override
@@ -59,19 +47,10 @@ public class CategoryService implements ICategoryService {
                     category.setUrlImage(request.getUrlImage());
 
                     return categoryRepository.save(category)
-                            .flatMap(updatedCategory -> {
-
-                                CategoryResponse categoryResponse = CategoryResponse.builder()
-                                        .categoryId(updatedCategory.getCategoryId())
-                                        .name(updatedCategory.getName())
-                                        .urlImage(updatedCategory.getUrlImage())
-                                        .build();
-
-                                return Mono.just(GeneralResponse.<CategoryResponse>builder()
-                                        .code(SuccessCode.UPDATED.name())
-                                        .data(categoryResponse)
-                                        .build());
-                            });
+                            .flatMap(updatedCategory -> Mono.just(GeneralResponse.<CategoryResponse>builder()
+                                    .code(SuccessCode.UPDATED.name())
+                                    .data(categoryMapper.modelToResponse(updatedCategory))
+                                    .build()));
                 });
     }
 
