@@ -24,6 +24,6 @@ public class Product {
     private String urlImage;
     private Integer freeSauce;
     private UUID nutritionalInformationId;
-    private UUID categoryId ;
+    private UUID campusCategoryId ;
     private Boolean isAvailable;
 }

@@ -5,11 +5,9 @@ import com.p20241061.management.api.mapping.ProductMapper;
 import com.p20241061.management.api.model.request.create.CreateProductRequest;
 import com.p20241061.management.api.model.request.update.UpdateProductRequest;
 import com.p20241061.management.api.model.response.ProductResponse;
-import com.p20241061.management.core.entities.NutritionalInformation;
-import com.p20241061.management.core.entities.Product;
-import com.p20241061.management.core.repositories.CategoryRepository;
 import com.p20241061.management.core.repositories.NutritionalInformationRepository;
 import com.p20241061.management.core.repositories.ProductRepository;
+import com.p20241061.management.core.repositories.relations.CampusCategoryRepository;
 import com.p20241061.management.infrastructure.interfaces.IProductService;
 import com.p20241061.shared.exceptions.CustomException;
 import com.p20241061.shared.models.enums.SuccessCode;
@@ -29,22 +27,20 @@ public class ProductService implements IProductService {
 
     private final ProductRepository productRepository;
     private final NutritionalInformationRepository nutritionalInformationRepository;
-    private final CategoryRepository categoryRepository;
+    private final CampusCategoryRepository campusCategoryRepository;
     private final ProductMapper productMapper;
     private final NutritionalInformationMapper nutritionalInformationMapper;
 
     @Override
     public Mono<GeneralResponse<ProductResponse>> create(CreateProductRequest request) {
-        return categoryRepository.findById(request.getCategoryId())
-                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Category with id " + request.getCategoryId() + " not found")))
-                .flatMap(category -> nutritionalInformationRepository.save(nutritionalInformationMapper.createRequestToModel(request.getNutritionalInformation()))
-                        .flatMap(createdNutritionalInformation -> productRepository.save(
-                                productMapper.createRequestToModel(request, createdNutritionalInformation.getNutritionalInformationId())
-                                )
+        return campusCategoryRepository.findById(request.getCampusCategoryId())
+                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Campus Category with id " + request.getCampusCategoryId() + " not found")))
+                .flatMap(campusCategory -> nutritionalInformationRepository.save(nutritionalInformationMapper.createRequestToModel(request.getNutritionalInformation()))
+                        .flatMap(createdNutritionalInformation -> productRepository.save(productMapper.createRequestToModel(request, createdNutritionalInformation.getNutritionalInformationId()))
                                 .flatMap(createdProduct -> {
                                     ProductResponse productResponse = productMapper.modelToResponse(createdProduct);
                                     productResponse.setNutritionalInformation(createdNutritionalInformation);
-                                    productResponse.setCategory(category);
+                                    productResponse.setCampusCategory(campusCategory);
 
                                     return Mono.just(GeneralResponse.<ProductResponse>builder()
                                             .code(SuccessCode.CREATED.name())
@@ -57,9 +53,9 @@ public class ProductService implements IProductService {
     public Mono<GeneralResponse<ProductResponse>> update(UpdateProductRequest request, UUID productId) {
         return productRepository.findById(productId)
                 .switchIfEmpty(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Product with id " + productId + " not found")))
-                .flatMap(product -> categoryRepository.findById(request.getCategoryId())
-                        .switchIfEmpty(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Category with id " + request.getCategoryId() + " not found")))
-                        .flatMap(category -> {
+                .flatMap(product -> campusCategoryRepository.findById(request.getCampusCategoryId())
+                        .switchIfEmpty(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Campus Category with id " + request.getCampusCategoryId() + " not found")))
+                        .flatMap(campusCategory -> {
 
                             product.setName(request.getName());
                             product.setCookingTime(request.getCookingTime());
@@ -69,7 +65,7 @@ public class ProductService implements IProductService {
                             product.setIsDinner(request.getIsDinner());
                             product.setUrlImage(request.getUrlImage());
                             product.setFreeSauce(request.getFreeSauce());
-                            product.setCategoryId(request.getCategoryId());
+                            product.setCampusCategoryId(request.getCampusCategoryId());
                             product.setIsAvailable(request.getIsAvailable());
 
                             return productRepository.save(product)
@@ -79,7 +75,7 @@ public class ProductService implements IProductService {
 
                                             ProductResponse productResponse = productMapper.modelToResponse(updatedProduct);
                                             productResponse.setNutritionalInformation(nutritionalInformation);
-                                            productResponse.setCategory(category);
+                                            productResponse.setCampusCategory(campusCategory);
 
                                             return Mono.just(GeneralResponse.<ProductResponse>builder()
                                                     .code(SuccessCode.UPDATED.name())

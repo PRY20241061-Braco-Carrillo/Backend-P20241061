@@ -29,8 +29,8 @@ public class UpdateProductRequest {
     private String urlImage;
     @NotNull(message = "Free sauce is required")
     private Integer freeSauce;
-    @NotNull(message = "Category id is required")
-    private UUID categoryId;
+    @NotNull(message = "Campus Category id is required")
+    private UUID campusCategoryId;
     @NotNull(message = "Is available is required")
     private Boolean isAvailable;
 

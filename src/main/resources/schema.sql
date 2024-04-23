@@ -146,11 +146,11 @@ CREATE TABLE product (
     url_glb varchar(255), -- Cambiado a varchar(255) para compatibilidad con PostgreSQL
     free_sauce integer  NOT NULL, -- Cambiado a integer para compatibilidad con PostgreSQL
     nutritional_information_id uuid  NOT NULL,
-    category_id uuid  NOT NULL,
+    campus_category_id uuid  NOT NULL,
     is_available bool  NOT NULL,
     CONSTRAINT product_pk PRIMARY KEY (product_id),
     CONSTRAINT product_nutritional_information FOREIGN KEY (nutritional_information_id) REFERENCES nutritional_information (nutritional_information_id),
-    CONSTRAINT product_category FOREIGN KEY (category_id) REFERENCES category (category_id)
+    CONSTRAINT product_campus_category FOREIGN KEY (campus_category_id) REFERENCES campus_category (campus_category_id)
 );
 
 -- Table: complement_promotion
