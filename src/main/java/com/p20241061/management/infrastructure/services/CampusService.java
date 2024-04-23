@@ -1,12 +1,11 @@
 package com.p20241061.management.infrastructure.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.p20241061.management.api.mapping.CampusMapper;
 import com.p20241061.management.api.model.request.create.CreateCampusRequest;
 import com.p20241061.management.api.model.request.update.UpdateCampusRequest;
 import com.p20241061.management.api.model.response.CampusResponse;
-import com.p20241061.management.core.entities.Campus;
 import com.p20241061.management.core.repositories.CampusRepository;
 import com.p20241061.management.core.repositories.RestaurantRepository;
 import com.p20241061.management.infrastructure.interfaces.ICampusService;
@@ -31,36 +30,21 @@ public class CampusService implements ICampusService {
     private final CampusRepository campusRepository;
     private final RestaurantRepository restaurantRepository;
     private final ObjectMapper objectMapper;
+    private final CampusMapper campusMapper;
 
     @Override
     public Mono<GeneralResponse<CampusResponse>> getById(UUID campusId) {
         return campusRepository.findById(campusId)
                 .switchIfEmpty(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Campus with id " + campusId + " not found")))
                 .flatMap(campus -> {
-
-                    CampusResponse campusResponse = null;
                     try {
-                        campusResponse = CampusResponse.builder()
-                                .campusId(campus.getCampusId())
-                                .name(campus.getName())
-                                .address(campus.getAddress())
-                                .phoneNumber(campus.getPhoneNumber())
-                                .toTakeHome(campus.getToTakeHome())
-                                .toDelivery(campus.getToDelivery())
-                                .restaurantId(campus.getRestaurantId())
-                                .isAvailable(campus.getIsAvailable())
-                                .build();
-
-                        campusResponse.setOpenHour(objectMapper.readValue(campus.getOpenHour(), new TypeReference<>() {
-                        }));
+                        return Mono.just(GeneralResponse.<CampusResponse>builder()
+                                .code(SuccessCode.SUCCESS.name())
+                                .data(campusMapper.modelToResponse(campus))
+                                .build());
                     } catch (JsonProcessingException e) {
                         return Mono.error(new CustomException(HttpStatus.BAD_REQUEST, e.getMessage()));
                     }
-
-                    return Mono.just(GeneralResponse.<CampusResponse>builder()
-                            .code(SuccessCode.SUCCESS.name())
-                            .data(campusResponse)
-                            .build());
                 });
     }
 
@@ -75,26 +59,11 @@ public class CampusService implements ICampusService {
 
                             List<CampusResponse> campusResponses = campuses.stream()
                                     .map(campus  -> {
-                                        CampusResponse response = CampusResponse.builder()
-                                                    .campusId(campus.getCampusId())
-                                                    .name(campus.getName())
-                                                    .address(campus.getAddress())
-                                                    .phoneNumber(campus.getPhoneNumber())
-                                                    .toTakeHome(campus.getToTakeHome())
-                                                    .toDelivery(campus.getToDelivery())
-                                                    .restaurantId(campus.getRestaurantId())
-                                                    .isAvailable(campus.getIsAvailable())
-                                                    .build();
-
                                         try {
-                                            response.setOpenHour(objectMapper.readValue(campus.getOpenHour(), new TypeReference<>() {
-                                            }));
+                                            return campusMapper.modelToResponse(campus);
                                         } catch (JsonProcessingException e) {
                                             throw new RuntimeException(e);
                                         }
-
-                                        return response;
-
                                     })
                                     .toList();
 
@@ -102,8 +71,6 @@ public class CampusService implements ICampusService {
                                     .code(SuccessCode.SUCCESS.name())
                                     .data(campusResponses)
                                     .build());
-
-
                         })
                 );
     }
@@ -114,49 +81,20 @@ public class CampusService implements ICampusService {
         return restaurantRepository.findById(request.getRestaurantId())
                 .switchIfEmpty(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Restaurant with id " + request.getRestaurantId() + " not found")))
                 .flatMap(restaurant -> {
-
-                    Campus campus;
                     try {
-                        campus = Campus.builder()
-                                .name(request.getName())
-                                .address(request.getAddress())
-                                .phoneNumber(request.getPhoneNumber())
-                                .openHour(objectMapper.writeValueAsString(request.getOpenHour()))
-                                .toTakeHome(request.getToTakeHome())
-                                .toDelivery(request.getToDelivery())
-                                .restaurantId(request.getRestaurantId())
-                                .isAvailable(true)
-                                .build();
+                        return campusRepository.save(campusMapper.createRequestToModel(request)).flatMap(createdCampus -> {
+                            try {
+                                return Mono.just(GeneralResponse.<CampusResponse>builder()
+                                        .code(SuccessCode.CREATED.name())
+                                        .data(campusMapper.modelToResponse(createdCampus))
+                                        .build());
+                            } catch (JsonProcessingException e) {
+                                return Mono.error(new CustomException(HttpStatus.BAD_REQUEST, e.getMessage()));
+                            }
+                        });
                     } catch (JsonProcessingException e) {
                         return Mono.error(new CustomException(HttpStatus.BAD_REQUEST, e.getMessage()));
                     }
-
-                    return campusRepository.save(campus).flatMap(createdCampus -> {
-
-                        CampusResponse campusResponse = null;
-                        try {
-                            campusResponse = CampusResponse.builder()
-                                    .campusId(createdCampus.getCampusId())
-                                    .name(createdCampus.getName())
-                                    .address(createdCampus.getAddress())
-                                    .phoneNumber(createdCampus.getPhoneNumber())
-                                    .openHour(objectMapper.readValue(createdCampus.getOpenHour(), new TypeReference<>() {
-                                    }))
-                                    .toTakeHome(createdCampus.getToTakeHome())
-                                    .toDelivery(createdCampus.getToDelivery())
-                                    .restaurantId(createdCampus.getRestaurantId())
-                                    .isAvailable(createdCampus.getIsAvailable())
-                                    .build();
-                        } catch (JsonProcessingException e) {
-                            return Mono.error(new CustomException(HttpStatus.BAD_REQUEST, e.getMessage()));
-                        }
-
-                        return Mono.just(GeneralResponse.<CampusResponse>builder()
-                                .code(SuccessCode.CREATED.name())
-                                .data(campusResponse)
-                                .build());
-
-                    });
                 });
     }
 
@@ -168,7 +106,6 @@ public class CampusService implements ICampusService {
                 .flatMap(findedCampus -> restaurantRepository.findById(request.getRestaurantId())
                         .switchIfEmpty(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Restaurant with id " + request.getRestaurantId() + " not found")))
                         .flatMap(restaurant -> {
-
 
                             try {
                                 findedCampus.setName(request.getName());
@@ -183,32 +120,15 @@ public class CampusService implements ICampusService {
                                 return Mono.error(new CustomException(HttpStatus.BAD_REQUEST, e.getMessage()));
                             }
 
-
                             return campusRepository.save(findedCampus).flatMap(updatedCampus -> {
-
-                                CampusResponse campusResponse;
                                 try {
-                                    campusResponse = CampusResponse.builder()
-                                            .campusId(updatedCampus.getCampusId())
-                                            .name(updatedCampus.getName())
-                                            .address(updatedCampus.getAddress())
-                                            .phoneNumber(updatedCampus.getPhoneNumber())
-                                            .openHour(objectMapper.readValue(updatedCampus.getOpenHour(), new TypeReference<>() {
-                                            }))
-                                            .toTakeHome(updatedCampus.getToTakeHome())
-                                            .toDelivery(updatedCampus.getToDelivery())
-                                            .restaurantId(updatedCampus.getRestaurantId())
-                                            .isAvailable(updatedCampus.getIsAvailable())
-                                            .build();
+                                    return Mono.just(GeneralResponse.<CampusResponse>builder()
+                                            .code(SuccessCode.UPDATED.name())
+                                            .data(campusMapper.modelToResponse(updatedCampus))
+                                            .build());
                                 } catch (JsonProcessingException e) {
                                     return Mono.error(new CustomException(HttpStatus.BAD_REQUEST, e.getMessage()));
                                 }
-
-                                return Mono.just(GeneralResponse.<CampusResponse>builder()
-                                        .code(SuccessCode.UPDATED.name())
-                                        .data(campusResponse)
-                                        .build());
-
                             });
                         }));
 
