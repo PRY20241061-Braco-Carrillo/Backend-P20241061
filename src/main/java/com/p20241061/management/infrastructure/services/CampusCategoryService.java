@@ -1,5 +1,6 @@
 package com.p20241061.management.infrastructure.services;
 
+import com.p20241061.management.api.mapping.CategoryMapper;
 import com.p20241061.management.api.model.request.create.relations.CreateCampusCategoryRequest;
 import com.p20241061.management.api.model.response.CategoryResponse;
 import com.p20241061.management.api.model.response.relations.CampusCategoryResponse;
@@ -29,6 +30,7 @@ public class CampusCategoryService implements ICampusCategoryService {
     private final CampusCategoryRepository campusCategoryRepository;
     private final CampusRepository campusRepository;
     private final CategoryRepository categoryRepository;
+    private final CategoryMapper categoryMapper;
 
     @Override
     public Mono<GeneralResponse<List<CategoryResponse>>> getCategoryByCampusId(PaginatedRequest paginatedRequest, UUID campusId) {
@@ -36,11 +38,7 @@ public class CampusCategoryService implements ICampusCategoryService {
 
         return paginatedRequest.paginateData(campusCategoryRepository.getCampusCategoriesByCampusId(campusId))
                 .flatMap(campusCategory -> categoryRepository.findById(campusCategory.getCategoryId())
-                        .map(category -> CategoryResponse.builder()
-                                .categoryId(category.getCategoryId())
-                                .name(category.getName())
-                                .urlImage(category.getUrlImage())
-                                .build()))
+                        .map(categoryMapper::modelToResponse))
                 .collectList()
                 .flatMap(categoryResponses -> Mono.just(GeneralResponse.<List<CategoryResponse>>builder()
                         .code(SuccessCode.SUCCESS.name())
