@@ -21,6 +21,17 @@ public class CampusCategoryHandler {
     private final ICampusCategoryService campusCategoryService;
     private final ObjectValidator objectValidator;
 
+    public Mono<ServerResponse> getCategoriesByCampusId(ServerRequest request) {
+        Integer pageNumber = Integer.parseInt(request.queryParam("pageNumber").orElse("0"));
+        Integer pageSize = Integer.parseInt(request.queryParam("pageSize").orElse("5"));
+        UUID campusId = UUID.fromString(request.pathVariable("campusId"));
+
+        return campusCategoryService.getCategoryByCampusId(pageNumber, pageSize, campusId)
+                .flatMap(response -> ServerResponse.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(response));
+    }
+
     public Mono<ServerResponse> create(ServerRequest request) {
         Mono<CreateCampusCategoryRequest> campusCategoryRequest = request.bodyToMono(CreateCampusCategoryRequest.class)
                 .doOnNext(objectValidator::validate);

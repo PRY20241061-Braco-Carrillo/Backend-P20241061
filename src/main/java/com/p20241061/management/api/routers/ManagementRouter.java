@@ -128,6 +128,7 @@ public class ManagementRouter {
     @Bean
     RouterFunction<ServerResponse> campusCategoryRtr(CampusCategoryHandler handler) {
         return RouterFunctions.route()
+                .GET(PATH_CAMPUS_CATEGORY + "/campus/{campusId}", handler::getCategoriesByCampusId)
                 .POST(PATH_CAMPUS_CATEGORY, handler::create)
                 .DELETE(PATH_CAMPUS_CATEGORY + "/{campusCategoryId}", handler::delete)
                 .build();

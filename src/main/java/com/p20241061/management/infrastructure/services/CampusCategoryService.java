@@ -1,6 +1,7 @@
 package com.p20241061.management.infrastructure.services;
 
 import com.p20241061.management.api.model.request.create.relations.CreateCampusCategoryRequest;
+import com.p20241061.management.api.model.response.CategoryResponse;
 import com.p20241061.management.api.model.response.relations.CampusCategoryResponse;
 import com.p20241061.management.core.entities.relations.CampusCategory;
 import com.p20241061.management.core.repositories.CampusRepository;
@@ -12,10 +13,13 @@ import com.p20241061.shared.models.enums.SuccessCode;
 import com.p20241061.shared.models.response.GeneralResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -26,6 +30,26 @@ public class CampusCategoryService implements ICampusCategoryService {
     private final CampusCategoryRepository campusCategoryRepository;
     private final CampusRepository campusRepository;
     private final CategoryRepository categoryRepository;
+
+    @Override
+    public Mono<GeneralResponse<List<CategoryResponse>>> getCategoryByCampusId(Integer pageNumber, Integer pageSize, UUID campusId) {
+
+        Sort sort = Sort.by(Sort.Order.asc("name"));
+        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, sort);
+
+        return campusCategoryRepository.getCampusCategoriesByCampusId(campusId).skip(pageRequest.getOffset()).take(pageRequest.getPageSize())
+                .flatMap(campusCategory -> categoryRepository.findById(campusCategory.getCategoryId())
+                        .map(category -> CategoryResponse.builder()
+                                .categoryId(category.getCategoryId())
+                                .name(category.getName())
+                                .urlImage(category.getUrlImage())
+                                .build()))
+                .collectList()
+                .flatMap(categoryResponses -> Mono.just(GeneralResponse.<List<CategoryResponse>>builder()
+                        .code(SuccessCode.SUCCESS.name())
+                        .data(categoryResponses)
+                        .build()));
+    }
 
     @Override
     public Mono<GeneralResponse<CampusCategoryResponse>> create(CreateCampusCategoryRequest request) {
