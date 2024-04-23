@@ -21,6 +21,16 @@ public class CampusHandler {
     private final ICampusService campusService;
     private final ObjectValidator objectValidator;
 
+    public Mono<ServerResponse> getById(ServerRequest request) {
+
+        UUID campusId = UUID.fromString(request.pathVariable("campusId"));
+
+        return campusService.getById(campusId)
+                .flatMap(response -> ServerResponse.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(response));
+    }
+
     public Mono<ServerResponse> getByRestaurantId(ServerRequest request) {
 
         Integer pageNumber = Integer.parseInt(request.queryParam("pageNumber").orElse("0"));

@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface ICampusService {
+    Mono<GeneralResponse<CampusResponse>> getById(UUID campusId);
     Mono<GeneralResponse<List<CampusResponse>>> getByRestaurantId(Integer pageNumber, Integer pageSize, Boolean available, UUID restaurantId);
     Mono<GeneralResponse<CampusResponse>> create(CreateCampusRequest request);
     Mono<GeneralResponse<CampusResponse>> update(UpdateCampusRequest request, UUID campusId);

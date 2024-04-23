@@ -34,6 +34,38 @@ public class CampusService implements ICampusService {
     private final ObjectMapper objectMapper;
 
     @Override
+    public Mono<GeneralResponse<CampusResponse>> getById(UUID campusId) {
+        return campusRepository.findById(campusId)
+                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Campus with id " + campusId + " not found")))
+                .flatMap(campus -> {
+
+                    CampusResponse campusResponse = null;
+                    try {
+                        campusResponse = CampusResponse.builder()
+                                .campusId(campus.getCampusId())
+                                .name(campus.getName())
+                                .address(campus.getAddress())
+                                .phoneNumber(campus.getPhoneNumber())
+                                .toTakeHome(campus.getToTakeHome())
+                                .toDelivery(campus.getToDelivery())
+                                .restaurantId(campus.getRestaurantId())
+                                .isAvailable(campus.getIsAvailable())
+                                .build();
+
+                        campusResponse.setOpenHour(objectMapper.readValue(campus.getOpenHour(), new TypeReference<>() {
+                        }));
+                    } catch (JsonProcessingException e) {
+                        return Mono.error(new CustomException(HttpStatus.BAD_REQUEST, e.getMessage()));
+                    }
+
+                    return Mono.just(GeneralResponse.<CampusResponse>builder()
+                            .code(SuccessCode.SUCCESS.name())
+                            .data(campusResponse)
+                            .build());
+                });
+    }
+
+    @Override
     public Mono<GeneralResponse<List<CampusResponse>>> getByRestaurantId(Integer pageNumber, Integer pageSize, Boolean available, UUID restaurantId) {
 
         Sort sort = Sort.by(Sort.Order.asc("name"));
