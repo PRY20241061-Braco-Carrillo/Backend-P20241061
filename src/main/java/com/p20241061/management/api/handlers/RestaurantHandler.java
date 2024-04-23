@@ -3,6 +3,7 @@ package com.p20241061.management.api.handlers;
 import com.p20241061.management.api.model.request.create.CreateRestaurantRequest;
 import com.p20241061.management.api.model.request.update.UpdateRestaurantRequest;
 import com.p20241061.management.infrastructure.interfaces.IRestaurantService;
+import com.p20241061.shared.utils.PaginatedRequest;
 import com.p20241061.shared.validation.ObjectValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +27,7 @@ public class RestaurantHandler {
         Integer pageSize = Integer.parseInt(request.queryParam("pageSize").orElse("5"));
         Boolean available = request.queryParam("available").orElse("true").equals("true");
 
-        return restaurantService.getAll(pageNumber, pageSize, available)
+        return restaurantService.getAll(new PaginatedRequest(pageNumber, pageSize, "name", true), available)
                 .flatMap(response -> ServerResponse.ok()
                         .contentType(MediaType.APPLICATION_JSON)
                         .bodyValue(response));

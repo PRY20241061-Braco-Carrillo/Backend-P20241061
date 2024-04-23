@@ -13,6 +13,7 @@ import com.p20241061.shared.exceptions.CustomException;
 import com.p20241061.shared.models.enums.SuccessCode;
 import com.p20241061.shared.models.response.GeneralResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.p20241061.shared.utils.PaginatedRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -66,14 +67,11 @@ public class CampusService implements ICampusService {
     }
 
     @Override
-    public Mono<GeneralResponse<List<CampusResponse>>> getByRestaurantId(Integer pageNumber, Integer pageSize, Boolean available, UUID restaurantId) {
-
-        Sort sort = Sort.by(Sort.Order.asc("name"));
-        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, sort);
+    public Mono<GeneralResponse<List<CampusResponse>>> getByRestaurantId(PaginatedRequest paginatedRequest, Boolean available, UUID restaurantId) {
 
         return restaurantRepository.findById(restaurantId)
                 .switchIfEmpty(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Restaurant with id " + restaurantId + " not found")))
-                .flatMap(restaurant -> campusRepository.findByRestaurantIdAndIsAvailable(restaurantId, available).skip(pageRequest.getOffset()).take(pageRequest.getPageSize())
+                .flatMap(restaurant -> paginatedRequest.paginateData(campusRepository.findByRestaurantIdAndIsAvailable(restaurantId, available))
                         .collectList()
                         .flatMap(campuses -> {
 

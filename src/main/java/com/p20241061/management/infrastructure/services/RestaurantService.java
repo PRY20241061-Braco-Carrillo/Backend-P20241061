@@ -9,6 +9,7 @@ import com.p20241061.management.infrastructure.interfaces.IRestaurantService;
 import com.p20241061.shared.exceptions.CustomException;
 import com.p20241061.shared.models.enums.SuccessCode;
 import com.p20241061.shared.models.response.GeneralResponse;
+import com.p20241061.shared.utils.PaginatedRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -29,12 +30,9 @@ public class RestaurantService implements IRestaurantService {
 
 
     @Override
-    public Mono<GeneralResponse<List<RestaurantResponse>>> getAll(Integer pageNumber, Integer pageSize, Boolean available) {
+    public Mono<GeneralResponse<List<RestaurantResponse>>> getAll(PaginatedRequest paginatedRequest, Boolean available) {
 
-        Sort sort = Sort.by(Sort.Order.asc("name"));
-        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, sort);
-
-        return restaurantRepository.findByIsAvailable(available).skip(pageRequest.getOffset()).take(pageRequest.getPageSize())
+        return paginatedRequest.paginateData(restaurantRepository.findByIsAvailable(available))
                 .collectList()
                 .flatMap(restaurants -> {
 

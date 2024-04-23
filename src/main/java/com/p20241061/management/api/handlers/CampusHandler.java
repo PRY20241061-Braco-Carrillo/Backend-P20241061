@@ -3,6 +3,7 @@ package com.p20241061.management.api.handlers;
 import com.p20241061.management.api.model.request.create.CreateCampusRequest;
 import com.p20241061.management.api.model.request.update.UpdateCampusRequest;
 import com.p20241061.management.infrastructure.interfaces.ICampusService;
+import com.p20241061.shared.utils.PaginatedRequest;
 import com.p20241061.shared.validation.ObjectValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +39,7 @@ public class CampusHandler {
         Boolean available = request.queryParam("available").orElse("true").equals("true");
         UUID restaurantId = UUID.fromString(request.pathVariable("restaurantId"));
 
-        return campusService.getByRestaurantId(pageNumber, pageSize, available, restaurantId)
+        return campusService.getByRestaurantId(new PaginatedRequest(pageNumber, pageSize, "name", true), available, restaurantId)
                 .flatMap(response -> ServerResponse.ok()
                         .contentType(MediaType.APPLICATION_JSON)
                         .bodyValue(response));

@@ -11,10 +11,9 @@ import com.p20241061.management.infrastructure.interfaces.ICampusCategoryService
 import com.p20241061.shared.exceptions.CustomException;
 import com.p20241061.shared.models.enums.SuccessCode;
 import com.p20241061.shared.models.response.GeneralResponse;
+import com.p20241061.shared.utils.PaginatedRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -32,12 +31,10 @@ public class CampusCategoryService implements ICampusCategoryService {
     private final CategoryRepository categoryRepository;
 
     @Override
-    public Mono<GeneralResponse<List<CategoryResponse>>> getCategoryByCampusId(Integer pageNumber, Integer pageSize, UUID campusId) {
+    public Mono<GeneralResponse<List<CategoryResponse>>> getCategoryByCampusId(PaginatedRequest paginatedRequest, UUID campusId) {
 
-        Sort sort = Sort.by(Sort.Order.asc("name"));
-        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, sort);
 
-        return campusCategoryRepository.getCampusCategoriesByCampusId(campusId).skip(pageRequest.getOffset()).take(pageRequest.getPageSize())
+        return paginatedRequest.paginateData(campusCategoryRepository.getCampusCategoriesByCampusId(campusId))
                 .flatMap(campusCategory -> categoryRepository.findById(campusCategory.getCategoryId())
                         .map(category -> CategoryResponse.builder()
                                 .categoryId(category.getCategoryId())
