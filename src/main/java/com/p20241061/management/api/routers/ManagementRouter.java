@@ -25,6 +25,8 @@ public class ManagementRouter {
     private static final String PATH_RESTAURANT = "/api/restaurant";
     private static final String PATH_SIZE = "/api/size";
 
+    private static final String PATH_CAMPUS_CATEGORY = "/api/campus-category";
+
     @Bean
     RouterFunction<ServerResponse> campusRtr(CampusHandler handler) {
         return RouterFunctions.route()
@@ -120,6 +122,14 @@ public class ManagementRouter {
                 .POST(PATH_SIZE, handler::create)
                 .PUT(PATH_SIZE + "/{sizeId}", handler::update)
                 .DELETE(PATH_SIZE + "/{sizeId}", handler::delete)
+                .build();
+    }
+
+    @Bean
+    RouterFunction<ServerResponse> campusCategoryRtr(CampusCategoryHandler handler) {
+        return RouterFunctions.route()
+                .POST(PATH_CAMPUS_CATEGORY, handler::create)
+                .DELETE(PATH_CAMPUS_CATEGORY + "/{campusCategoryId}", handler::delete)
                 .build();
     }
 
