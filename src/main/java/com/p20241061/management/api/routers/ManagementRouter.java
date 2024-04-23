@@ -105,6 +105,7 @@ public class ManagementRouter {
     @Bean
     RouterFunction<ServerResponse> restaurantRtr(RestaurantHandler handler) {
         return RouterFunctions.route()
+                .GET(PATH_RESTAURANT, handler::getAll)
                 .POST(PATH_RESTAURANT, handler::create)
                 .PUT(PATH_RESTAURANT + "/{restaurantId}", handler::update)
                 .DELETE(PATH_RESTAURANT + "/{restaurantId}", handler::delete)

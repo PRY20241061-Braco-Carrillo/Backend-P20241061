@@ -11,10 +11,13 @@ import com.p20241061.shared.models.enums.SuccessCode;
 import com.p20241061.shared.models.response.GeneralResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -26,11 +29,39 @@ public class RestaurantService implements IRestaurantService {
 
 
     @Override
+    public Mono<GeneralResponse<List<RestaurantResponse>>> getAll(Integer pageNumber, Integer pageSize, Boolean available) {
+
+        Sort sort = Sort.by(Sort.Order.asc("name"));
+        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, sort);
+
+        return restaurantRepository.findByIsAvailable(available).skip(pageRequest.getOffset()).take(pageRequest.getPageSize())
+                .collectList()
+                .flatMap(restaurants -> {
+
+                    List<RestaurantResponse> restaurantResponses = restaurants.stream()
+                            .map(restaurant -> RestaurantResponse.builder()
+                                    .restaurantId(restaurant.getRestaurantId())
+                                    .name(restaurant.getName())
+                                    .imageUrl(restaurant.getImageUrl())
+                                    .isAvailable(restaurant.getIsAvailable())
+                                    .build())
+                            .toList();
+
+                    return Mono.just(GeneralResponse.<List<RestaurantResponse>>builder()
+                            .code(SuccessCode.SUCCESS.name())
+                            .data(restaurantResponses)
+                            .build());
+                }
+        );
+    }
+
+    @Override
     public Mono<GeneralResponse<RestaurantResponse>> create(CreateRestaurantRequest request) {
 
         Restaurant restaurant = Restaurant.builder()
                 .name(request.getName())
                 .imageUrl(request.getImageUrl())
+                .logoUrl(request.getLogoUrl())
                 .isAvailable(true)
                 .build();
 
@@ -40,6 +71,7 @@ public class RestaurantService implements IRestaurantService {
                     .restaurantId(createdRestaurant.getRestaurantId())
                     .name(createdRestaurant.getName())
                     .imageUrl(createdRestaurant.getImageUrl())
+                    .logoUrl(createdRestaurant.getLogoUrl())
                     .isAvailable(createdRestaurant.getIsAvailable())
                     .build();
 
@@ -58,6 +90,7 @@ public class RestaurantService implements IRestaurantService {
 
                     restaurant.setName(request.getName());
                     restaurant.setImageUrl(request.getImageUrl());
+                    restaurant.setLogoUrl(request.getLogoUrl());
                     restaurant.setIsAvailable(request.getIsAvailable());
 
                     return restaurantRepository.save(restaurant).flatMap(updatedRestaurant -> {
@@ -66,6 +99,7 @@ public class RestaurantService implements IRestaurantService {
                                 .restaurantId(updatedRestaurant.getRestaurantId())
                                 .name(updatedRestaurant.getName())
                                 .imageUrl(updatedRestaurant.getImageUrl())
+                                .logoUrl(updatedRestaurant.getLogoUrl())
                                 .isAvailable(updatedRestaurant.getIsAvailable())
                                 .build();
 

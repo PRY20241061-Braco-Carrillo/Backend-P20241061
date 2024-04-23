@@ -17,5 +17,6 @@ public class Restaurant {
     private UUID restaurantId;
     private String name;
     private String imageUrl;
+    private String logoUrl;
     private Boolean isAvailable;
 }

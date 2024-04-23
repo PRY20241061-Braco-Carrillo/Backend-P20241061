@@ -16,6 +16,7 @@ public class UpdateRestaurantRequest {
     @NotBlank(message = "Name is required")
     private String name;
     private String imageUrl;
+    private String logoUrl;
     @NotNull(message = "isAvailable is required")
     private Boolean isAvailable;
 }

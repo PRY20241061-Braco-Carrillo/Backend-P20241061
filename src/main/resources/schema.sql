@@ -84,6 +84,7 @@ CREATE TABLE restaurant (
     restaurant_id uuid  NOT NULL DEFAULT gen_random_uuid(),
     name varchar(255)  NOT NULL,
     image_url varchar(255)  NULL,
+    logo_url varchar(255)  NULL,
     is_available bool  NOT NULL,
     CONSTRAINT restaurant_pk PRIMARY KEY (restaurant_id)
 );

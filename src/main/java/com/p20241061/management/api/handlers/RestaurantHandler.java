@@ -21,6 +21,17 @@ public class RestaurantHandler {
     private final IRestaurantService restaurantService;
     private final ObjectValidator objectValidator;
 
+    public Mono<ServerResponse> getAll(ServerRequest request) {
+        Integer pageNumber = Integer.parseInt(request.queryParam("pageNumber").orElse("0"));
+        Integer pageSize = Integer.parseInt(request.queryParam("pageSize").orElse("5"));
+        Boolean available = request.queryParam("available").orElse("true").equals("true");
+
+        return restaurantService.getAll(pageNumber, pageSize, available)
+                .flatMap(response -> ServerResponse.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(response));
+    }
+
     public Mono<ServerResponse> create(ServerRequest request) {
         Mono<CreateRestaurantRequest> restaurantRequest = request.bodyToMono(CreateRestaurantRequest.class)
                 .doOnNext(objectValidator::validate);
