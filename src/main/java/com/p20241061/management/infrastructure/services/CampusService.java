@@ -15,10 +15,13 @@ import com.p20241061.shared.models.response.GeneralResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -29,6 +32,53 @@ public class CampusService implements ICampusService {
     private final CampusRepository campusRepository;
     private final RestaurantRepository restaurantRepository;
     private final ObjectMapper objectMapper;
+
+    @Override
+    public Mono<GeneralResponse<List<CampusResponse>>> getByRestaurantId(Integer pageNumber, Integer pageSize, Boolean available, UUID restaurantId) {
+
+        Sort sort = Sort.by(Sort.Order.asc("name"));
+        PageRequest pageRequest = PageRequest.of(pageNumber, pageSize, sort);
+
+        return restaurantRepository.findById(restaurantId)
+                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Restaurant with id " + restaurantId + " not found")))
+                .flatMap(restaurant -> campusRepository.findByRestaurantIdAndIsAvailable(restaurantId, available).skip(pageRequest.getOffset()).take(pageRequest.getPageSize())
+                        .collectList()
+                        .flatMap(campuses -> {
+
+                            List<CampusResponse> campusResponses = campuses.stream()
+                                    .map(campus  -> {
+                                        CampusResponse response = CampusResponse.builder()
+                                                    .campusId(campus.getCampusId())
+                                                    .name(campus.getName())
+                                                    .address(campus.getAddress())
+                                                    .phoneNumber(campus.getPhoneNumber())
+                                                    .toTakeHome(campus.getToTakeHome())
+                                                    .toDelivery(campus.getToDelivery())
+                                                    .restaurantId(campus.getRestaurantId())
+                                                    .isAvailable(campus.getIsAvailable())
+                                                    .build();
+
+                                        try {
+                                            response.setOpenHour(objectMapper.readValue(campus.getOpenHour(), new TypeReference<>() {
+                                            }));
+                                        } catch (JsonProcessingException e) {
+                                            throw new RuntimeException(e);
+                                        }
+
+                                        return response;
+
+                                    })
+                                    .toList();
+
+                            return Mono.just(GeneralResponse.<List<CampusResponse>>builder()
+                                    .code(SuccessCode.SUCCESS.name())
+                                    .data(campusResponses)
+                                    .build());
+
+
+                        })
+                );
+    }
 
     @Override
     public Mono<GeneralResponse<CampusResponse>> create(CreateCampusRequest request) {

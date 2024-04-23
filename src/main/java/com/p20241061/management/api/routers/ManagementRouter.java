@@ -28,6 +28,7 @@ public class ManagementRouter {
     @Bean
     RouterFunction<ServerResponse> campusRtr(CampusHandler handler) {
         return RouterFunctions.route()
+                .GET(PATH_CAMPUS + "/restaurant/{restaurantId}", handler::getByRestaurantId)
                 .POST(PATH_CAMPUS, handler::create)
                 .PUT(PATH_CAMPUS + "/{campusId}", handler::update)
                 .DELETE(PATH_CAMPUS + "/{campusId}", handler::delete)
