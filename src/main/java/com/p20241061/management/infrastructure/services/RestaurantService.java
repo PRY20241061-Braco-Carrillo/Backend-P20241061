@@ -1,5 +1,6 @@
 package com.p20241061.management.infrastructure.services;
 
+import com.p20241061.management.api.mapping.RestaurantMapper;
 import com.p20241061.management.api.model.request.create.CreateRestaurantRequest;
 import com.p20241061.management.api.model.request.update.UpdateRestaurantRequest;
 import com.p20241061.management.api.model.response.RestaurantResponse;
@@ -25,6 +26,7 @@ import java.util.UUID;
 public class RestaurantService implements IRestaurantService {
 
     private final RestaurantRepository restaurantRepository;
+    private final RestaurantMapper restaurantMapper;
 
 
     @Override
@@ -35,12 +37,7 @@ public class RestaurantService implements IRestaurantService {
                 .flatMap(restaurants -> {
 
                     List<RestaurantResponse> restaurantResponses = restaurants.stream()
-                            .map(restaurant -> RestaurantResponse.builder()
-                                    .restaurantId(restaurant.getRestaurantId())
-                                    .name(restaurant.getName())
-                                    .imageUrl(restaurant.getImageUrl())
-                                    .isAvailable(restaurant.getIsAvailable())
-                                    .build())
+                            .map(restaurantMapper::modelToResponse)
                             .toList();
 
                     return Mono.just(GeneralResponse.<List<RestaurantResponse>>builder()
@@ -54,28 +51,10 @@ public class RestaurantService implements IRestaurantService {
     @Override
     public Mono<GeneralResponse<RestaurantResponse>> create(CreateRestaurantRequest request) {
 
-        Restaurant restaurant = Restaurant.builder()
-                .name(request.getName())
-                .imageUrl(request.getImageUrl())
-                .logoUrl(request.getLogoUrl())
-                .isAvailable(true)
-                .build();
-
-        return restaurantRepository.save(restaurant).flatMap(createdRestaurant -> {
-
-            RestaurantResponse restaurantResponse = RestaurantResponse.builder()
-                    .restaurantId(createdRestaurant.getRestaurantId())
-                    .name(createdRestaurant.getName())
-                    .imageUrl(createdRestaurant.getImageUrl())
-                    .logoUrl(createdRestaurant.getLogoUrl())
-                    .isAvailable(createdRestaurant.getIsAvailable())
-                    .build();
-
-            return Mono.just(GeneralResponse.<RestaurantResponse>builder()
-                    .code(SuccessCode.CREATED.name())
-                    .data(restaurantResponse)
-                    .build());
-        });
+        return restaurantRepository.save(restaurantMapper.createRequestToModel(request)).flatMap(createdRestaurant -> Mono.just(GeneralResponse.<RestaurantResponse>builder()
+                .code(SuccessCode.CREATED.name())
+                .data(restaurantMapper.modelToResponse(createdRestaurant))
+                .build()));
     }
 
     @Override
@@ -89,21 +68,10 @@ public class RestaurantService implements IRestaurantService {
                     restaurant.setLogoUrl(request.getLogoUrl());
                     restaurant.setIsAvailable(request.getIsAvailable());
 
-                    return restaurantRepository.save(restaurant).flatMap(updatedRestaurant -> {
-
-                        RestaurantResponse restaurantResponse = RestaurantResponse.builder()
-                                .restaurantId(updatedRestaurant.getRestaurantId())
-                                .name(updatedRestaurant.getName())
-                                .imageUrl(updatedRestaurant.getImageUrl())
-                                .logoUrl(updatedRestaurant.getLogoUrl())
-                                .isAvailable(updatedRestaurant.getIsAvailable())
-                                .build();
-
-                        return Mono.just(GeneralResponse.<RestaurantResponse>builder()
-                                .code(SuccessCode.UPDATED.name())
-                                .data(restaurantResponse)
-                                .build());
-                    });
+                    return restaurantRepository.save(restaurant).flatMap(updatedRestaurant -> Mono.just(GeneralResponse.<RestaurantResponse>builder()
+                            .code(SuccessCode.UPDATED.name())
+                            .data(restaurantMapper.modelToResponse(updatedRestaurant))
+                            .build()));
                 });
     }
 

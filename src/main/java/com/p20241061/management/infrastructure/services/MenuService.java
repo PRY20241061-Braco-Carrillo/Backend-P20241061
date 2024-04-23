@@ -1,5 +1,6 @@
 package com.p20241061.management.infrastructure.services;
 
+import com.p20241061.management.api.mapping.MenuMapper;
 import com.p20241061.management.api.model.request.create.CreateMenuRequest;
 import com.p20241061.management.api.model.request.update.UpdateMenuRequest;
 import com.p20241061.management.api.model.response.MenuResponse;
@@ -23,31 +24,15 @@ import java.util.UUID;
 public class MenuService implements IMenuService {
 
     private final MenuRepository menuRepository;
+    private final MenuMapper menuMapper;
 
     @Override
     public Mono<GeneralResponse<MenuResponse>> create(CreateMenuRequest request) {
 
-        Menu menu = Menu.builder()
-                .name(request.getName())
-                .price(request.getPrice())
-                .cookingTime(request.getCookingTime())
-                .urlImage(request.getUrlImage())
-                .build();
-
-        return menuRepository.save(menu).flatMap(createdMenu -> {
-            MenuResponse menuResponse = MenuResponse.builder()
-                    .menuId(createdMenu.getMenuId())
-                    .name(createdMenu.getName())
-                    .price(createdMenu.getPrice())
-                    .cookingTime(createdMenu.getCookingTime())
-                    .urlImage(createdMenu.getUrlImage())
-                    .build();
-
-            return Mono.just(GeneralResponse.<MenuResponse>builder()
-                    .code(SuccessCode.CREATED.name())
-                    .data(menuResponse)
-                    .build());
-        });
+        return menuRepository.save(menuMapper.createRequestToModel(request)).flatMap(createdMenu -> Mono.just(GeneralResponse.<MenuResponse>builder()
+                .code(SuccessCode.CREATED.name())
+                .data(menuMapper.modelToResponse(createdMenu))
+                .build()));
     }
 
     @Override
@@ -60,20 +45,10 @@ public class MenuService implements IMenuService {
                     menu.setCookingTime(request.getCookingTime());
                     menu.setUrlImage(request.getUrlImage());
 
-                    return menuRepository.save(menu).flatMap(updatedMenu -> {
-                        MenuResponse menuResponse = MenuResponse.builder()
-                                .menuId(updatedMenu.getMenuId())
-                                .name(updatedMenu.getName())
-                                .price(updatedMenu.getPrice())
-                                .cookingTime(updatedMenu.getCookingTime())
-                                .urlImage(updatedMenu.getUrlImage())
-                                .build();
-
-                        return Mono.just(GeneralResponse.<MenuResponse>builder()
-                                .code(SuccessCode.UPDATED.name())
-                                .data(menuResponse)
-                                .build());
-                    });
+                    return menuRepository.save(menu).flatMap(updatedMenu -> Mono.just(GeneralResponse.<MenuResponse>builder()
+                            .code(SuccessCode.UPDATED.name())
+                            .data(menuMapper.modelToResponse(updatedMenu))
+                            .build()));
                 }
         );
     }

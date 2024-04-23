@@ -1,5 +1,6 @@
 package com.p20241061.management.infrastructure.services;
 
+import com.p20241061.management.api.mapping.NutritionalInformationMapper;
 import com.p20241061.management.api.model.request.update.UpdateNutritionalInformationRequest;
 import com.p20241061.management.api.model.response.NutritionalInformationResponse;
 import com.p20241061.management.core.repositories.NutritionalInformationRepository;
@@ -19,6 +20,7 @@ import java.util.UUID;
 public class NutritionalInformationService implements INutritionalInformationService {
 
     private final NutritionalInformationRepository nutritionalInformationRepository;
+    private final NutritionalInformationMapper nutritionalInformationMapper;
 
     @Override
     public Mono<GeneralResponse<NutritionalInformationResponse>> update(UpdateNutritionalInformationRequest request, UUID nutritionalInformationId) {
@@ -39,28 +41,9 @@ public class NutritionalInformationService implements INutritionalInformationSer
                     nutritionalInformation.setIsWithoutSeafood(request.getIsWithoutSeafood());
                     nutritionalInformation.setIsWithoutPig(request.getIsWithoutPig());
 
-                    return nutritionalInformationRepository.save(nutritionalInformation).map(updatedNutritionalInformation -> {
-                        NutritionalInformationResponse nutritionalInformationResponse = NutritionalInformationResponse.builder()
-                                .nutritionalInformationId(updatedNutritionalInformation.getNutritionalInformationId())
-                                .calories(updatedNutritionalInformation.getCalories())
-                                .proteins(updatedNutritionalInformation.getProteins())
-                                .totalFat(updatedNutritionalInformation.getTotalFat())
-                                .carbohydrates(updatedNutritionalInformation.getCarbohydrates())
-                                .isVegan(updatedNutritionalInformation.getIsVegan())
-                                .isVegetarian(updatedNutritionalInformation.getIsVegetarian())
-                                .isLowCalories(updatedNutritionalInformation.getIsLowCalories())
-                                .isHighProtein(updatedNutritionalInformation.getIsHighProtein())
-                                .isWithoutGluten(updatedNutritionalInformation.getIsWithoutGluten())
-                                .isWithoutNut(updatedNutritionalInformation.getIsWithoutNut())
-                                .isWithoutLactose(updatedNutritionalInformation.getIsWithoutLactose())
-                                .isWithoutEggs(updatedNutritionalInformation.getIsWithoutEggs())
-                                .isWithoutSeafood(updatedNutritionalInformation.getIsWithoutSeafood())
-                                .isWithoutPig(updatedNutritionalInformation.getIsWithoutPig())
-                                .build();
-                        return GeneralResponse.<NutritionalInformationResponse>builder()
-                                .code(SuccessCode.UPDATED.name())
-                                .data(nutritionalInformationResponse).build();
-                    });
+                    return nutritionalInformationRepository.save(nutritionalInformation).map(updatedNutritionalInformation -> GeneralResponse.<NutritionalInformationResponse>builder()
+                            .code(SuccessCode.UPDATED.name())
+                            .data(nutritionalInformationMapper.modelToResponse(updatedNutritionalInformation)).build());
                 }
         );
     }

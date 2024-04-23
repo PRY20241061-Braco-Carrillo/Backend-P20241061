@@ -1,6 +1,7 @@
 package com.p20241061.management.infrastructure.services;
 
 
+import com.p20241061.management.api.mapping.ProductVariantMapper;
 import com.p20241061.management.api.model.request.create.CreateProductVariantRequest;
 import com.p20241061.management.api.model.request.update.UpdateProductVariantRequest;
 import com.p20241061.management.api.model.response.ProductVariantResponse;
@@ -30,6 +31,7 @@ public class ProductVariantService implements IProductVariantService {
     private final CookingTypeRepository cookingTypeRepository;
     private final SizeRepository sizeRepository;
     private final ProductRepository productRepository;
+    private final ProductVariantMapper productVariantMapper;
 
 
     @Override
@@ -40,30 +42,19 @@ public class ProductVariantService implements IProductVariantService {
                         .switchIfEmpty(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Size with id " + request.getSizeId() + " not found")))
                         .flatMap(size -> productRepository.findById(request.getProductId())
                                 .switchIfEmpty(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Product with id " + request.getProductId() + " not found")))
-                                .flatMap(product -> {
-                                    ProductVariant productVariant = ProductVariant.builder()
-                                            .cookingTypeId(cookingType.getCookingTypeId())
-                                            .sizeId(size.getSizeId())
-                                            .productId(product.getProductId())
-                                            .price(request.getPrice())
-                                            .build();
+                                .flatMap(product -> productVariantRepository.save(productVariantMapper.createRequestToModel(request, cookingType.getCookingTypeId(), size.getSizeId(), product.getProductId()))
+                                        .flatMap(createdProductVariant -> {
 
-                                    return productVariantRepository.save(productVariant).flatMap(createdProductVariant -> {
+                                            ProductVariantResponse productVariantResponse = productVariantMapper.modelToResponse(createdProductVariant);
+                                            productVariantResponse.setCookingType(cookingType);
+                                            productVariantResponse.setSize(size);
+                                            productVariantResponse.setProduct(product);
 
-                                        ProductVariantResponse productVariantResponse = ProductVariantResponse.builder()
-                                                .productVariantId(createdProductVariant.getProductVariantId())
-                                                .cookingType(cookingType)
-                                                .size(size)
-                                                .product(product)
-                                                .price(createdProductVariant.getPrice())
-                                                .build();
-
-                                        return Mono.just(GeneralResponse.<ProductVariantResponse>builder()
-                                                .code(SuccessCode.CREATED.name())
-                                                .data(productVariantResponse)
-                                                .build());
-                                    });
-                                })));
+                                            return Mono.just(GeneralResponse.<ProductVariantResponse>builder()
+                                                    .code(SuccessCode.CREATED.name())
+                                                    .data(productVariantResponse)
+                                                    .build());
+                                        }))));
     }
 
     @Override
@@ -84,13 +75,10 @@ public class ProductVariantService implements IProductVariantService {
 
                                             return productVariantRepository.save(productVariant).flatMap(updatedProductVariant -> {
 
-                                                ProductVariantResponse productVariantResponse = ProductVariantResponse.builder()
-                                                        .productVariantId(updatedProductVariant.getProductVariantId())
-                                                        .cookingType(cookingType)
-                                                        .size(size)
-                                                        .product(product)
-                                                        .price(updatedProductVariant.getPrice())
-                                                        .build();
+                                                ProductVariantResponse productVariantResponse = productVariantMapper.modelToResponse(updatedProductVariant);
+                                                productVariantResponse.setCookingType(cookingType);
+                                                productVariantResponse.setSize(size);
+                                                productVariantResponse.setProduct(product);
 
                                                 return Mono.just(GeneralResponse.<ProductVariantResponse>builder()
                                                         .code(SuccessCode.UPDATED.name())

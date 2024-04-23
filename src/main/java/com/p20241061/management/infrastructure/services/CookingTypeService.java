@@ -1,5 +1,6 @@
 package com.p20241061.management.infrastructure.services;
 
+import com.p20241061.management.api.mapping.CookingTypeMapper;
 import com.p20241061.management.api.model.request.create.CreateCookingTypeRequest;
 import com.p20241061.management.api.model.request.update.UpdateCookingTypeRequest;
 import com.p20241061.management.api.model.response.CookingTypeResponse;
@@ -22,27 +23,16 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class CookingTypeService implements ICookingTypeService {
     private final CookingTypeRepository cookingTypeRepository;
+    private final CookingTypeMapper cookingTypeMapper;
 
     @Override
     public Mono<GeneralResponse<CookingTypeResponse>> create(CreateCookingTypeRequest request) {
-        CookingType cookingType = CookingType.builder()
-                .name(request.getName())
-                .isAvailable(true)
-                .build();
 
-        return cookingTypeRepository.save(cookingType)
-                .flatMap(createdCookingType -> {
-                    CookingTypeResponse cookingTypeResponse = CookingTypeResponse.builder()
-                            .cookingTypeId(createdCookingType.getCookingTypeId())
-                            .name(createdCookingType.getName())
-                            .isAvailable(createdCookingType.getIsAvailable())
-                            .build();
-
-                    return Mono.just(GeneralResponse.<CookingTypeResponse>builder()
-                            .code(SuccessCode.CREATED.name())
-                            .data(cookingTypeResponse)
-                            .build());
-                });
+        return cookingTypeRepository.save(cookingTypeMapper.createRequestToModel(request))
+                .flatMap(createdCookingType -> Mono.just(GeneralResponse.<CookingTypeResponse>builder()
+                        .code(SuccessCode.CREATED.name())
+                        .data(cookingTypeMapper.modelToResponse(createdCookingType))
+                        .build()));
     }
 
     @Override
@@ -54,18 +44,10 @@ public class CookingTypeService implements ICookingTypeService {
                     cookingType.setIsAvailable(request.getIsAvailable());
 
                     return cookingTypeRepository.save(cookingType)
-                            .flatMap(updatedCookingType -> {
-                                CookingTypeResponse cookingTypeResponse = CookingTypeResponse.builder()
-                                        .cookingTypeId(updatedCookingType.getCookingTypeId())
-                                        .name(updatedCookingType.getName())
-                                        .isAvailable(updatedCookingType.getIsAvailable())
-                                        .build();
-
-                                return Mono.just(GeneralResponse.<CookingTypeResponse>builder()
-                                        .code(SuccessCode.UPDATED.name())
-                                        .data(cookingTypeResponse)
-                                        .build());
-                            });
+                            .flatMap(updatedCookingType -> Mono.just(GeneralResponse.<CookingTypeResponse>builder()
+                                    .code(SuccessCode.UPDATED.name())
+                                    .data(cookingTypeMapper.modelToResponse(updatedCookingType))
+                                    .build()));
                 });
     }
 

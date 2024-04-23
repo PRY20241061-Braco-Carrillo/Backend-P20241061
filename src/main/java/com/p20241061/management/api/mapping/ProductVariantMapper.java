@@ -7,6 +7,7 @@ import com.p20241061.shared.utils.EnhancedModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.UUID;
 
 public class ProductVariantMapper {
     @Autowired
@@ -16,8 +17,14 @@ public class ProductVariantMapper {
         return mapper.map(model, ProductVariantResponse.class);
     }
 
-    public ProductVariant createRequestToModel(CreateProductVariantRequest request) {
-        return mapper.map(request, ProductVariant.class);
+    public ProductVariant createRequestToModel(CreateProductVariantRequest request, UUID cookingTypeId, UUID sizeId, UUID productId) {
+        ProductVariant productVariant = mapper.map(request, ProductVariant.class);
+        productVariant.setCookingTypeId(cookingTypeId);
+        productVariant.setSizeId(sizeId);
+        productVariant.setProductId(productId);
+
+        return productVariant;
+
     }
 
     public List<ProductVariantResponse> modelToListResponse(List<ProductVariant> models) {
