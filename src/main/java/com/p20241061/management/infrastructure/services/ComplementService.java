@@ -1,5 +1,6 @@
 package com.p20241061.management.infrastructure.services;
 
+import com.p20241061.management.api.mapping.ComplementMapper;
 import com.p20241061.management.api.model.request.create.CreateComplementRequest;
 import com.p20241061.management.api.model.request.update.UpdateComplementRequest;
 import com.p20241061.management.api.model.response.ComplementResponse;
@@ -23,32 +24,16 @@ import java.util.UUID;
 public class ComplementService implements IComplementService {
 
     private final ComplementRepository complementRepository;
+    private final ComplementMapper complementMapper;
 
     @Override
     public Mono<GeneralResponse<ComplementResponse>> create(CreateComplementRequest request) {
-        Complement complement = Complement.builder()
-                .name(request.getName())
-                .price(request.getPrice())
-                .isSauce(request.getIsSauce())
-                .isAvailable(true)
-                .build();
 
-        return complementRepository.save(complement)
-                .flatMap(createdComplement -> {
-                    ComplementResponse complementResponse = ComplementResponse.builder()
-                            .complementId(createdComplement.getComplementId())
-                            .name(createdComplement.getName())
-                            .price(createdComplement.getPrice())
-                            .isSauce(createdComplement.getIsSauce())
-                            .isAvailable(createdComplement.getIsAvailable())
-                            .build();
-
-                    return Mono.just(GeneralResponse.<ComplementResponse>builder()
-                            .code(SuccessCode.CREATED.name())
-                            .data(complementResponse)
-                            .build());
-                });
-
+        return complementRepository.save(complementMapper.createRequestToModel(request))
+                .flatMap(createdComplement -> Mono.just(GeneralResponse.<ComplementResponse>builder()
+                        .code(SuccessCode.CREATED.name())
+                        .data(complementMapper.modelToResponse(createdComplement))
+                        .build()));
     }
 
     @Override
@@ -56,25 +41,17 @@ public class ComplementService implements IComplementService {
         return complementRepository.findById(complementId)
                 .switchIfEmpty(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Complement with id " + complementId + " not found")))
                 .flatMap(complement -> {
+
                     complement.setName(request.getName());
                     complement.setPrice(request.getPrice());
                     complement.setIsSauce(request.getIsSauce());
                     complement.setIsAvailable(request.getIsAvailable());
-                    return complementRepository.save(complement)
-                            .flatMap(updatedComplement -> {
-                                ComplementResponse complementResponse = ComplementResponse.builder()
-                                        .complementId(updatedComplement.getComplementId())
-                                        .name(updatedComplement.getName())
-                                        .price(updatedComplement.getPrice())
-                                        .isSauce(updatedComplement.getIsSauce())
-                                        .isAvailable(updatedComplement.getIsAvailable())
-                                        .build();
 
-                                return Mono.just(GeneralResponse.<ComplementResponse>builder()
-                                        .code(SuccessCode.UPDATED.name())
-                                        .data(complementResponse)
-                                        .build());
-                            });
+                    return complementRepository.save(complement)
+                            .flatMap(updatedComplement -> Mono.just(GeneralResponse.<ComplementResponse>builder()
+                                    .code(SuccessCode.UPDATED.name())
+                                    .data(complementMapper.modelToResponse(updatedComplement))
+                                    .build()));
                 });
 
     }
