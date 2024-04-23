@@ -1,7 +1,6 @@
 package com.p20241061.management.api.routers;
 
 import com.p20241061.management.api.handlers.*;
-import com.p20241061.management.core.entities.Product;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

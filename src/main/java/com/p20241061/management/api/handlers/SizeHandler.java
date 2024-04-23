@@ -1,8 +1,6 @@
 package com.p20241061.management.api.handlers;
 
-import com.p20241061.management.api.model.request.create.CreateRestaurantRequest;
 import com.p20241061.management.api.model.request.create.CreateSizeRequest;
-import com.p20241061.management.api.model.request.update.UpdateRestaurantRequest;
 import com.p20241061.management.api.model.request.update.UpdateSizeRequest;
 import com.p20241061.management.infrastructure.interfaces.ISizeService;
 import com.p20241061.shared.validation.ObjectValidator;

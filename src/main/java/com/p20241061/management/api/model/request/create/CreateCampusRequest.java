@@ -1,6 +1,5 @@
 package com.p20241061.management.api.model.request.create;
 
-import com.p20241061.management.core.entities.Campus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

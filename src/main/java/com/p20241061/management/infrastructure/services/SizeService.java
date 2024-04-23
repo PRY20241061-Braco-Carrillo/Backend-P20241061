@@ -1,9 +1,9 @@
 package com.p20241061.management.infrastructure.services;
 
+import com.p20241061.management.api.mapping.SizeMapper;
 import com.p20241061.management.api.model.request.create.CreateSizeRequest;
 import com.p20241061.management.api.model.request.update.UpdateSizeRequest;
 import com.p20241061.management.api.model.response.SizeResponse;
-import com.p20241061.management.core.entities.Size;
 import com.p20241061.management.core.repositories.SizeRepository;
 import com.p20241061.management.infrastructure.interfaces.ISizeService;
 import com.p20241061.shared.exceptions.CustomException;
@@ -23,27 +23,15 @@ import java.util.UUID;
 public class SizeService implements ISizeService {
 
     private final SizeRepository sizeRepository;
+    private final SizeMapper sizeMapper;
 
     @Override
     public Mono<GeneralResponse<SizeResponse>> create(CreateSizeRequest request) {
-        Size size = Size.builder()
-                .name(request.getName())
-                .isAvailable(true)
-                .build();
-
-        return sizeRepository.save(size)
-                .flatMap(createdSize -> {
-                    SizeResponse sizeResponse = SizeResponse.builder()
-                            .sizeId(createdSize.getSizeId())
-                            .name(createdSize.getName())
-                            .isAvailable(createdSize.getIsAvailable())
-                            .build();
-
-                    return Mono.just(GeneralResponse.<SizeResponse>builder()
-                            .code(SuccessCode.CREATED.name())
-                            .data(sizeResponse)
-                            .build());
-                });
+        return sizeRepository.save(sizeMapper.createRequestToModel(request))
+                .flatMap(createdSize -> Mono.just(GeneralResponse.<SizeResponse>builder()
+                        .code(SuccessCode.CREATED.name())
+                        .data(sizeMapper.modelToResponse(createdSize))
+                        .build()));
     }
 
     @Override
@@ -51,22 +39,15 @@ public class SizeService implements ISizeService {
         return sizeRepository.findById(sizeId)
                 .switchIfEmpty(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Size with id " + sizeId + " not found")))
                 .flatMap(size -> {
+
                     size.setName(request.getName());
                     size.setIsAvailable(request.getIsAvailable());
 
                     return sizeRepository.save(size)
-                            .flatMap(updatedSize -> {
-                                SizeResponse sizeResponse = SizeResponse.builder()
-                                        .sizeId(updatedSize.getSizeId())
-                                        .name(updatedSize.getName())
-                                        .isAvailable(updatedSize.getIsAvailable())
-                                        .build();
-
-                                return Mono.just(GeneralResponse.<SizeResponse>builder()
-                                        .code(SuccessCode.UPDATED.name())
-                                        .data(sizeResponse)
-                                        .build());
-                            });
+                            .flatMap(updatedSize -> Mono.just(GeneralResponse.<SizeResponse>builder()
+                                    .code(SuccessCode.UPDATED.name())
+                                    .data(sizeMapper.modelToResponse(updatedSize))
+                                    .build()));
                 });
     }
 

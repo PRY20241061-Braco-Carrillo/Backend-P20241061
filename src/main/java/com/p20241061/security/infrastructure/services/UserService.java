@@ -10,7 +10,6 @@ import com.p20241061.security.core.enums.Role;
 import com.p20241061.security.core.repositories.UserRepository;
 import com.p20241061.security.infrastructure.interfaces.IUserService;
 import com.p20241061.shared.exceptions.CustomException;
-import com.p20241061.shared.models.enums.ErrorCode;
 import com.p20241061.shared.models.enums.SuccessCode;
 import com.p20241061.shared.models.response.GeneralResponse;
 import lombok.RequiredArgsConstructor;

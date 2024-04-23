@@ -1,6 +1,6 @@
 package com.p20241061.shared.utils;
 
-import lombok.*;
+import lombok.Getter;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import reactor.core.publisher.Flux;
