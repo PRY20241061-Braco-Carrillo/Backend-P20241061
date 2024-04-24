@@ -12,12 +12,14 @@ import com.p20241061.management.infrastructure.interfaces.IProductService;
 import com.p20241061.shared.exceptions.CustomException;
 import com.p20241061.shared.models.enums.SuccessCode;
 import com.p20241061.shared.models.response.GeneralResponse;
+import com.p20241061.shared.utils.PaginatedRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -30,6 +32,22 @@ public class ProductService implements IProductService {
     private final CampusCategoryRepository campusCategoryRepository;
     private final ProductMapper productMapper;
     private final NutritionalInformationMapper nutritionalInformationMapper;
+
+    @Override
+    public Mono<GeneralResponse<List<ProductResponse>>> getAllByCampusCategory(PaginatedRequest paginatedRequest, UUID campusCategoryId, Boolean available) {
+        return paginatedRequest.paginateData(productRepository.getAllByCampusCategoryIdAndIsAvailable(campusCategoryId, available))
+                .flatMap(product -> nutritionalInformationRepository.findById(product.getNutritionalInformationId())
+                        .map(nutritionalInformation -> {
+                            ProductResponse productResponse = productMapper.modelToResponse(product);
+                            productResponse.setNutritionalInformation(nutritionalInformation);
+                            return productResponse;
+                        }))
+                .collectList()
+                .map(products -> GeneralResponse.<List<ProductResponse>>builder()
+                        .code(SuccessCode.SUCCESS.name())
+                        .data(products)
+                        .build());
+    }
 
     @Override
     public Mono<GeneralResponse<ProductResponse>> create(CreateProductRequest request) {

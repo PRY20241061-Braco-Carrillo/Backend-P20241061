@@ -81,6 +81,7 @@ public class ManagementRouter {
     @Bean
     RouterFunction<ServerResponse> productRtr(ProductHandler handler) {
         return RouterFunctions.route()
+                .GET(PATH_PRODUCT + "/campus-category/{campusCategoryId}", handler::getAllByCampusCategory)
                 .POST(PATH_PRODUCT, handler::create)
                 .PUT(PATH_PRODUCT + "/{productId}", handler::update)
                 .DELETE(PATH_PRODUCT + "/{productId}", handler::delete)

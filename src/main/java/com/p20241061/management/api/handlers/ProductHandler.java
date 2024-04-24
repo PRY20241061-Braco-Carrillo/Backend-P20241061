@@ -3,6 +3,7 @@ package com.p20241061.management.api.handlers;
 import com.p20241061.management.api.model.request.create.CreateProductRequest;
 import com.p20241061.management.api.model.request.update.UpdateProductRequest;
 import com.p20241061.management.infrastructure.interfaces.IProductService;
+import com.p20241061.shared.utils.PaginatedRequest;
 import com.p20241061.shared.validation.ObjectValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,18 @@ import java.util.UUID;
 public class ProductHandler {
     private final IProductService productService;
     private final ObjectValidator objectValidator;
+
+    public Mono<ServerResponse> getAllByCampusCategory(ServerRequest request) {
+        UUID campusCategoryId = UUID.fromString(request.pathVariable("campusCategoryId"));
+        Boolean available = request.queryParam("available").orElse("true").equals("true");
+        Integer pageNumber = Integer.parseInt(request.queryParam("pageNumber").orElse("0"));
+        Integer pageSize = Integer.parseInt(request.queryParam("pageSize").orElse("5"));
+
+        return productService.getAllByCampusCategory(new PaginatedRequest(pageNumber, pageSize, "name", true), campusCategoryId, available)
+                .flatMap(response -> ServerResponse.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(response));
+    }
 
     public Mono<ServerResponse> create(ServerRequest request) {
         Mono<CreateProductRequest> productRequest = request.bodyToMono(CreateProductRequest.class)
