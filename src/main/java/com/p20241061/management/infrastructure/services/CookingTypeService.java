@@ -8,6 +8,7 @@ import com.p20241061.management.core.entities.CookingType;
 import com.p20241061.management.core.repositories.CookingTypeRepository;
 import com.p20241061.management.infrastructure.interfaces.ICookingTypeService;
 import com.p20241061.shared.exceptions.CustomException;
+import com.p20241061.shared.models.enums.ErrorCode;
 import com.p20241061.shared.models.enums.SuccessCode;
 import com.p20241061.shared.models.response.GeneralResponse;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,8 @@ import reactor.core.publisher.Mono;
 
 import java.util.UUID;
 
+import static com.p20241061.shared.models.enums.CampusName.COOKING_TYPE_ENTITY;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -26,27 +29,27 @@ public class CookingTypeService implements ICookingTypeService {
     private final CookingTypeMapper cookingTypeMapper;
 
     @Override
-    public Mono<GeneralResponse<CookingTypeResponse>> create(CreateCookingTypeRequest request) {
+    public Mono<GeneralResponse<String>> create(CreateCookingTypeRequest request) {
 
         return cookingTypeRepository.save(cookingTypeMapper.createRequestToModel(request))
-                .flatMap(createdCookingType -> Mono.just(GeneralResponse.<CookingTypeResponse>builder()
+                .flatMap(createdCookingType -> Mono.just(GeneralResponse.<String>builder()
                         .code(SuccessCode.CREATED.name())
-                        .data(cookingTypeMapper.modelToResponse(createdCookingType))
+                        .data(COOKING_TYPE_ENTITY)
                         .build()));
     }
 
     @Override
-    public Mono<GeneralResponse<CookingTypeResponse>> update(UpdateCookingTypeRequest request, UUID cookingTypeId) {
+    public Mono<GeneralResponse<String>> update(UpdateCookingTypeRequest request, UUID cookingTypeId) {
         return cookingTypeRepository.findById(cookingTypeId)
-                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Cooking type with id " + cookingTypeId + " not found")))
+                .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), COOKING_TYPE_ENTITY)))
                 .flatMap(cookingType -> {
                     cookingType.setName(request.getName());
                     cookingType.setIsAvailable(request.getIsAvailable());
 
                     return cookingTypeRepository.save(cookingType)
-                            .flatMap(updatedCookingType -> Mono.just(GeneralResponse.<CookingTypeResponse>builder()
+                            .flatMap(updatedCookingType -> Mono.just(GeneralResponse.<String>builder()
                                     .code(SuccessCode.UPDATED.name())
-                                    .data(cookingTypeMapper.modelToResponse(updatedCookingType))
+                                    .data(COOKING_TYPE_ENTITY)
                                     .build()));
                 });
     }
@@ -54,11 +57,11 @@ public class CookingTypeService implements ICookingTypeService {
     @Override
     public Mono<GeneralResponse<String>> delete(UUID cookingTypeId) {
         return cookingTypeRepository.findById(cookingTypeId)
-                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Cooking type with id " + cookingTypeId + " not found")))
+                .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), COOKING_TYPE_ENTITY)))
                 .flatMap(cookingType -> cookingTypeRepository.delete(cookingType)
                         .then(Mono.just(GeneralResponse.<String>builder()
                                 .code(SuccessCode.DELETED.name())
-                                .data("Cooking type with id " + cookingTypeId + " deleted successfully")
+                                .data(COOKING_TYPE_ENTITY)
                                 .build())));
     }
 }

@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono;
 import java.util.UUID;
 
 public interface ICookingTypeService {
-    Mono<GeneralResponse<CookingTypeResponse>> create(CreateCookingTypeRequest request);
-    Mono<GeneralResponse<CookingTypeResponse>> update(UpdateCookingTypeRequest request, UUID cookingTypeId);
+    Mono<GeneralResponse<String>> create(CreateCookingTypeRequest request);
+    Mono<GeneralResponse<String>> update(UpdateCookingTypeRequest request, UUID cookingTypeId);
     Mono<GeneralResponse<String>> delete(UUID cookingTypeId);
 }

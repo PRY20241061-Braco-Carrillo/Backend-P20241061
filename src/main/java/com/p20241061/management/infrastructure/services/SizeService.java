@@ -7,6 +7,7 @@ import com.p20241061.management.api.model.response.SizeResponse;
 import com.p20241061.management.core.repositories.SizeRepository;
 import com.p20241061.management.infrastructure.interfaces.ISizeService;
 import com.p20241061.shared.exceptions.CustomException;
+import com.p20241061.shared.models.enums.ErrorCode;
 import com.p20241061.shared.models.enums.SuccessCode;
 import com.p20241061.shared.models.response.GeneralResponse;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,8 @@ import reactor.core.publisher.Mono;
 
 import java.util.UUID;
 
+import static com.p20241061.shared.models.enums.CampusName.SIZE_ENTITY;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -26,27 +29,27 @@ public class SizeService implements ISizeService {
     private final SizeMapper sizeMapper;
 
     @Override
-    public Mono<GeneralResponse<SizeResponse>> create(CreateSizeRequest request) {
+    public Mono<GeneralResponse<String>> create(CreateSizeRequest request) {
         return sizeRepository.save(sizeMapper.createRequestToModel(request))
-                .flatMap(createdSize -> Mono.just(GeneralResponse.<SizeResponse>builder()
+                .flatMap(createdSize -> Mono.just(GeneralResponse.<String>builder()
                         .code(SuccessCode.CREATED.name())
-                        .data(sizeMapper.modelToResponse(createdSize))
+                        .data(SIZE_ENTITY)
                         .build()));
     }
 
     @Override
-    public Mono<GeneralResponse<SizeResponse>> update(UpdateSizeRequest request, UUID sizeId) {
+    public Mono<GeneralResponse<String>> update(UpdateSizeRequest request, UUID sizeId) {
         return sizeRepository.findById(sizeId)
-                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Size with id " + sizeId + " not found")))
+                .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), SIZE_ENTITY)))
                 .flatMap(size -> {
 
                     size.setName(request.getName());
                     size.setIsAvailable(request.getIsAvailable());
 
                     return sizeRepository.save(size)
-                            .flatMap(updatedSize -> Mono.just(GeneralResponse.<SizeResponse>builder()
+                            .flatMap(updatedSize -> Mono.just(GeneralResponse.<String>builder()
                                     .code(SuccessCode.UPDATED.name())
-                                    .data(sizeMapper.modelToResponse(updatedSize))
+                                    .data(SIZE_ENTITY)
                                     .build()));
                 });
     }
@@ -54,11 +57,11 @@ public class SizeService implements ISizeService {
     @Override
     public Mono<GeneralResponse<String>> delete(UUID sizeId) {
         return sizeRepository.findById(sizeId)
-                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Size with id " + sizeId + " not found")))
+                .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), SIZE_ENTITY)))
                 .flatMap(size -> sizeRepository.delete(size)
                         .then(Mono.just(GeneralResponse.<String>builder()
                                 .code(SuccessCode.DELETED.name())
-                                .data("Size with id " + sizeId + " deleted successfully")
+                                .data(SIZE_ENTITY)
                                 .build())));
     }
 }

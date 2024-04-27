@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono;
 import java.util.UUID;
 
 public interface IComplementService {
-    Mono<GeneralResponse<ComplementResponse>> create(CreateComplementRequest request);
-    Mono<GeneralResponse<ComplementResponse>> update(UpdateComplementRequest request, UUID complementId);
+    Mono<GeneralResponse<String>> create(CreateComplementRequest request);
+    Mono<GeneralResponse<String>> update(UpdateComplementRequest request, UUID complementId);
     Mono<GeneralResponse<String>> delete(UUID complementId);
 }

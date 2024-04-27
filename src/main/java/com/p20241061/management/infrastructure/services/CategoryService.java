@@ -8,6 +8,7 @@ import com.p20241061.management.core.entities.Category;
 import com.p20241061.management.core.repositories.CategoryRepository;
 import com.p20241061.management.infrastructure.interfaces.ICategoryService;
 import com.p20241061.shared.exceptions.CustomException;
+import com.p20241061.shared.models.enums.ErrorCode;
 import com.p20241061.shared.models.enums.SuccessCode;
 import com.p20241061.shared.models.response.GeneralResponse;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,8 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import java.util.UUID;
+
+import static com.p20241061.shared.models.enums.CampusName.CATEGORY_ENTITY;
 
 @Service
 @Slf4j
@@ -28,28 +31,28 @@ public class CategoryService implements ICategoryService {
 
 
     @Override
-    public Mono<GeneralResponse<CategoryResponse>> create(CreateCategoryRequest request) {
+    public Mono<GeneralResponse<String>> create(CreateCategoryRequest request) {
 
         return categoryRepository.save(categoryMapper.createRequestToModel(request))
-                .flatMap(createdCategory -> Mono.just(GeneralResponse.<CategoryResponse>builder()
+                .flatMap(createdCategory -> Mono.just(GeneralResponse.<String>builder()
                         .code(SuccessCode.CREATED.name())
-                        .data(categoryMapper.modelToResponse(createdCategory))
+                        .data(CATEGORY_ENTITY)
                         .build()));
     }
 
     @Override
-    public Mono<GeneralResponse<CategoryResponse>> update(UpdateCategoryRequest request, UUID categoryId) {
+    public Mono<GeneralResponse<String>> update(UpdateCategoryRequest request, UUID categoryId) {
         return categoryRepository.findById(categoryId)
-                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Category with id " + categoryId + " not found")))
+                .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), CATEGORY_ENTITY)))
                 .flatMap(category -> {
 
                     category.setName(request.getName());
                     category.setUrlImage(request.getUrlImage());
 
                     return categoryRepository.save(category)
-                            .flatMap(updatedCategory -> Mono.just(GeneralResponse.<CategoryResponse>builder()
+                            .flatMap(updatedCategory -> Mono.just(GeneralResponse.<String>builder()
                                     .code(SuccessCode.UPDATED.name())
-                                    .data(categoryMapper.modelToResponse(updatedCategory))
+                                    .data(CATEGORY_ENTITY)
                                     .build()));
                 });
     }
@@ -57,11 +60,11 @@ public class CategoryService implements ICategoryService {
     @Override
     public Mono<GeneralResponse<String>> delete(UUID categoryId) {
         return categoryRepository.findById(categoryId)
-                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Category with id " + categoryId + " not found")))
+                .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), CATEGORY_ENTITY)))
                 .flatMap(category -> categoryRepository.delete(category)
                         .then(Mono.just(GeneralResponse.<String>builder()
                                 .code(SuccessCode.DELETED.name())
-                                .data("Category with id " + categoryId + " deleted successfully")
+                                .data(CATEGORY_ENTITY)
                                 .build())));
     }
 }

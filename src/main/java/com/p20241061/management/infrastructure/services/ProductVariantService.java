@@ -12,6 +12,7 @@ import com.p20241061.management.core.repositories.ProductVariantRepository;
 import com.p20241061.management.core.repositories.SizeRepository;
 import com.p20241061.management.infrastructure.interfaces.IProductVariantService;
 import com.p20241061.shared.exceptions.CustomException;
+import com.p20241061.shared.models.enums.ErrorCode;
 import com.p20241061.shared.models.enums.SuccessCode;
 import com.p20241061.shared.models.response.GeneralResponse;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,8 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import java.util.UUID;
+
+import static com.p20241061.shared.models.enums.CampusName.*;
 
 @Service
 @Slf4j
@@ -35,56 +38,40 @@ public class ProductVariantService implements IProductVariantService {
 
 
     @Override
-    public Mono<GeneralResponse<ProductVariantResponse>> create(CreateProductVariantRequest request) {
+    public Mono<GeneralResponse<String>> create(CreateProductVariantRequest request) {
         return cookingTypeRepository.findById(request.getCookingTypeId())
-                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Cooking type with id " + request.getCookingTypeId() + " not found")))
+                .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), COOKING_TYPE_ENTITY)))
                 .flatMap(cookingType -> sizeRepository.findById(request.getSizeId())
-                        .switchIfEmpty(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Size with id " + request.getSizeId() + " not found")))
+                        .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), SIZE_ENTITY)))
                         .flatMap(size -> productRepository.findById(request.getProductId())
-                                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Product with id " + request.getProductId() + " not found")))
+                                .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), PRODUCT_ENTITY)))
                                 .flatMap(product -> productVariantRepository.save(productVariantMapper.createRequestToModel(request, cookingType.getCookingTypeId(), size.getSizeId(), product.getProductId()))
-                                        .flatMap(createdProductVariant -> {
-
-                                            ProductVariantResponse productVariantResponse = productVariantMapper.modelToResponse(createdProductVariant);
-                                            productVariantResponse.setCookingType(cookingType);
-                                            productVariantResponse.setSize(size);
-                                            productVariantResponse.setProduct(product);
-
-                                            return Mono.just(GeneralResponse.<ProductVariantResponse>builder()
-                                                    .code(SuccessCode.CREATED.name())
-                                                    .data(productVariantResponse)
-                                                    .build());
-                                        }))));
+                                        .flatMap(createdProductVariant -> Mono.just(GeneralResponse.<String>builder()
+                                                .code(SuccessCode.CREATED.name())
+                                                .data(PRODUCT_VARIANT_ENTITY)
+                                                .build())))));
     }
 
     @Override
-    public Mono<GeneralResponse<ProductVariantResponse>> update(UpdateProductVariantRequest request, UUID productVariantId) {
+    public Mono<GeneralResponse<String>> update(UpdateProductVariantRequest request, UUID productVariantId) {
         return productVariantRepository.findById(productVariantId)
-                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Product variant with id " + productVariantId + " not found")))
+                .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), PRODUCT_VARIANT_ENTITY)))
                 .flatMap(productVariant -> cookingTypeRepository.findById(request.getCookingTypeId())
-                        .switchIfEmpty(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Cooking type with id " + request.getCookingTypeId() + " not found")))
+                        .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), COOKING_TYPE_ENTITY)))
                         .flatMap(cookingType -> sizeRepository.findById(request.getSizeId())
-                                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Size with id " + request.getSizeId() + " not found")))
+                                .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), SIZE_ENTITY)))
                                 .flatMap(size -> productRepository.findById(request.getProductId())
-                                        .switchIfEmpty(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Product with id " + request.getProductId() + " not found")))
+                                        .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), PRODUCT_ENTITY)))
                                         .flatMap(product -> {
                                             productVariant.setCookingTypeId(cookingType.getCookingTypeId());
                                             productVariant.setSizeId(size.getSizeId());
                                             productVariant.setProductId(product.getProductId());
                                             productVariant.setPrice(request.getPrice());
 
-                                            return productVariantRepository.save(productVariant).flatMap(updatedProductVariant -> {
-
-                                                ProductVariantResponse productVariantResponse = productVariantMapper.modelToResponse(updatedProductVariant);
-                                                productVariantResponse.setCookingType(cookingType);
-                                                productVariantResponse.setSize(size);
-                                                productVariantResponse.setProduct(product);
-
-                                                return Mono.just(GeneralResponse.<ProductVariantResponse>builder()
-                                                        .code(SuccessCode.UPDATED.name())
-                                                        .data(productVariantResponse)
-                                                        .build());
-                                            });
+                                            return productVariantRepository.save(productVariant).flatMap(updatedProductVariant -> Mono.just(GeneralResponse.<String>builder()
+                                                    .code(SuccessCode.UPDATED.name())
+                                                    .data(PRODUCT_VARIANT_ENTITY)
+                                                    .build()));
                                         })
                                 )));
     }
@@ -92,11 +79,11 @@ public class ProductVariantService implements IProductVariantService {
     @Override
     public Mono<GeneralResponse<String>> delete(UUID productVariantId) {
         return productVariantRepository.findById(productVariantId)
-                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Product variant with id " + productVariantId + " not found")))
+                .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), PRODUCT_VARIANT_ENTITY)))
                 .flatMap(productVariant -> productVariantRepository.delete(productVariant)
                         .then(Mono.just(GeneralResponse.<String>builder()
                                 .code(SuccessCode.DELETED.name())
-                                .data("Product variant with id " + productVariantId + " deleted successfully")
+                                .data(PRODUCT_VARIANT_ENTITY)
                                 .build())));
     }
 }

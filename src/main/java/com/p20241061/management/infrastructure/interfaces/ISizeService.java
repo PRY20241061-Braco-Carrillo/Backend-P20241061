@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono;
 import java.util.UUID;
 
 public interface ISizeService {
-    Mono<GeneralResponse<SizeResponse>> create(CreateSizeRequest request);
-    Mono<GeneralResponse<SizeResponse>> update(UpdateSizeRequest request, UUID sizeId);
+    Mono<GeneralResponse<String>> create(CreateSizeRequest request);
+    Mono<GeneralResponse<String>> update(UpdateSizeRequest request, UUID sizeId);
     Mono<GeneralResponse<String>> delete(UUID sizeId);
 }

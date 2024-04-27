@@ -8,6 +8,7 @@ import com.p20241061.management.core.entities.Restaurant;
 import com.p20241061.management.core.repositories.RestaurantRepository;
 import com.p20241061.management.infrastructure.interfaces.IRestaurantService;
 import com.p20241061.shared.exceptions.CustomException;
+import com.p20241061.shared.models.enums.ErrorCode;
 import com.p20241061.shared.models.enums.SuccessCode;
 import com.p20241061.shared.models.response.GeneralResponse;
 import com.p20241061.shared.utils.PaginatedRequest;
@@ -19,6 +20,8 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.UUID;
+
+import static com.p20241061.shared.models.enums.CampusName.RESTAURANT_ENTITY;
 
 @Service
 @Slf4j
@@ -49,18 +52,18 @@ public class RestaurantService implements IRestaurantService {
     }
 
     @Override
-    public Mono<GeneralResponse<RestaurantResponse>> create(CreateRestaurantRequest request) {
+    public Mono<GeneralResponse<String>> create(CreateRestaurantRequest request) {
 
-        return restaurantRepository.save(restaurantMapper.createRequestToModel(request)).flatMap(createdRestaurant -> Mono.just(GeneralResponse.<RestaurantResponse>builder()
+        return restaurantRepository.save(restaurantMapper.createRequestToModel(request)).flatMap(createdRestaurant -> Mono.just(GeneralResponse.<String>builder()
                 .code(SuccessCode.CREATED.name())
-                .data(restaurantMapper.modelToResponse(createdRestaurant))
+                .data(RESTAURANT_ENTITY)
                 .build()));
     }
 
     @Override
-    public Mono<GeneralResponse<RestaurantResponse>> update(UpdateRestaurantRequest request, UUID campusId) {
+    public Mono<GeneralResponse<String>> update(UpdateRestaurantRequest request, UUID campusId) {
         return restaurantRepository.findById(campusId)
-                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Restaurant with id " + campusId + " not found")))
+                .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), RESTAURANT_ENTITY)))
                 .flatMap(restaurant -> {
 
                     restaurant.setName(request.getName());
@@ -68,9 +71,9 @@ public class RestaurantService implements IRestaurantService {
                     restaurant.setLogoUrl(request.getLogoUrl());
                     restaurant.setIsAvailable(request.getIsAvailable());
 
-                    return restaurantRepository.save(restaurant).flatMap(updatedRestaurant -> Mono.just(GeneralResponse.<RestaurantResponse>builder()
+                    return restaurantRepository.save(restaurant).flatMap(updatedRestaurant -> Mono.just(GeneralResponse.<String>builder()
                             .code(SuccessCode.UPDATED.name())
-                            .data(restaurantMapper.modelToResponse(updatedRestaurant))
+                            .data(RESTAURANT_ENTITY)
                             .build()));
                 });
     }
@@ -78,11 +81,11 @@ public class RestaurantService implements IRestaurantService {
     @Override
     public Mono<GeneralResponse<String>> delete(UUID campusId) {
         return restaurantRepository.findById(campusId)
-                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Restaurant with id " + campusId + " not found")))
+                .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), RESTAURANT_ENTITY)))
                 .flatMap(restaurant -> restaurantRepository.delete(restaurant)
                         .then(Mono.just(GeneralResponse.<String>builder()
                                 .code(SuccessCode.DELETED.name())
-                                .data("Restaurant with id " + campusId + " deleted successfully")
+                                .data(RESTAURANT_ENTITY)
                                 .build())));
     }
 }

@@ -8,6 +8,7 @@ import com.p20241061.management.core.entities.Complement;
 import com.p20241061.management.core.repositories.ComplementRepository;
 import com.p20241061.management.infrastructure.interfaces.IComplementService;
 import com.p20241061.shared.exceptions.CustomException;
+import com.p20241061.shared.models.enums.ErrorCode;
 import com.p20241061.shared.models.enums.SuccessCode;
 import com.p20241061.shared.models.response.GeneralResponse;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,8 @@ import reactor.core.publisher.Mono;
 
 import java.util.UUID;
 
+import static com.p20241061.shared.models.enums.CampusName.COMPLEMENT_ENTITY;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -27,19 +30,19 @@ public class ComplementService implements IComplementService {
     private final ComplementMapper complementMapper;
 
     @Override
-    public Mono<GeneralResponse<ComplementResponse>> create(CreateComplementRequest request) {
+    public Mono<GeneralResponse<String>> create(CreateComplementRequest request) {
 
         return complementRepository.save(complementMapper.createRequestToModel(request))
-                .flatMap(createdComplement -> Mono.just(GeneralResponse.<ComplementResponse>builder()
+                .flatMap(createdComplement -> Mono.just(GeneralResponse.<String>builder()
                         .code(SuccessCode.CREATED.name())
-                        .data(complementMapper.modelToResponse(createdComplement))
+                        .data(COMPLEMENT_ENTITY)
                         .build()));
     }
 
     @Override
-    public Mono<GeneralResponse<ComplementResponse>> update(UpdateComplementRequest request, UUID complementId) {
+    public Mono<GeneralResponse<String>> update(UpdateComplementRequest request, UUID complementId) {
         return complementRepository.findById(complementId)
-                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Complement with id " + complementId + " not found")))
+                .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), COMPLEMENT_ENTITY)))
                 .flatMap(complement -> {
 
                     complement.setName(request.getName());
@@ -48,9 +51,9 @@ public class ComplementService implements IComplementService {
                     complement.setIsAvailable(request.getIsAvailable());
 
                     return complementRepository.save(complement)
-                            .flatMap(updatedComplement -> Mono.just(GeneralResponse.<ComplementResponse>builder()
+                            .flatMap(updatedComplement -> Mono.just(GeneralResponse.<String>builder()
                                     .code(SuccessCode.UPDATED.name())
-                                    .data(complementMapper.modelToResponse(updatedComplement))
+                                    .data(COMPLEMENT_ENTITY)
                                     .build()));
                 });
 
@@ -59,11 +62,11 @@ public class ComplementService implements IComplementService {
     @Override
     public Mono<GeneralResponse<String>> delete(UUID complementId) {
         return complementRepository.findById(complementId)
-                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Complement with id " + complementId + " not found")))
+                .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), COMPLEMENT_ENTITY)))
                 .flatMap(complement -> complementRepository.delete(complement)
                         .then(Mono.just(GeneralResponse.<String>builder()
                                 .code(SuccessCode.DELETED.name())
-                                .data("Complement with id " + complementId + " deleted successfully")
+                                .data(COMPLEMENT_ENTITY)
                                 .build())));
     }
 }

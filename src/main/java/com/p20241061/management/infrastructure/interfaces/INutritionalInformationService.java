@@ -8,5 +8,5 @@ import reactor.core.publisher.Mono;
 import java.util.UUID;
 
 public interface INutritionalInformationService {
-    Mono<GeneralResponse<NutritionalInformationResponse>> update(UpdateNutritionalInformationRequest request, UUID nutritionalInformationId);
+    Mono<GeneralResponse<String>> update(UpdateNutritionalInformationRequest request, UUID nutritionalInformationId);
 }

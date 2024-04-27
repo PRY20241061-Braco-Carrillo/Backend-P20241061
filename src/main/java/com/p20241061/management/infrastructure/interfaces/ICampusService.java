@@ -13,7 +13,7 @@ import java.util.UUID;
 public interface ICampusService {
     Mono<GeneralResponse<CampusResponse>> getById(UUID campusId);
     Mono<GeneralResponse<List<CampusResponse>>> getByRestaurantId(PaginatedRequest paginatedRequest, Boolean available, UUID restaurantId);
-    Mono<GeneralResponse<CampusResponse>> create(CreateCampusRequest request);
-    Mono<GeneralResponse<CampusResponse>> update(UpdateCampusRequest request, UUID campusId);
+    Mono<GeneralResponse<String>> create(CreateCampusRequest request);
+    Mono<GeneralResponse<String>> update(UpdateCampusRequest request, UUID campusId);
     Mono<GeneralResponse<String>> delete(UUID campusId);
 }

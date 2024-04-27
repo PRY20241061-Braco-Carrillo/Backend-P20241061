@@ -7,6 +7,8 @@ import com.p20241061.management.api.model.response.PromotionResponse;
 import com.p20241061.management.core.entities.Promotion;
 import com.p20241061.management.core.repositories.PromotionRepository;
 import com.p20241061.management.infrastructure.interfaces.IPromotionService;
+import com.p20241061.shared.exceptions.CustomException;
+import com.p20241061.shared.models.enums.ErrorCode;
 import com.p20241061.shared.models.enums.SuccessCode;
 import com.p20241061.shared.models.response.GeneralResponse;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +17,8 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import java.util.UUID;
+
+import static com.p20241061.shared.models.enums.CampusName.PROMOTION_ENTITY;
 
 @Service
 @Slf4j
@@ -25,19 +29,19 @@ public class PromotionService  implements IPromotionService {
     private final PromotionMapper promotionMapper;
 
     @Override
-    public Mono<GeneralResponse<PromotionResponse>> create(CreatePromotionRequest request) {
+    public Mono<GeneralResponse<String>> create(CreatePromotionRequest request) {
 
         return promotionRepository.save(promotionMapper.createRequestToModel(request))
-                .flatMap(createdPromotion -> Mono.just(GeneralResponse.<PromotionResponse>builder()
+                .flatMap(createdPromotion -> Mono.just(GeneralResponse.<String>builder()
                         .code(SuccessCode.CREATED.name())
-                        .data(promotionMapper.modelToResponse(createdPromotion))
+                        .data(PROMOTION_ENTITY)
                         .build()));
     }
 
     @Override
-    public Mono<GeneralResponse<PromotionResponse>> update(UpdatePromotionRequest request, UUID promotionId) {
+    public Mono<GeneralResponse<String>> update(UpdatePromotionRequest request, UUID promotionId) {
         return promotionRepository.findById(promotionId)
-                .switchIfEmpty(Mono.error(new Exception("Promotion with id " + promotionId + " not found")))
+                .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), PROMOTION_ENTITY)))
                 .flatMap(promotion -> {
                     promotion.setPrice(request.getPrice());
                     promotion.setCookingTime(request.getCookingTime());
@@ -49,9 +53,9 @@ public class PromotionService  implements IPromotionService {
                     promotion.setUrlImage(request.getUrlImage());
 
                     return promotionRepository.save(promotion)
-                            .flatMap(updatedPromotion -> Mono.just(GeneralResponse.<PromotionResponse>builder()
+                            .flatMap(updatedPromotion -> Mono.just(GeneralResponse.<String>builder()
                                     .code(SuccessCode.UPDATED.name())
-                                    .data(promotionMapper.modelToResponse(updatedPromotion))
+                                    .data(PROMOTION_ENTITY)
                                     .build()));
                 });
     }
@@ -59,11 +63,11 @@ public class PromotionService  implements IPromotionService {
     @Override
     public Mono<GeneralResponse<String>> delete(UUID promotionId) {
         return promotionRepository.findById(promotionId)
-                .switchIfEmpty(Mono.error(new Exception("Promotion with id " + promotionId + " not found")))
+                .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), PROMOTION_ENTITY)))
                 .flatMap(promotion -> promotionRepository.delete(promotion)
                         .then(Mono.just(GeneralResponse.<String>builder()
                                 .code(SuccessCode.DELETED.name())
-                                .data("Promotion with id " + promotionId + " deleted successfully")
+                                .data(PROMOTION_ENTITY)
                                 .build()))
                 );
     }

@@ -12,7 +12,7 @@ import java.util.UUID;
 
 public interface IRestaurantService {
     Mono<GeneralResponse<List<RestaurantResponse>>> getAll(PaginatedRequest paginatedRequest, Boolean available);
-    Mono<GeneralResponse<RestaurantResponse>> create(CreateRestaurantRequest request);
-    Mono<GeneralResponse<RestaurantResponse>> update(UpdateRestaurantRequest request, UUID campusId);
+    Mono<GeneralResponse<String>> create(CreateRestaurantRequest request);
+    Mono<GeneralResponse<String>> update(UpdateRestaurantRequest request, UUID campusId);
     Mono<GeneralResponse<String>> delete(UUID campusId);
 }

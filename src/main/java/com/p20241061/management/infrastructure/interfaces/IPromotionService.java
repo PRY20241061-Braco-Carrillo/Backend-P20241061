@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono;
 import java.util.UUID;
 
 public interface IPromotionService {
-    Mono<GeneralResponse<PromotionResponse>> create(CreatePromotionRequest request);
-    Mono<GeneralResponse<PromotionResponse>> update(UpdatePromotionRequest request, UUID promotionId);
+    Mono<GeneralResponse<String>> create(CreatePromotionRequest request);
+    Mono<GeneralResponse<String>> update(UpdatePromotionRequest request, UUID promotionId);
     Mono<GeneralResponse<String>> delete(UUID promotionId);
 }

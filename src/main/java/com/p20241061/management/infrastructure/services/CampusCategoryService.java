@@ -10,6 +10,7 @@ import com.p20241061.management.core.repositories.CategoryRepository;
 import com.p20241061.management.core.repositories.relations.CampusCategoryRepository;
 import com.p20241061.management.infrastructure.interfaces.ICampusCategoryService;
 import com.p20241061.shared.exceptions.CustomException;
+import com.p20241061.shared.models.enums.ErrorCode;
 import com.p20241061.shared.models.enums.SuccessCode;
 import com.p20241061.shared.models.response.GeneralResponse;
 import com.p20241061.shared.utils.PaginatedRequest;
@@ -21,6 +22,8 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.UUID;
+
+import static com.p20241061.shared.models.enums.CampusName.*;
 
 @Service
 @Slf4j
@@ -35,7 +38,6 @@ public class CampusCategoryService implements ICampusCategoryService {
     @Override
     public Mono<GeneralResponse<List<CategoryResponse>>> getCategoryByCampusId(PaginatedRequest paginatedRequest, UUID campusId) {
 
-
         return paginatedRequest.paginateData(campusCategoryRepository.getCampusCategoriesByCampusId(campusId))
                 .flatMap(campusCategory -> categoryRepository.findById(campusCategory.getCategoryId())
                         .map(categoryMapper::modelToResponse))
@@ -47,11 +49,11 @@ public class CampusCategoryService implements ICampusCategoryService {
     }
 
     @Override
-    public Mono<GeneralResponse<CampusCategoryResponse>> create(CreateCampusCategoryRequest request) {
+    public Mono<GeneralResponse<String>> create(CreateCampusCategoryRequest request) {
         return campusRepository.findById(request.getCampusId())
-                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Campus with id " + request.getCampusId() + " not found")))
+                .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), CAMPUS_ENTITY)))
                 .flatMap(campus -> categoryRepository.findById(request.getCategoryId())
-                        .switchIfEmpty(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Category with id " + request.getCategoryId() + " not found")))
+                        .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), CATEGORY_ENTITY)))
                         .flatMap(category -> {
                             CampusCategory campusCategory = CampusCategory.builder()
                                     .categoryId(category.getCategoryId())
@@ -59,18 +61,10 @@ public class CampusCategoryService implements ICampusCategoryService {
                                     .build();
 
                             return campusCategoryRepository.save(campusCategory)
-                                    .flatMap(createdCampusCategory -> {
-                                        CampusCategoryResponse campusCategoryResponse = CampusCategoryResponse.builder()
-                                                .campusCategoryId(createdCampusCategory.getCampusCategoryId())
-                                                .campus(campus)
-                                                .category(category)
-                                                .build();
-
-                                        return Mono.just(GeneralResponse.<CampusCategoryResponse>builder()
-                                                .code(HttpStatus.CREATED.name())
-                                                .data(campusCategoryResponse)
-                                                .build());
-                                    });
+                                    .flatMap(createdCampusCategory -> Mono.just(GeneralResponse.<String>builder()
+                                            .code(HttpStatus.CREATED.name())
+                                            .data(CAMPUS_ENTITY)
+                                            .build()));
                         })
                 );
     }
@@ -78,11 +72,11 @@ public class CampusCategoryService implements ICampusCategoryService {
     @Override
     public Mono<GeneralResponse<String>> delete(UUID campusCategoryId) {
         return campusCategoryRepository.findById(campusCategoryId)
-                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Campus category with id " + campusCategoryId + " not found")))
+                .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), CAMPUS_CATEGORY_ENTITY)))
                 .flatMap(campusCategory -> campusCategoryRepository.delete(campusCategory)
                         .then(Mono.just(GeneralResponse.<String>builder()
                                 .code(SuccessCode.DELETED.name())
-                                .data("Campus category with id " + campusCategoryId + " deleted successfully")
+                                .data(CAMPUS_CATEGORY_ENTITY)
                                 .build())
                         )
                 );

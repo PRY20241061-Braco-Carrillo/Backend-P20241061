@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono;
 import java.util.UUID;
 
 public interface ICategoryService {
-    Mono<GeneralResponse<CategoryResponse>> create(CreateCategoryRequest request);
-    Mono<GeneralResponse<CategoryResponse>> update(UpdateCategoryRequest request, UUID categoryId);
+    Mono<GeneralResponse<String>> create(CreateCategoryRequest request);
+    Mono<GeneralResponse<String>> update(UpdateCategoryRequest request, UUID categoryId);
     Mono<GeneralResponse<String>> delete(UUID categoryId);
 }

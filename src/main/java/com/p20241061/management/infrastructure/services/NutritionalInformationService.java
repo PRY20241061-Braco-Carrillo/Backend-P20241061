@@ -5,6 +5,8 @@ import com.p20241061.management.api.model.request.update.UpdateNutritionalInform
 import com.p20241061.management.api.model.response.NutritionalInformationResponse;
 import com.p20241061.management.core.repositories.NutritionalInformationRepository;
 import com.p20241061.management.infrastructure.interfaces.INutritionalInformationService;
+import com.p20241061.shared.exceptions.CustomException;
+import com.p20241061.shared.models.enums.ErrorCode;
 import com.p20241061.shared.models.enums.SuccessCode;
 import com.p20241061.shared.models.response.GeneralResponse;
 import lombok.RequiredArgsConstructor;
@@ -14,17 +16,19 @@ import reactor.core.publisher.Mono;
 
 import java.util.UUID;
 
+import static com.p20241061.shared.models.enums.CampusName.NUTRITIONAL_INFORMATION_ENTITY;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class NutritionalInformationService implements INutritionalInformationService {
 
     private final NutritionalInformationRepository nutritionalInformationRepository;
-    private final NutritionalInformationMapper nutritionalInformationMapper;
 
     @Override
-    public Mono<GeneralResponse<NutritionalInformationResponse>> update(UpdateNutritionalInformationRequest request, UUID nutritionalInformationId) {
+    public Mono<GeneralResponse<String>> update(UpdateNutritionalInformationRequest request, UUID nutritionalInformationId) {
         return nutritionalInformationRepository.findById(nutritionalInformationId)
+                .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), NUTRITIONAL_INFORMATION_ENTITY)))
                 .flatMap(nutritionalInformation -> {
                     nutritionalInformation.setCalories(request.getCalories());
                     nutritionalInformation.setProteins(request.getProteins());
@@ -41,9 +45,9 @@ public class NutritionalInformationService implements INutritionalInformationSer
                     nutritionalInformation.setIsWithoutSeafood(request.getIsWithoutSeafood());
                     nutritionalInformation.setIsWithoutPig(request.getIsWithoutPig());
 
-                    return nutritionalInformationRepository.save(nutritionalInformation).map(updatedNutritionalInformation -> GeneralResponse.<NutritionalInformationResponse>builder()
+                    return nutritionalInformationRepository.save(nutritionalInformation).map(updatedNutritionalInformation -> GeneralResponse.<String>builder()
                             .code(SuccessCode.UPDATED.name())
-                            .data(nutritionalInformationMapper.modelToResponse(updatedNutritionalInformation)).build());
+                            .data(NUTRITIONAL_INFORMATION_ENTITY).build());
                 }
         );
     }

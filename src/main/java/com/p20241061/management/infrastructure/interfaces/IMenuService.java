@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono;
 import java.util.UUID;
 
 public interface IMenuService {
-    Mono<GeneralResponse<MenuResponse>> create(CreateMenuRequest request);
-    Mono<GeneralResponse<MenuResponse>> update(UpdateMenuRequest request, UUID menuId);
+    Mono<GeneralResponse<String>> create(CreateMenuRequest request);
+    Mono<GeneralResponse<String>> update(UpdateMenuRequest request, UUID menuId);
     Mono<GeneralResponse<String>> delete(UUID menuId);
 }

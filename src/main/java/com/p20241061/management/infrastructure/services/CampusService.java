@@ -10,6 +10,7 @@ import com.p20241061.management.core.repositories.CampusRepository;
 import com.p20241061.management.core.repositories.RestaurantRepository;
 import com.p20241061.management.infrastructure.interfaces.ICampusService;
 import com.p20241061.shared.exceptions.CustomException;
+import com.p20241061.shared.models.enums.ErrorCode;
 import com.p20241061.shared.models.enums.SuccessCode;
 import com.p20241061.shared.models.response.GeneralResponse;
 import com.p20241061.shared.utils.PaginatedRequest;
@@ -22,6 +23,9 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 import java.util.UUID;
 
+import static com.p20241061.shared.models.enums.CampusName.CAMPUS_ENTITY;
+import static com.p20241061.shared.models.enums.CampusName.RESTAURANT_ENTITY;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -32,10 +36,10 @@ public class CampusService implements ICampusService {
     private final ObjectMapper objectMapper;
     private final CampusMapper campusMapper;
 
+
     @Override
     public Mono<GeneralResponse<CampusResponse>> getById(UUID campusId) {
         return campusRepository.findById(campusId)
-                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Campus with id " + campusId + " not found")))
                 .flatMap(campus -> {
                     try {
                         return Mono.just(GeneralResponse.<CampusResponse>builder()
@@ -43,7 +47,7 @@ public class CampusService implements ICampusService {
                                 .data(campusMapper.modelToResponse(campus))
                                 .build());
                     } catch (JsonProcessingException e) {
-                        return Mono.error(new CustomException(HttpStatus.BAD_REQUEST, e.getMessage()));
+                        return Mono.error(new CustomException(ErrorCode.CONFLICT.name(), e.getMessage()));
                     }
                 });
     }
@@ -52,7 +56,7 @@ public class CampusService implements ICampusService {
     public Mono<GeneralResponse<List<CampusResponse>>> getByRestaurantId(PaginatedRequest paginatedRequest, Boolean available, UUID restaurantId) {
 
         return restaurantRepository.findById(restaurantId)
-                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Restaurant with id " + restaurantId + " not found")))
+                .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), RESTAURANT_ENTITY)))
                 .flatMap(restaurant -> paginatedRequest.paginateData(campusRepository.findByRestaurantIdAndIsAvailable(restaurantId, available))
                         .collectList()
                         .flatMap(campuses -> {
@@ -76,35 +80,29 @@ public class CampusService implements ICampusService {
     }
 
     @Override
-    public Mono<GeneralResponse<CampusResponse>> create(CreateCampusRequest request) {
+    public Mono<GeneralResponse<String>> create(CreateCampusRequest request) {
 
         return restaurantRepository.findById(request.getRestaurantId())
-                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Restaurant with id " + request.getRestaurantId() + " not found")))
+                .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), RESTAURANT_ENTITY)))
                 .flatMap(restaurant -> {
                     try {
-                        return campusRepository.save(campusMapper.createRequestToModel(request)).flatMap(createdCampus -> {
-                            try {
-                                return Mono.just(GeneralResponse.<CampusResponse>builder()
-                                        .code(SuccessCode.CREATED.name())
-                                        .data(campusMapper.modelToResponse(createdCampus))
-                                        .build());
-                            } catch (JsonProcessingException e) {
-                                return Mono.error(new CustomException(HttpStatus.BAD_REQUEST, e.getMessage()));
-                            }
-                        });
+                        return campusRepository.save(campusMapper.createRequestToModel(request)).flatMap(createdCampus -> Mono.just(GeneralResponse.<String>builder()
+                                .code(SuccessCode.CREATED.name())
+                                .data(CAMPUS_ENTITY)
+                                .build()));
                     } catch (JsonProcessingException e) {
-                        return Mono.error(new CustomException(HttpStatus.BAD_REQUEST, e.getMessage()));
+                        return Mono.error(new CustomException(ErrorCode.CONFLICT.name(), e.getMessage()));
                     }
                 });
     }
 
     @Override
-    public Mono<GeneralResponse<CampusResponse>> update(UpdateCampusRequest request, UUID campusId) {
+    public Mono<GeneralResponse<String>> update(UpdateCampusRequest request, UUID campusId) {
 
         return campusRepository.findById(campusId)
-                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Campus with id " + campusId + " not found")))
+                .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), CAMPUS_ENTITY)))
                 .flatMap(findedCampus -> restaurantRepository.findById(request.getRestaurantId())
-                        .switchIfEmpty(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Restaurant with id " + request.getRestaurantId() + " not found")))
+                        .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), RESTAURANT_ENTITY)))
                         .flatMap(restaurant -> {
 
                             try {
@@ -117,19 +115,13 @@ public class CampusService implements ICampusService {
                                 findedCampus.setRestaurantId(request.getRestaurantId());
                                 findedCampus.setIsAvailable(request.getIsAvailable());
                             } catch (JsonProcessingException e) {
-                                return Mono.error(new CustomException(HttpStatus.BAD_REQUEST, e.getMessage()));
+                                return Mono.error(new CustomException(ErrorCode.CONFLICT.name(), e.getMessage()));
                             }
 
-                            return campusRepository.save(findedCampus).flatMap(updatedCampus -> {
-                                try {
-                                    return Mono.just(GeneralResponse.<CampusResponse>builder()
-                                            .code(SuccessCode.UPDATED.name())
-                                            .data(campusMapper.modelToResponse(updatedCampus))
-                                            .build());
-                                } catch (JsonProcessingException e) {
-                                    return Mono.error(new CustomException(HttpStatus.BAD_REQUEST, e.getMessage()));
-                                }
-                            });
+                            return campusRepository.save(findedCampus).flatMap(updatedCampus -> Mono.just(GeneralResponse.<String>builder()
+                                    .code(SuccessCode.UPDATED.name())
+                                    .data(CAMPUS_ENTITY)
+                                    .build()));
                         }));
 
        }
@@ -137,11 +129,11 @@ public class CampusService implements ICampusService {
     @Override
     public Mono<GeneralResponse<String>> delete(UUID campusId) {
         return campusRepository.findById(campusId)
-                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Campus with id " + campusId + " not found")))
+                .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), CAMPUS_ENTITY)))
                 .flatMap(campus -> campusRepository.delete(campus)
                         .then(Mono.just(GeneralResponse.<String>builder()
                                 .code(SuccessCode.DELETED.name())
-                                .data("Campus with id " + campusId + " deleted successfully")
+                                .data(CAMPUS_ENTITY)
                                 .build())));
     }
 }
