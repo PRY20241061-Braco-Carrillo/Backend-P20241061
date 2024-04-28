@@ -10,6 +10,7 @@ import com.p20241061.security.core.enums.Role;
 import com.p20241061.security.core.repositories.UserRepository;
 import com.p20241061.security.infrastructure.interfaces.IUserService;
 import com.p20241061.shared.exceptions.CustomException;
+import com.p20241061.shared.models.enums.ErrorCode;
 import com.p20241061.shared.models.enums.SuccessCode;
 import com.p20241061.shared.models.response.GeneralResponse;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+
+import static com.p20241061.shared.models.enums.CampusName.ROLE_ENTITY;
+import static com.p20241061.shared.models.enums.CampusName.USER_ENTITY;
 
 @Service
 @Slf4j
@@ -48,11 +52,11 @@ public class UserService implements IUserService {
                             .data(loginResponse)
                             .build());
                 })
-                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.UNAUTHORIZED, "Invalid credentials")));
+                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.UNAUTHORIZED, ErrorCode.UNAUTHORIZED.name(), "Invalid credentials")));
     }
 
     @Override
-    public Mono<GeneralResponse<CreateUserResponse>> createUser(CreateUserRequest request) {
+    public Mono<GeneralResponse<String>> createUser(CreateUserRequest request) {
 
         User user = User.builder()
                 .names(request.getNames())
@@ -77,30 +81,17 @@ public class UserService implements IUserService {
                 user.setRoles(Role.ROLE_WAITER.name());
                 break;
             default:
-                return Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Role " + request.getRole() + " is not valid"));
+                return Mono.error(new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.BAD_REQUEST.name(), ROLE_ENTITY));
         }
 
         Mono<Boolean> userExists = userRepository.findByEmail(user.getEmail()).hasElement();
 
         return userExists.flatMap(exists -> exists
-                ? Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "User with email " + request.getEmail()+ " already exists"))
+                ? Mono.error(new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.ALREADY_EXISTS.name(), USER_ENTITY))
                 :  userRepository.save(user).flatMap(
-                        u -> {
-
-                            CreateUserResponse response = CreateUserResponse.builder()
-                                    .userId(u.getUserId())
-                                    .names(u.getNames())
-                                    .lastNames(u.getLastNames())
-                                    .email(u.getEmail())
-                                    .roles(u.getRoles())
-                                    .cancelReservation(u.getCancelReservation())
-                                    .acceptReservation(u.getAcceptReservation())
-                                    .build();
-
-                            return Mono.just( GeneralResponse.<CreateUserResponse>builder()
-                                            .code(SuccessCode.CREATED.name())
-                                            .data(response)
-                                    .build());
-                        }));
+                        u -> Mono.just( GeneralResponse.<String>builder()
+                                        .code(SuccessCode.CREATED.name())
+                                        .data(USER_ENTITY)
+                                .build())));
     }
 }

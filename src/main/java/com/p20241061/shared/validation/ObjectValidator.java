@@ -2,6 +2,7 @@ package com.p20241061.shared.validation;
 
 
 import com.p20241061.shared.exceptions.CustomException;
+import com.p20241061.shared.models.enums.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +27,7 @@ public class ObjectValidator {
         Set<ConstraintViolation<T>> errors = validator.validate(object);
         if (!errors.isEmpty()) {
             String message = errors.stream().map(err -> err.getMessage()).collect(Collectors.joining(", "));
-            throw new CustomException(HttpStatus.BAD_REQUEST, message);
+            throw new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.BAD_REQUEST.name(), message);
         }
 
         return object;

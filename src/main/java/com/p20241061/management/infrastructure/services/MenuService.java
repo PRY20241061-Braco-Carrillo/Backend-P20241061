@@ -41,7 +41,7 @@ public class MenuService implements IMenuService {
     @Override
     public Mono<GeneralResponse<String>> update(UpdateMenuRequest request, UUID menuId) {
         return menuRepository.findById(menuId)
-                .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), MENU_ENTITY)))
+                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), MENU_ENTITY)))
                 .flatMap(menu -> {
                     menu.setName(request.getName());
                     menu.setPrice(request.getPrice());
@@ -59,7 +59,7 @@ public class MenuService implements IMenuService {
     @Override
     public Mono<GeneralResponse<String>> delete(UUID menuId) {
         return menuRepository.findById(menuId)
-                .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), MENU_ENTITY)))
+                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), MENU_ENTITY)))
                 .flatMap(menu -> menuRepository.delete(menu).then(Mono.just(GeneralResponse.<String>builder()
                         .code(SuccessCode.DELETED.name())
                         .data(MENU_ENTITY)

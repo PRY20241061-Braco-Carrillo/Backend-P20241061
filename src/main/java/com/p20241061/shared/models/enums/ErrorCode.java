@@ -12,5 +12,6 @@ public enum ErrorCode {
     CONFLICT,
     NOT_IMPLEMENTED,
     BAD_GATEWAY,
-    UNKNOWN_ERROR
+    UNKNOWN_ERROR,
+    ALREADY_EXISTS,
 }

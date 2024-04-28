@@ -51,9 +51,9 @@ public class CampusCategoryService implements ICampusCategoryService {
     @Override
     public Mono<GeneralResponse<String>> create(CreateCampusCategoryRequest request) {
         return campusRepository.findById(request.getCampusId())
-                .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), CAMPUS_ENTITY)))
+                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), CAMPUS_ENTITY)))
                 .flatMap(campus -> categoryRepository.findById(request.getCategoryId())
-                        .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), CATEGORY_ENTITY)))
+                        .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), CATEGORY_ENTITY)))
                         .flatMap(category -> {
                             CampusCategory campusCategory = CampusCategory.builder()
                                     .categoryId(category.getCategoryId())
@@ -72,7 +72,7 @@ public class CampusCategoryService implements ICampusCategoryService {
     @Override
     public Mono<GeneralResponse<String>> delete(UUID campusCategoryId) {
         return campusCategoryRepository.findById(campusCategoryId)
-                .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), CAMPUS_CATEGORY_ENTITY)))
+                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), CAMPUS_CATEGORY_ENTITY)))
                 .flatMap(campusCategory -> campusCategoryRepository.delete(campusCategory)
                         .then(Mono.just(GeneralResponse.<String>builder()
                                 .code(SuccessCode.DELETED.name())

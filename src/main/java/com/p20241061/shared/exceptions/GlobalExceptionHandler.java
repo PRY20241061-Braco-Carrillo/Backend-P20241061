@@ -34,7 +34,7 @@ public class GlobalExceptionHandler extends AbstractErrorWebExceptionHandler {
     private Mono<ServerResponse> customErrorResponse(ServerRequest serverRequest) {
 
         Map<String, Object> errorMap = this.getErrorAttributes(serverRequest, ErrorAttributeOptions.defaults());
-        HttpStatus status = (HttpStatus) Optional.ofNullable(errorMap.get("status")).orElse(HttpStatus.INTERNAL_SERVER_ERROR);
+        HttpStatus status = Optional.of(HttpStatus.valueOf((Integer) errorMap.get("httpStatus"))).orElse(HttpStatus.INTERNAL_SERVER_ERROR);
 
         return ServerResponse.status(status).contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromValue(errorMap));

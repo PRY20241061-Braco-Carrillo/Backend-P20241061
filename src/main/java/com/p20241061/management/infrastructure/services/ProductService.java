@@ -40,7 +40,7 @@ public class ProductService implements IProductService {
     public Mono<GeneralResponse<List<ProductResponse>>> getAllByCampusCategory(PaginatedRequest paginatedRequest, UUID campusCategoryId, Boolean available) {
         return paginatedRequest.paginateData(productRepository.getAllByCampusCategoryIdAndIsAvailable(campusCategoryId, available))
                 .flatMap(product -> nutritionalInformationRepository.findById(product.getNutritionalInformationId())
-                        .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), NUTRITIONAL_INFORMATION_ENTITY)))
+                        .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), NUTRITIONAL_INFORMATION_ENTITY)))
                         .map(nutritionalInformation -> {
                             ProductResponse productResponse = productMapper.modelToResponse(product);
                             productResponse.setNutritionalInformation(nutritionalInformation);
@@ -56,7 +56,7 @@ public class ProductService implements IProductService {
     @Override
     public Mono<GeneralResponse<String>> create(CreateProductRequest request) {
         return campusCategoryRepository.findById(request.getCampusCategoryId())
-                .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), CAMPUS_CATEGORY_ENTITY)))
+                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), CAMPUS_CATEGORY_ENTITY)))
                 .flatMap(campusCategory -> nutritionalInformationRepository.save(nutritionalInformationMapper.createRequestToModel(request.getNutritionalInformation()))
                         .flatMap(createdNutritionalInformation -> productRepository.save(productMapper.createRequestToModel(request, createdNutritionalInformation.getNutritionalInformationId()))
                                 .flatMap(createdProduct -> {
@@ -74,9 +74,9 @@ public class ProductService implements IProductService {
     @Override
     public Mono<GeneralResponse<String>> update(UpdateProductRequest request, UUID productId) {
         return productRepository.findById(productId)
-                .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), PRODUCT_ENTITY)))
+                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), PRODUCT_ENTITY)))
                 .flatMap(product -> campusCategoryRepository.findById(request.getCampusCategoryId())
-                        .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), CAMPUS_CATEGORY_ENTITY)))
+                        .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), CAMPUS_CATEGORY_ENTITY)))
                         .flatMap(campusCategory -> {
 
                             product.setName(request.getName());
@@ -92,7 +92,7 @@ public class ProductService implements IProductService {
 
                             return productRepository.save(product)
                                 .flatMap(updatedProduct -> nutritionalInformationRepository.findById(updatedProduct.getNutritionalInformationId())
-                                        .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), NUTRITIONAL_INFORMATION_ENTITY)))
+                                        .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), NUTRITIONAL_INFORMATION_ENTITY)))
                                         .flatMap(nutritionalInformation -> {
 
                                             ProductResponse productResponse = productMapper.modelToResponse(updatedProduct);
@@ -111,10 +111,10 @@ public class ProductService implements IProductService {
     @Override
     public Mono<GeneralResponse<String>> delete(UUID productId) {
         return productRepository.findById(productId)
-                .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), PRODUCT_ENTITY)))
+                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), PRODUCT_ENTITY)))
                 .flatMap(product -> productRepository.delete(product)
                         .then(Mono.defer(() -> nutritionalInformationRepository.findById(product.getNutritionalInformationId())
-                                .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), NUTRITIONAL_INFORMATION_ENTITY)))
+                                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), NUTRITIONAL_INFORMATION_ENTITY)))
                                 .flatMap(nutritionalInformationRepository::delete)
                                 .then(Mono.just(GeneralResponse.<String>builder()
                                         .code(SuccessCode.DELETED.name())

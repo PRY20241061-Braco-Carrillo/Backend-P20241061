@@ -11,6 +11,7 @@ import com.p20241061.shared.models.enums.SuccessCode;
 import com.p20241061.shared.models.response.GeneralResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
@@ -28,7 +29,7 @@ public class NutritionalInformationService implements INutritionalInformationSer
     @Override
     public Mono<GeneralResponse<String>> update(UpdateNutritionalInformationRequest request, UUID nutritionalInformationId) {
         return nutritionalInformationRepository.findById(nutritionalInformationId)
-                .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), NUTRITIONAL_INFORMATION_ENTITY)))
+                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), NUTRITIONAL_INFORMATION_ENTITY)))
                 .flatMap(nutritionalInformation -> {
                     nutritionalInformation.setCalories(request.getCalories());
                     nutritionalInformation.setProteins(request.getProteins());

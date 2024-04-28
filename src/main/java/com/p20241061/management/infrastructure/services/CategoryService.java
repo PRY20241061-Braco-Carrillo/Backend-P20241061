@@ -43,7 +43,7 @@ public class CategoryService implements ICategoryService {
     @Override
     public Mono<GeneralResponse<String>> update(UpdateCategoryRequest request, UUID categoryId) {
         return categoryRepository.findById(categoryId)
-                .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), CATEGORY_ENTITY)))
+                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), CATEGORY_ENTITY)))
                 .flatMap(category -> {
 
                     category.setName(request.getName());
@@ -60,7 +60,7 @@ public class CategoryService implements ICategoryService {
     @Override
     public Mono<GeneralResponse<String>> delete(UUID categoryId) {
         return categoryRepository.findById(categoryId)
-                .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), CATEGORY_ENTITY)))
+                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), CATEGORY_ENTITY)))
                 .flatMap(category -> categoryRepository.delete(category)
                         .then(Mono.just(GeneralResponse.<String>builder()
                                 .code(SuccessCode.DELETED.name())

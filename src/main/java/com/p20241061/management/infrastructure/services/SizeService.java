@@ -40,7 +40,7 @@ public class SizeService implements ISizeService {
     @Override
     public Mono<GeneralResponse<String>> update(UpdateSizeRequest request, UUID sizeId) {
         return sizeRepository.findById(sizeId)
-                .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), SIZE_ENTITY)))
+                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), SIZE_ENTITY)))
                 .flatMap(size -> {
 
                     size.setName(request.getName());
@@ -57,7 +57,7 @@ public class SizeService implements ISizeService {
     @Override
     public Mono<GeneralResponse<String>> delete(UUID sizeId) {
         return sizeRepository.findById(sizeId)
-                .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), SIZE_ENTITY)))
+                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), SIZE_ENTITY)))
                 .flatMap(size -> sizeRepository.delete(size)
                         .then(Mono.just(GeneralResponse.<String>builder()
                                 .code(SuccessCode.DELETED.name())

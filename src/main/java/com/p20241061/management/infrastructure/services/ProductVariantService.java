@@ -40,11 +40,11 @@ public class ProductVariantService implements IProductVariantService {
     @Override
     public Mono<GeneralResponse<String>> create(CreateProductVariantRequest request) {
         return cookingTypeRepository.findById(request.getCookingTypeId())
-                .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), COOKING_TYPE_ENTITY)))
+                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND,ErrorCode.NOT_FOUND.name(), COOKING_TYPE_ENTITY)))
                 .flatMap(cookingType -> sizeRepository.findById(request.getSizeId())
-                        .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), SIZE_ENTITY)))
+                        .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), SIZE_ENTITY)))
                         .flatMap(size -> productRepository.findById(request.getProductId())
-                                .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), PRODUCT_ENTITY)))
+                                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), PRODUCT_ENTITY)))
                                 .flatMap(product -> productVariantRepository.save(productVariantMapper.createRequestToModel(request, cookingType.getCookingTypeId(), size.getSizeId(), product.getProductId()))
                                         .flatMap(createdProductVariant -> Mono.just(GeneralResponse.<String>builder()
                                                 .code(SuccessCode.CREATED.name())
@@ -55,13 +55,13 @@ public class ProductVariantService implements IProductVariantService {
     @Override
     public Mono<GeneralResponse<String>> update(UpdateProductVariantRequest request, UUID productVariantId) {
         return productVariantRepository.findById(productVariantId)
-                .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), PRODUCT_VARIANT_ENTITY)))
+                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), PRODUCT_VARIANT_ENTITY)))
                 .flatMap(productVariant -> cookingTypeRepository.findById(request.getCookingTypeId())
-                        .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), COOKING_TYPE_ENTITY)))
+                        .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), COOKING_TYPE_ENTITY)))
                         .flatMap(cookingType -> sizeRepository.findById(request.getSizeId())
-                                .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), SIZE_ENTITY)))
+                                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), SIZE_ENTITY)))
                                 .flatMap(size -> productRepository.findById(request.getProductId())
-                                        .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), PRODUCT_ENTITY)))
+                                        .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), PRODUCT_ENTITY)))
                                         .flatMap(product -> {
                                             productVariant.setCookingTypeId(cookingType.getCookingTypeId());
                                             productVariant.setSizeId(size.getSizeId());
@@ -79,7 +79,7 @@ public class ProductVariantService implements IProductVariantService {
     @Override
     public Mono<GeneralResponse<String>> delete(UUID productVariantId) {
         return productVariantRepository.findById(productVariantId)
-                .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), PRODUCT_VARIANT_ENTITY)))
+                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), PRODUCT_VARIANT_ENTITY)))
                 .flatMap(productVariant -> productVariantRepository.delete(productVariant)
                         .then(Mono.just(GeneralResponse.<String>builder()
                                 .code(SuccessCode.DELETED.name())

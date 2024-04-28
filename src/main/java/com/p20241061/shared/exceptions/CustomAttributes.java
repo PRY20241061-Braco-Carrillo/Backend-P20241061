@@ -20,7 +20,8 @@ public class CustomAttributes extends DefaultErrorAttributes {
 
         if(throwable instanceof CustomException customException) {
             errorAttribute.put("message", customException.getMessage());
-            errorAttribute.put("status", customException.getHttpStatus());
+            errorAttribute.put("code", customException.getCode());
+            errorAttribute.put("httpStatus", customException.getHttpStatus().value());
         }
 
         return errorAttribute;

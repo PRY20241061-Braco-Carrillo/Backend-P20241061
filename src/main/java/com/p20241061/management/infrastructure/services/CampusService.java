@@ -6,6 +6,8 @@ import com.p20241061.management.api.mapping.CampusMapper;
 import com.p20241061.management.api.model.request.create.CreateCampusRequest;
 import com.p20241061.management.api.model.request.update.UpdateCampusRequest;
 import com.p20241061.management.api.model.response.CampusResponse;
+import com.p20241061.management.core.entities.Campus;
+import com.p20241061.management.core.entities.Restaurant;
 import com.p20241061.management.core.repositories.CampusRepository;
 import com.p20241061.management.core.repositories.RestaurantRepository;
 import com.p20241061.management.infrastructure.interfaces.ICampusService;
@@ -40,14 +42,19 @@ public class CampusService implements ICampusService {
     @Override
     public Mono<GeneralResponse<CampusResponse>> getById(UUID campusId) {
         return campusRepository.findById(campusId)
+                .flatMap(campus ->  Mono.zip(Mono.just(campus), restaurantRepository.findById(campus.getRestaurantId())))
                 .flatMap(campus -> {
                     try {
+
+                        CampusResponse response = campusMapper.modelToResponse(campus.getT1());
+                        response.setRestaurant(campus.getT2());
+
                         return Mono.just(GeneralResponse.<CampusResponse>builder()
                                 .code(SuccessCode.SUCCESS.name())
-                                .data(campusMapper.modelToResponse(campus))
+                                .data(response)
                                 .build());
                     } catch (JsonProcessingException e) {
-                        return Mono.error(new CustomException(ErrorCode.CONFLICT.name(), e.getMessage()));
+                        return Mono.error(new CustomException(HttpStatus.CONFLICT, ErrorCode.CONFLICT.name(), e.getMessage()));
                     }
                 });
     }
@@ -56,34 +63,32 @@ public class CampusService implements ICampusService {
     public Mono<GeneralResponse<List<CampusResponse>>> getByRestaurantId(PaginatedRequest paginatedRequest, Boolean available, UUID restaurantId) {
 
         return restaurantRepository.findById(restaurantId)
-                .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), RESTAURANT_ENTITY)))
+                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), RESTAURANT_ENTITY)))
                 .flatMap(restaurant -> paginatedRequest.paginateData(campusRepository.findByRestaurantIdAndIsAvailable(restaurantId, available))
-                        .collectList()
-                        .flatMap(campuses -> {
+                        .flatMap(campuses -> Mono.zip(Mono.just(campuses), restaurantRepository.findById(campuses.getRestaurantId())))
+                        .map(tuple -> {
+                            Campus campus = tuple.getT1();
+                            Restaurant fetchRestaurant = tuple.getT2();
 
-                            List<CampusResponse> campusResponses = campuses.stream()
-                                    .map(campus  -> {
-                                        try {
-                                            return campusMapper.modelToResponse(campus);
-                                        } catch (JsonProcessingException e) {
-                                            throw new RuntimeException(e);
-                                        }
-                                    })
-                                    .toList();
-
-                            return Mono.just(GeneralResponse.<List<CampusResponse>>builder()
-                                    .code(SuccessCode.SUCCESS.name())
-                                    .data(campusResponses)
-                                    .build());
-                        })
-                );
+                            try {
+                                CampusResponse campusResponse = campusMapper.modelToResponse(campus);
+                                campusResponse.setRestaurant(fetchRestaurant);
+                                return campusResponse;
+                            } catch (JsonProcessingException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }).collectList())
+                .flatMap(campusResponse -> Mono.just(GeneralResponse.<List<CampusResponse>>builder()
+                        .code(SuccessCode.SUCCESS.name())
+                        .data(campusResponse)
+                        .build()));
     }
 
     @Override
     public Mono<GeneralResponse<String>> create(CreateCampusRequest request) {
 
         return restaurantRepository.findById(request.getRestaurantId())
-                .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), RESTAURANT_ENTITY)))
+                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), RESTAURANT_ENTITY)))
                 .flatMap(restaurant -> {
                     try {
                         return campusRepository.save(campusMapper.createRequestToModel(request)).flatMap(createdCampus -> Mono.just(GeneralResponse.<String>builder()
@@ -91,7 +96,7 @@ public class CampusService implements ICampusService {
                                 .data(CAMPUS_ENTITY)
                                 .build()));
                     } catch (JsonProcessingException e) {
-                        return Mono.error(new CustomException(ErrorCode.CONFLICT.name(), e.getMessage()));
+                        return Mono.error(new CustomException(HttpStatus.CONFLICT,ErrorCode.CONFLICT.name(), e.getMessage()));
                     }
                 });
     }
@@ -100,9 +105,9 @@ public class CampusService implements ICampusService {
     public Mono<GeneralResponse<String>> update(UpdateCampusRequest request, UUID campusId) {
 
         return campusRepository.findById(campusId)
-                .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), CAMPUS_ENTITY)))
+                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), CAMPUS_ENTITY)))
                 .flatMap(findedCampus -> restaurantRepository.findById(request.getRestaurantId())
-                        .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), RESTAURANT_ENTITY)))
+                        .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), RESTAURANT_ENTITY)))
                         .flatMap(restaurant -> {
 
                             try {
@@ -115,7 +120,7 @@ public class CampusService implements ICampusService {
                                 findedCampus.setRestaurantId(request.getRestaurantId());
                                 findedCampus.setIsAvailable(request.getIsAvailable());
                             } catch (JsonProcessingException e) {
-                                return Mono.error(new CustomException(ErrorCode.CONFLICT.name(), e.getMessage()));
+                                return Mono.error(new CustomException(HttpStatus.CONFLICT, ErrorCode.CONFLICT.name(), e.getMessage()));
                             }
 
                             return campusRepository.save(findedCampus).flatMap(updatedCampus -> Mono.just(GeneralResponse.<String>builder()
@@ -129,7 +134,7 @@ public class CampusService implements ICampusService {
     @Override
     public Mono<GeneralResponse<String>> delete(UUID campusId) {
         return campusRepository.findById(campusId)
-                .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), CAMPUS_ENTITY)))
+                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), CAMPUS_ENTITY)))
                 .flatMap(campus -> campusRepository.delete(campus)
                         .then(Mono.just(GeneralResponse.<String>builder()
                                 .code(SuccessCode.DELETED.name())

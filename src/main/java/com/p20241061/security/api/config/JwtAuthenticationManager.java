@@ -1,6 +1,7 @@
 package com.p20241061.security.api.config;
 
 import com.p20241061.shared.exceptions.CustomException;
+import com.p20241061.shared.models.enums.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -29,7 +30,7 @@ public class JwtAuthenticationManager implements ReactiveAuthenticationManager {
         return Mono.just(authentication)
                 .map(auth -> jwtProvider.getClaims(auth.getCredentials().toString()))
                 .log()
-                .onErrorResume(e -> Mono.error(new CustomException(HttpStatus.UNAUTHORIZED, e.getMessage())))
+                .onErrorResume(e -> Mono.error(new CustomException(HttpStatus.UNAUTHORIZED, ErrorCode.UNAUTHORIZED.name(), e.getMessage())))
                 .map(claims -> new UsernamePasswordAuthenticationToken(
                         claims.getSubject(),
                         null,

@@ -1,5 +1,6 @@
 package com.p20241061.management.api.model.response;
 
+import com.p20241061.management.core.entities.Restaurant;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,6 +21,6 @@ public class CampusResponse {
     private Map<String, Map<String, Map<String, String>>> openHour;
     private Boolean toTakeHome;
     private Boolean toDelivery;
-    private UUID restaurantId;
+    private Restaurant restaurant;
     private Boolean isAvailable;
 }

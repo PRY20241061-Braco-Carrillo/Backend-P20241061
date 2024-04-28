@@ -54,34 +54,43 @@ public class RestaurantService implements IRestaurantService {
     @Override
     public Mono<GeneralResponse<String>> create(CreateRestaurantRequest request) {
 
-        return restaurantRepository.save(restaurantMapper.createRequestToModel(request)).flatMap(createdRestaurant -> Mono.just(GeneralResponse.<String>builder()
-                .code(SuccessCode.CREATED.name())
-                .data(RESTAURANT_ENTITY)
-                .build()));
+        return restaurantRepository.existsByName(request.getName())
+                        .flatMap(exists -> {
+                            if (exists) {
+                                return Mono.error(new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.ALREADY_EXISTS.name(), RESTAURANT_ENTITY));
+                            }
+                            return restaurantRepository.save(restaurantMapper.createRequestToModel(request)).flatMap(createdRestaurant -> Mono.just(GeneralResponse.<String>builder()
+                                    .code(SuccessCode.CREATED.name())
+                                    .data(RESTAURANT_ENTITY)
+                                    .build()));
+                        });
     }
 
     @Override
     public Mono<GeneralResponse<String>> update(UpdateRestaurantRequest request, UUID campusId) {
         return restaurantRepository.findById(campusId)
-                .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), RESTAURANT_ENTITY)))
-                .flatMap(restaurant -> {
+                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), RESTAURANT_ENTITY)))
+                .flatMap(restaurant -> restaurantRepository.existsByName(request.getName())
+                        .flatMap(exists -> {
+                            if (exists) {
+                                return Mono.error(new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.ALREADY_EXISTS.name(), RESTAURANT_ENTITY));
+                            }
+                            restaurant.setName(request.getName());
+                            restaurant.setImageUrl(request.getImageUrl());
+                            restaurant.setLogoUrl(request.getLogoUrl());
+                            restaurant.setIsAvailable(request.getIsAvailable());
 
-                    restaurant.setName(request.getName());
-                    restaurant.setImageUrl(request.getImageUrl());
-                    restaurant.setLogoUrl(request.getLogoUrl());
-                    restaurant.setIsAvailable(request.getIsAvailable());
-
-                    return restaurantRepository.save(restaurant).flatMap(updatedRestaurant -> Mono.just(GeneralResponse.<String>builder()
-                            .code(SuccessCode.UPDATED.name())
-                            .data(RESTAURANT_ENTITY)
-                            .build()));
-                });
+                            return restaurantRepository.save(restaurant).flatMap(updatedRestaurant -> Mono.just(GeneralResponse.<String>builder()
+                                    .code(SuccessCode.UPDATED.name())
+                                    .data(RESTAURANT_ENTITY)
+                                    .build()));
+                        }));
     }
 
     @Override
     public Mono<GeneralResponse<String>> delete(UUID campusId) {
         return restaurantRepository.findById(campusId)
-                .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), RESTAURANT_ENTITY)))
+                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), RESTAURANT_ENTITY)))
                 .flatMap(restaurant -> restaurantRepository.delete(restaurant)
                         .then(Mono.just(GeneralResponse.<String>builder()
                                 .code(SuccessCode.DELETED.name())

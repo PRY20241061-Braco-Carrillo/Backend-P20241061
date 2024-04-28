@@ -42,7 +42,7 @@ public class ComplementService implements IComplementService {
     @Override
     public Mono<GeneralResponse<String>> update(UpdateComplementRequest request, UUID complementId) {
         return complementRepository.findById(complementId)
-                .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), COMPLEMENT_ENTITY)))
+                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), COMPLEMENT_ENTITY)))
                 .flatMap(complement -> {
 
                     complement.setName(request.getName());
@@ -62,7 +62,7 @@ public class ComplementService implements IComplementService {
     @Override
     public Mono<GeneralResponse<String>> delete(UUID complementId) {
         return complementRepository.findById(complementId)
-                .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), COMPLEMENT_ENTITY)))
+                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), COMPLEMENT_ENTITY)))
                 .flatMap(complement -> complementRepository.delete(complement)
                         .then(Mono.just(GeneralResponse.<String>builder()
                                 .code(SuccessCode.DELETED.name())

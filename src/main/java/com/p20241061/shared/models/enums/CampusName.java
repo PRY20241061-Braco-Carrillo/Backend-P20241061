@@ -13,5 +13,7 @@ public class CampusName {
     public static final String PRODUCT_VARIANT_ENTITY = "Product Variant";
     public static final String PROMOTION_ENTITY = "Promotion";
     public static final String SIZE_ENTITY = "Size";
+    public static final String USER_ENTITY = "User";
+    public static final String ROLE_ENTITY = "Role";
 
 }

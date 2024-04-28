@@ -41,7 +41,7 @@ public class CookingTypeService implements ICookingTypeService {
     @Override
     public Mono<GeneralResponse<String>> update(UpdateCookingTypeRequest request, UUID cookingTypeId) {
         return cookingTypeRepository.findById(cookingTypeId)
-                .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), COOKING_TYPE_ENTITY)))
+                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), COOKING_TYPE_ENTITY)))
                 .flatMap(cookingType -> {
                     cookingType.setName(request.getName());
                     cookingType.setIsAvailable(request.getIsAvailable());
@@ -57,7 +57,7 @@ public class CookingTypeService implements ICookingTypeService {
     @Override
     public Mono<GeneralResponse<String>> delete(UUID cookingTypeId) {
         return cookingTypeRepository.findById(cookingTypeId)
-                .switchIfEmpty(Mono.error(new CustomException(ErrorCode.NOT_FOUND.name(), COOKING_TYPE_ENTITY)))
+                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), COOKING_TYPE_ENTITY)))
                 .flatMap(cookingType -> cookingTypeRepository.delete(cookingType)
                         .then(Mono.just(GeneralResponse.<String>builder()
                                 .code(SuccessCode.DELETED.name())

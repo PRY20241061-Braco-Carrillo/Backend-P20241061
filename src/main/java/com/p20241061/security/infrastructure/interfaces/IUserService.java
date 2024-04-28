@@ -11,5 +11,5 @@ public interface IUserService {
 
     Mono<GeneralResponse<LoginResponse>> login(LoginRequest request);
 
-    Mono<GeneralResponse<CreateUserResponse>> createUser(CreateUserRequest request);
+    Mono<GeneralResponse<String>> createUser(CreateUserRequest request);
 }

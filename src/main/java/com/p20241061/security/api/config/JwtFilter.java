@@ -1,6 +1,7 @@
 package com.p20241061.security.api.config;
 
 import com.p20241061.shared.exceptions.CustomException;
+import com.p20241061.shared.models.enums.ErrorCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -25,10 +26,10 @@ public class JwtFilter implements WebFilter {
         String auth = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
 
         if(auth == null)
-            return Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Token wasn't found"));
+            return Mono.error(new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.BAD_REQUEST.name(), "Token wasn't found"));
 
         if(!auth.startsWith("Bearer ")) {
-            return Mono.error(new CustomException(HttpStatus.BAD_REQUEST, "Token is not valid"));
+            return Mono.error(new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.BAD_REQUEST.name(), "Token is not valid"));
         }
 
         String token = auth.replace("Bearer ", "");
