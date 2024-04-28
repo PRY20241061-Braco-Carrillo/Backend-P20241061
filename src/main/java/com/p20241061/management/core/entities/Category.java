@@ -17,4 +17,5 @@ public class Category {
     private UUID categoryId;
     private String name;
     private String urlImage;
+    private UUID restaurantId;
 }

@@ -1,5 +1,6 @@
 package com.p20241061.management.api.model.response;
 
+import com.p20241061.management.core.entities.Restaurant;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,4 +16,5 @@ public class CategoryResponse {
     private UUID categoryId;
     private String name;
     private String urlImage;
+    private UUID restaurantId;
 }

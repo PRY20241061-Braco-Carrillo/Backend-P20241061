@@ -11,14 +11,6 @@ CREATE TABLE "user" (
     CONSTRAINT user_pk PRIMARY KEY (user_id)
 );
 
--- Table: category
-CREATE TABLE category (
-    category_id uuid  NOT NULL DEFAULT gen_random_uuid(),
-    name varchar(255)  NOT NULL,
-    url_image varchar(255),
-    CONSTRAINT category_pk PRIMARY KEY (category_id)
-);
-
 -- Table: cooking_type
 CREATE TABLE cooking_type (
     cooking_type_id uuid  NOT NULL DEFAULT gen_random_uuid(),
@@ -87,6 +79,16 @@ CREATE TABLE restaurant (
     logo_url varchar(255)  NULL,
     is_available bool  NOT NULL,
     CONSTRAINT restaurant_pk PRIMARY KEY (restaurant_id)
+);
+
+-- Table: category
+CREATE TABLE category (
+    category_id uuid  NOT NULL DEFAULT gen_random_uuid(),
+    name varchar(255)  NOT NULL,
+    url_image varchar(255),
+    restaurant_id uuid  NOT NULL,
+    CONSTRAINT category_pk PRIMARY KEY (category_id),
+    CONSTRAINT category_restaurant FOREIGN KEY (restaurant_id) REFERENCES restaurant (restaurant_id)
 );
 
 -- Table: menu

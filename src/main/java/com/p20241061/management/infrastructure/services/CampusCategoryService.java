@@ -38,9 +38,8 @@ public class CampusCategoryService implements ICampusCategoryService {
     @Override
     public Mono<GeneralResponse<List<CategoryResponse>>> getCategoryByCampusId(PaginatedRequest paginatedRequest, UUID campusId) {
 
-        return paginatedRequest.paginateData(campusCategoryRepository.getCampusCategoriesByCampusId(campusId))
-                .flatMap(campusCategory -> categoryRepository.findById(campusCategory.getCategoryId())
-                        .map(categoryMapper::modelToResponse))
+        return paginatedRequest.paginateData(campusCategoryRepository.getCategoriesByCampus(campusId))
+                .map(categoryMapper::modelToResponse)
                 .collectList()
                 .flatMap(categoryResponses -> Mono.just(GeneralResponse.<List<CategoryResponse>>builder()
                         .code(SuccessCode.SUCCESS.name())
