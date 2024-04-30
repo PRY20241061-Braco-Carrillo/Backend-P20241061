@@ -1,14 +1,12 @@
-package com.p20241061.management.infrastructure.services;
+package com.p20241061.management.infrastructure.services.relations;
 
-import com.p20241061.management.api.mapping.CategoryMapper;
 import com.p20241061.management.api.model.request.create.relations.CreateCampusCategoryRequest;
-import com.p20241061.management.api.model.response.CategoryResponse;
-import com.p20241061.management.api.model.response.relations.CampusCategoryResponse;
 import com.p20241061.management.core.entities.relations.CampusCategory;
 import com.p20241061.management.core.repositories.CampusRepository;
 import com.p20241061.management.core.repositories.CategoryRepository;
+import com.p20241061.management.api.model.response.relations.GetCategoriesByCampusResponse;
 import com.p20241061.management.core.repositories.relations.CampusCategoryRepository;
-import com.p20241061.management.infrastructure.interfaces.ICampusCategoryService;
+import com.p20241061.management.infrastructure.interfaces.relations.ICampusCategoryService;
 import com.p20241061.shared.exceptions.CustomException;
 import com.p20241061.shared.models.enums.ErrorCode;
 import com.p20241061.shared.models.enums.SuccessCode;
@@ -33,19 +31,6 @@ public class CampusCategoryService implements ICampusCategoryService {
     private final CampusCategoryRepository campusCategoryRepository;
     private final CampusRepository campusRepository;
     private final CategoryRepository categoryRepository;
-    private final CategoryMapper categoryMapper;
-
-    @Override
-    public Mono<GeneralResponse<List<CategoryResponse>>> getCategoryByCampusId(PaginatedRequest paginatedRequest, UUID campusId) {
-
-        return paginatedRequest.paginateData(campusCategoryRepository.getCategoriesByCampus(campusId))
-                .map(categoryMapper::modelToResponse)
-                .collectList()
-                .flatMap(categoryResponses -> Mono.just(GeneralResponse.<List<CategoryResponse>>builder()
-                        .code(SuccessCode.SUCCESS.name())
-                        .data(categoryResponses)
-                        .build()));
-    }
 
     @Override
     public Mono<GeneralResponse<String>> create(CreateCampusCategoryRequest request) {

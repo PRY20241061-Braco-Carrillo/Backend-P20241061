@@ -39,6 +39,7 @@ public class ManagementRouter {
     @Bean
     RouterFunction<ServerResponse> categoryRtr(CategoryHandler handler) {
         return RouterFunctions.route()
+                .GET(PATH_CATEGORY + "/campus/{campusId}", handler::getCategoriesByCampusId)
                 .POST(PATH_CATEGORY, handler::create)
                 .PUT(PATH_CATEGORY + "/{categoryId}", handler::update)
                 .DELETE(PATH_CATEGORY + "/{categoryId}", handler::delete)
@@ -128,7 +129,6 @@ public class ManagementRouter {
     @Bean
     RouterFunction<ServerResponse> campusCategoryRtr(CampusCategoryHandler handler) {
         return RouterFunctions.route()
-                .GET(PATH_CAMPUS_CATEGORY + "/campus/{campusId}", handler::getCategoriesByCampusId)
                 .POST(PATH_CAMPUS_CATEGORY, handler::create)
                 .DELETE(PATH_CAMPUS_CATEGORY + "/{campusCategoryId}", handler::delete)
                 .build();

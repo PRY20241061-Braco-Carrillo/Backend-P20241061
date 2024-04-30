@@ -3,6 +3,7 @@ package com.p20241061.management.api.handlers;
 import com.p20241061.management.api.model.request.create.CreateCategoryRequest;
 import com.p20241061.management.api.model.request.update.UpdateCategoryRequest;
 import com.p20241061.management.infrastructure.interfaces.ICategoryService;
+import com.p20241061.shared.utils.PaginatedRequest;
 import com.p20241061.shared.validation.ObjectValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,17 @@ public class CategoryHandler {
 
     private final ICategoryService categoryService;
     private final ObjectValidator objectValidator;
+
+    public Mono<ServerResponse> getCategoriesByCampusId(ServerRequest request) {
+        Integer pageNumber = Integer.parseInt(request.queryParam("pageNumber").orElse("0"));
+        Integer pageSize = Integer.parseInt(request.queryParam("pageSize").orElse("5"));
+        UUID campusId = UUID.fromString(request.pathVariable("campusId"));
+
+        return categoryService.getCategoryByCampusId(new PaginatedRequest(pageNumber, pageSize, "name", true), campusId)
+                .flatMap(response -> ServerResponse.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(response));
+    }
 
     public Mono<ServerResponse> create(ServerRequest request) {
         Mono<CreateCategoryRequest> categoryRequest = request.bodyToMono(CreateCategoryRequest.class)

@@ -1,7 +1,7 @@
 package com.p20241061.management.api.handlers;
 
 import com.p20241061.management.api.model.request.create.relations.CreateCampusCategoryRequest;
-import com.p20241061.management.infrastructure.interfaces.ICampusCategoryService;
+import com.p20241061.management.infrastructure.interfaces.relations.ICampusCategoryService;
 import com.p20241061.shared.utils.PaginatedRequest;
 import com.p20241061.shared.validation.ObjectValidator;
 import lombok.RequiredArgsConstructor;
@@ -21,17 +21,6 @@ public class CampusCategoryHandler {
 
     private final ICampusCategoryService campusCategoryService;
     private final ObjectValidator objectValidator;
-
-    public Mono<ServerResponse> getCategoriesByCampusId(ServerRequest request) {
-        Integer pageNumber = Integer.parseInt(request.queryParam("pageNumber").orElse("0"));
-        Integer pageSize = Integer.parseInt(request.queryParam("pageSize").orElse("5"));
-        UUID campusId = UUID.fromString(request.pathVariable("campusId"));
-
-        return campusCategoryService.getCategoryByCampusId(new PaginatedRequest(pageNumber, pageSize, "name", true), campusId)
-                .flatMap(response -> ServerResponse.ok()
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .bodyValue(response));
-    }
 
     public Mono<ServerResponse> create(ServerRequest request) {
         Mono<CreateCampusCategoryRequest> campusCategoryRequest = request.bodyToMono(CreateCampusCategoryRequest.class)
