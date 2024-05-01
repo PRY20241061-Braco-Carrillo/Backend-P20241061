@@ -1,9 +1,11 @@
 package com.p20241061.management.infrastructure.services;
 
 
+import com.p20241061.management.api.mapping.ProductMapper;
 import com.p20241061.management.api.mapping.ProductVariantMapper;
 import com.p20241061.management.api.model.request.create.CreateProductVariantRequest;
 import com.p20241061.management.api.model.request.update.UpdateProductVariantRequest;
+import com.p20241061.management.api.model.response.GetProductDetailResponse;
 import com.p20241061.management.api.model.response.ProductVariantResponse;
 import com.p20241061.management.core.entities.ProductVariant;
 import com.p20241061.management.core.repositories.CookingTypeRepository;
@@ -35,7 +37,23 @@ public class ProductVariantService implements IProductVariantService {
     private final SizeRepository sizeRepository;
     private final ProductRepository productRepository;
     private final ProductVariantMapper productVariantMapper;
+    private final ProductMapper productMapper;
 
+
+    @Override
+    public Mono<GeneralResponse<GetProductDetailResponse>> getProductDetailResponse(UUID productId) {
+        return productRepository.findById(productId)
+                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), PRODUCT_ENTITY)))
+                .flatMap(product -> productVariantRepository.getProductVariantByProductId(productId)
+                        .collectList()
+                        .flatMap(productVariant -> Mono.just(GeneralResponse.<GetProductDetailResponse>builder()
+                                .code(SuccessCode.SUCCESS.name())
+                                .data(GetProductDetailResponse.builder()
+                                        .productVariants(productVariant)
+                                        .product(productMapper.modelToResponse(product))
+                                        .build())
+                                .build())));
+    }
 
     @Override
     public Mono<GeneralResponse<String>> create(CreateProductVariantRequest request) {

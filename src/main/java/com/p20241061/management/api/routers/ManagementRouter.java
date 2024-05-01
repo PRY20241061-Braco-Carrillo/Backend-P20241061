@@ -92,6 +92,7 @@ public class ManagementRouter {
     @Bean
     RouterFunction<ServerResponse> productVariantRtr(ProductVariantHandler handler) {
         return RouterFunctions.route()
+                .GET(PATH_PRODUCT_VARIANT + "/product/{productId}", handler::getAllByProductId)
                 .POST(PATH_PRODUCT_VARIANT, handler::create)
                 .PUT(PATH_PRODUCT_VARIANT + "/{productVariantId}", handler::update)
                 .DELETE(PATH_PRODUCT_VARIANT + "/{productVariantId}", handler::delete)

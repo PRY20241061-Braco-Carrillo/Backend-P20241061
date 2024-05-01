@@ -22,6 +22,15 @@ public class ProductVariantHandler {
     private final IProductVariantService productVariantService;
     private final ObjectValidator objectValidator;
 
+    public Mono<ServerResponse> getAllByProductId(ServerRequest request) {
+        UUID productId = UUID.fromString(request.pathVariable("productId"));
+
+        return productVariantService.getProductDetailResponse(productId)
+                .flatMap(response -> ServerResponse.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(response));
+    }
+
     public Mono<ServerResponse> create(ServerRequest request) {
         Mono<CreateProductVariantRequest> productVariantRequest = request.bodyToMono(CreateProductVariantRequest.class)
                 .doOnNext(objectValidator::validate);
