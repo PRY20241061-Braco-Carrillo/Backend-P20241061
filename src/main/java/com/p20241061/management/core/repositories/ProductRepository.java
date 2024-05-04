@@ -1,6 +1,6 @@
 package com.p20241061.management.core.repositories;
 
-import com.p20241061.management.api.model.response.GetProductByCategoryIdResponse;
+import com.p20241061.management.api.model.response.GetProductByCategoryResponse;
 import com.p20241061.management.core.entities.Product;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
@@ -16,5 +16,5 @@ public interface ProductRepository extends ReactiveCrudRepository<Product, UUID>
             "AND pv.product_id = p.product_id " +
             "AND mpp.campus_category_id = :campusCategoryId " +
             "AND p.is_available = :isAvailable")
-    Flux<GetProductByCategoryIdResponse> getProductByCampusCategoryIdAndIsAvailable(UUID campusCategoryId, Boolean isAvailable);
+    Flux<GetProductByCategoryResponse> getProductByCampusCategoryIdAndIsAvailable(UUID campusCategoryId, Boolean isAvailable);
 }

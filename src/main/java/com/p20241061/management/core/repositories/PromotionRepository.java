@@ -1,6 +1,7 @@
 package com.p20241061.management.core.repositories;
 
-import com.p20241061.management.api.model.response.GetAllByCampusCategoryResponse;
+import com.p20241061.management.api.model.response.GetProductVariantPromotionDetailResponse;
+import com.p20241061.management.api.model.response.GetPromotionByCampusCategoryResponse;
 import com.p20241061.management.core.entities.Promotion;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
@@ -20,5 +21,13 @@ public interface PromotionRepository extends ReactiveCrudRepository<Promotion, U
             "left join product p2 on p2.product_id = pv.product_id " +
             "AND p.is_available = true " +
             "where pv.campus_category_id = :campusCategoryId " )
-    Flux<GetAllByCampusCategoryResponse> getAllByCampusCategoryId(UUID campusCategoryId);
+    Flux<GetPromotionByCampusCategoryResponse> getAllByCampusCategoryId(UUID campusCategoryId);
+
+    @Query("select pv.product_variant_id, pv.detail, pv.amount_price, pv.currency_price, p2.name, p2.min_cooking_time, p2.max_cooking_time, p2.unit_of_time_cooking_time, p2.description, p2.nutritional_information_id, p2.product_id " +
+            "from promotion p " +
+            "left join product_variant_promotion pvp on pvp.promotion_id = p.promotion_id " +
+            "left join product_variant pv on pv.product_variant_id = pvp.product_variant_id " +
+            "left join product p2 on p2.product_id = pv.product_id " +
+            "where p.promotion_id = :promotionId ")
+    Flux<GetProductVariantPromotionDetailResponse> getVariantPromotionDetail(UUID promotionId);
 }

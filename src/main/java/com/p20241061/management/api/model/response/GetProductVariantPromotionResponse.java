@@ -9,8 +9,9 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Builder
-public class GetProductDetailResponse {
-    private ProductResponse product;
-    private List<GetProductVariantByProductResponse> productVariants;
+public class GetProductVariantPromotionResponse {
+    private PromotionResponse promotion;
+    private List<GetProductVariantPromotionDetailResponse> productVariants;
+    private NutritionalInformationResponse nutritionalInformation;
     private List<ComplementResponse> complements;
 }

@@ -13,12 +13,14 @@ import java.util.UUID;
 @Builder
 public class PromotionResponse {
     private UUID promotionId;
-    private Double price;
-    private String cookingTime;
+    private String name;
     private Double discount;
     private String discountType;
     private String detail;
-    private Integer freeSauce;
-    private Integer freeComplements;
     private String urlImage;
+    private Integer freeSauce;
+    private Boolean isAvailable;
+    private Boolean hasVariant;
+    private Integer freeComplements;
+    private UUID comboId;
 }

@@ -1,6 +1,6 @@
 package com.p20241061.management.core.repositories;
 
-import com.p20241061.management.api.model.response.GetProductVariantByProductIdResponse;
+import com.p20241061.management.api.model.response.GetProductVariantByProductResponse;
 import com.p20241061.management.core.entities.ProductVariant;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
@@ -19,5 +19,5 @@ public interface ProductVariantRepository extends ReactiveCrudRepository<Product
             "AND pv.is_available = true " +
             "AND pv.product_id = :productId " +
             "GROUP by pv.product_variant_id, pv.amount_price, pv.currency_price")
-    Flux<GetProductVariantByProductIdResponse> getProductVariantByProductId(UUID productId);
+    Flux<GetProductVariantByProductResponse> getProductVariantByProductId(UUID productId);
 }

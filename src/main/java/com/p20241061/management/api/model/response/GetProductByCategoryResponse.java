@@ -7,7 +7,7 @@ import java.util.UUID;
 
 @AllArgsConstructor
 @Getter
-public class GetProductByCategoryIdResponse {
+public class GetProductByCategoryResponse {
     private UUID productId;
     private String name;
     private Integer minCookingTime;

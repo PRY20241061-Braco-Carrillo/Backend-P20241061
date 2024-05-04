@@ -91,6 +91,8 @@ public class ManagementRouter {
     RouterFunction<ServerResponse> promotionRtr(PromotionHandler handler) {
         return RouterFunctions.route()
                 .GET(PATH_PROMOTION + "/campus-category/{campusCategoryId}", handler::getAllByCampusCategoryId)
+                .GET(PATH_PROMOTION + "/productVariant/{promotionId}", handler::getProductVariantPromotionById)
+                .GET(PATH_PROMOTION + "combo/{promotionId}", handler::getComboPromotionById)
                 .POST(PATH_PROMOTION, handler::create)
                 .PUT(PATH_PROMOTION + "/{promotionId}", handler::update)
                 .DELETE(PATH_PROMOTION + "/{promotionId}", handler::delete)

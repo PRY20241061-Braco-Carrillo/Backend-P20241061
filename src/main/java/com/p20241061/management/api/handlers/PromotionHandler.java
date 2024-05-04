@@ -22,6 +22,24 @@ public class PromotionHandler {
     private final IPromotionService promotionService;
     private final ObjectValidator objectValidator;
 
+    public Mono<ServerResponse> getProductVariantPromotionById(ServerRequest request) {
+        UUID promotionId = UUID.fromString(request.pathVariable("promotionId"));
+
+        return promotionService.getProductVariantPromotionById(promotionId)
+                .flatMap(response -> ServerResponse.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(response));
+    }
+
+    public Mono<ServerResponse> getComboPromotionById(ServerRequest request) {
+        UUID promotionId = UUID.fromString(request.pathVariable("promotionId"));
+
+        return promotionService.getComboPromotionById(promotionId)
+                .flatMap(response -> ServerResponse.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(response));
+    }
+
     public Mono<ServerResponse> getAllByCampusCategoryId(ServerRequest request) {
 
         UUID campusCategoryId = UUID.fromString(request.pathVariable("campusCategoryId"));
