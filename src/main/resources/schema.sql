@@ -220,6 +220,7 @@ CREATE TABLE product_complement (
 -- Table: promotion
 CREATE TABLE promotion (
     promotion_id uuid NOT NULL DEFAULT gen_random_uuid(),
+    name varchar(255)  NOT NULL,
     discount decimal(12,2)  NOT NULL,
     discount_type varchar(255)  NOT NULL,
     detail text  NOT NULL,
@@ -227,11 +228,20 @@ CREATE TABLE promotion (
     free_sauce int  NOT NULL,
     free_complements int NOT NULL,
     is_available bool NOT NULL,
-    product_variant_id uuid,
+    has_variant bool NOT NULL,
     combo_id uuid,
     CONSTRAINT promotion_pk PRIMARY KEY (promotion_id),
-    CONSTRAINT promotion_product_variant FOREIGN KEY (product_variant_id) REFERENCES product_variant (product_variant_id),
     CONSTRAINT promotion_combo FOREIGN KEY (combo_id) REFERENCES combo (combo_id)
+);
+
+-- Table: product_variant_promotion
+CREATE TABLE product_variant_promotion (
+    product_variant_promotion_id uuid  NOT NULL DEFAULT gen_random_uuid(),
+    product_variant_id uuid  NOT NULL,
+    promotion_id uuid  NOT NULL,
+    CONSTRAINT product_variant_promotion_pk PRIMARY KEY (product_variant_promotion_id),
+    CONSTRAINT product_variant_promotion_product_variant FOREIGN KEY (product_variant_id) REFERENCES product_variant (product_variant_id),
+    CONSTRAINT product_variant_promotion_promotion FOREIGN KEY (promotion_id) REFERENCES promotion (promotion_id)
 );
 
 -- Table: complement_promotion
@@ -242,18 +252,6 @@ CREATE TABLE complement_promotion (
     CONSTRAINT complement_promotion_p PRIMARY KEY (complement_promotion_id),
     CONSTRAINT complement_promotion_complement FOREIGN KEY (complement_id) REFERENCES complement (complement_id),
     CONSTRAINT complement_promotion_promotion FOREIGN KEY (promotion_id) REFERENCES promotion (promotion_id)
-);
-
--- Table: campus_promotion
-CREATE TABLE campus_promotion (
-    campus_promotion_id uuid  NOT NULL DEFAULT gen_random_uuid(),
-    amount_price decimal(12,2)  NOT NULL,
-    currency_price varchar(25)  NOT NULL,
-    campus_id uuid NOT NULL,
-    promotion_id uuid NOT NULL,
-    CONSTRAINT campus_promotion_pk PRIMARY KEY (campus_promotion_id),
-    CONSTRAINT campus_promotion_campus FOREIGN KEY (campus_id) REFERENCES campus (campus_id),
-    CONSTRAINT campus_promotion_promotion FOREIGN KEY (promotion_id) REFERENCES promotion (promotion_id)
 );
 
 -- Table: "user"
@@ -412,20 +410,21 @@ VALUES
     ('e3d78b94-66a0-4c1c-9030-67133e75ae3a', 'f5b7f6cb-4b78-4973-9d6f-4741d0072cb9', '2f5d3d62-12d9-45c3-8c6f-4f415e1b3d39');
 
 
-INSERT INTO promotion (promotion_id, discount, discount_type, detail, free_sauce, free_complements, is_available, product_variant_id, combo_id)
+INSERT INTO promotion (promotion_id, name, discount, discount_type, detail, free_sauce, free_complements, is_available, has_variant, combo_id)
 VALUES
-    ('2b883221-2e51-47d7-a047-8b15b6b30fa7', 10, 'percentage', '10% de descuento en el producto', 1, 0, true, '5c63e9e9-ebc6-4e15-b77d-5a0fb2d8a1a7', NULL),
-    ('b9f19657-67ab-48ef-90a7-6fd0f0bf6b38', 5, 'currency', 'Descuento de $5 en el combo', 2, 2, true, NULL, '2f5d3d62-12d9-45c3-8c6f-4f415e1b3d39');
+    ('2b883221-2e51-47d7-a047-8b15b6b30fa7', 'Oferta de pollo', 10, 'percentage', '10% de descuento en el producto', 1, 0, true, true, NULL),
+    ('b9f19657-67ab-48ef-90a7-6fd0f0bf6b38', 'Pollo Burguer Oferta', 5, 'currency', 'Descuento de $5 en el combo', 2, 2, true, false, '2f5d3d62-12d9-45c3-8c6f-4f415e1b3d39');
+
+
+INSERT INTO product_variant_promotion (product_variant_promotion_id, product_variant_id ,promotion_id)
+VALUES
+    ('b9a3e5c7-28a3-4728-9ec3-c994077ba055', '5c63e9e9-ebc6-4e15-b77d-5a0fb2d8a1a7', '2b883221-2e51-47d7-a047-8b15b6b30fa7'),
+    ('5e6126ee-0147-4e5e-83b1-7e26e990fa14', 'a482c179-12c0-4a58-bdc2-4d4f8eef64cf', '2b883221-2e51-47d7-a047-8b15b6b30fa7');
 
 INSERT INTO complement_promotion (complement_promotion_id, complement_id, promotion_id)
 VALUES
     ('b9a3e5c7-28a3-4728-9ec3-c994077ba053', '22ed25d2-6178-49a2-8a82-3908c38e8c5a', 'b9f19657-67ab-48ef-90a7-6fd0f0bf6b38'),
     ('f0a846fc-274f-44f7-9e27-32772c7b83fc', 'c8b7f6cb-4b78-4973-9d6f-4741d0072cb9', 'b9f19657-67ab-48ef-90a7-6fd0f0bf6b38');
-
-INSERT INTO campus_promotion (campus_promotion_id, amount_price, currency_price, campus_id, promotion_id)
-VALUES
-    ('c2800a4a-03b3-4a38-8168-fdf6b6b9dc38', 50.00, 'USD', '8c81aabb-dc05-4cf1-b9b3-1e3d3fd64ee2', '2b883221-2e51-47d7-a047-8b15b6b30fa7'),
-    ('1f74fbbf-58fb-46ed-8dab-86c3f97d356f', 30.00, 'USD', '8c81aabb-dc05-4cf1-b9b3-1e3d3fd64ee2', 'b9f19657-67ab-48ef-90a7-6fd0f0bf6b38');
 
 
 

@@ -102,6 +102,7 @@ public class ManagementRouter {
     @Bean
     RouterFunction<ServerResponse> promotionRtr(PromotionHandler handler) {
         return RouterFunctions.route()
+                .GET(PATH_PROMOTION + "/campus-category/{campusCategoryId}", handler::getAllByCampusCategoryId)
                 .POST(PATH_PROMOTION, handler::create)
                 .PUT(PATH_PROMOTION + "/{promotionId}", handler::update)
                 .DELETE(PATH_PROMOTION + "/{promotionId}", handler::delete)

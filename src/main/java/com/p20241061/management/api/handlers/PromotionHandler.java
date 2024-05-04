@@ -3,6 +3,7 @@ package com.p20241061.management.api.handlers;
 import com.p20241061.management.api.model.request.create.CreatePromotionRequest;
 import com.p20241061.management.api.model.request.update.UpdatePromotionRequest;
 import com.p20241061.management.infrastructure.interfaces.IPromotionService;
+import com.p20241061.shared.utils.PaginatedRequest;
 import com.p20241061.shared.validation.ObjectValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,19 @@ import java.util.UUID;
 public class PromotionHandler {
     private final IPromotionService promotionService;
     private final ObjectValidator objectValidator;
+
+    public Mono<ServerResponse> getAllByCampusCategoryId(ServerRequest request) {
+
+        UUID campusCategoryId = UUID.fromString(request.pathVariable("campusCategoryId"));
+        Integer pageNumber = Integer.parseInt(request.queryParam("pageNumber").orElse("0"));
+        Integer pageSize = Integer.parseInt(request.queryParam("pageSize").orElse("5"));
+
+        return promotionService.getAllByCampusCategoryId(new PaginatedRequest(pageNumber, pageSize, "name", true), campusCategoryId)
+                .flatMap(response -> ServerResponse.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(response));
+    }
+
 
     public Mono<ServerResponse> create(ServerRequest request) {
         Mono<CreatePromotionRequest> promotionRequest = request.bodyToMono(CreatePromotionRequest.class)
