@@ -17,10 +17,9 @@ public class ProductVariantMapper {
         return mapper.map(model, ProductVariantResponse.class);
     }
 
-    public ProductVariant createRequestToModel(CreateProductVariantRequest request, UUID cookingTypeId, UUID sizeId, UUID productId) {
+    public ProductVariant createRequestToModel(CreateProductVariantRequest request, UUID productId) {
         ProductVariant productVariant = mapper.map(request, ProductVariant.class);
-        productVariant.setCookingTypeId(cookingTypeId);
-        productVariant.setSizeId(sizeId);
+
         productVariant.setProductId(productId);
 
         return productVariant;

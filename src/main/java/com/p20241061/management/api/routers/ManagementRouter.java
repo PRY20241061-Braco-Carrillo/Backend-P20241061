@@ -15,15 +15,12 @@ public class ManagementRouter {
     private static final String PATH_CAMPUS = "/api/campus";
     private static final String PATH_CATEGORY = "/api/category";
     private static final String PATH_COMPLEMENT = "/api/complement";
-    private static final String PATH_COOKING_TYPE = "/api/cooking-type";
     private static final String PATH_MENU = "/api/menu";
     private static final String PATH_NUTRITIONAL_INFORMATION = "/api/nutritional-information";
     private static final String PATH_PRODUCT = "/api/product";
     private static final String PATH_PRODUCT_VARIANT = "/api/product-variant";
     private static final String PATH_PROMOTION = "/api/promotion";
     private static final String PATH_RESTAURANT = "/api/restaurant";
-    private static final String PATH_SIZE = "/api/size";
-
     private static final String PATH_CAMPUS_CATEGORY = "/api/campus-category";
 
     @Bean
@@ -51,15 +48,6 @@ public class ManagementRouter {
                 .POST(PATH_COMPLEMENT, handler::create)
                 .PUT(PATH_COMPLEMENT + "/{complementId}", handler::update)
                 .DELETE(PATH_COMPLEMENT + "/{complementId}", handler::delete)
-                .build();
-    }
-
-    @Bean
-    RouterFunction<ServerResponse> cookingTypeRtr(CookingTypeHandler handler) {
-        return RouterFunctions.route()
-                .POST(PATH_COOKING_TYPE, handler::create)
-                .PUT(PATH_COOKING_TYPE + "/{cookingTypeId}", handler::update)
-                .DELETE(PATH_COOKING_TYPE + "/{cookingTypeId}", handler::delete)
                 .build();
     }
 
@@ -116,15 +104,6 @@ public class ManagementRouter {
                 .POST(PATH_RESTAURANT, handler::create)
                 .PUT(PATH_RESTAURANT + "/{restaurantId}", handler::update)
                 .DELETE(PATH_RESTAURANT + "/{restaurantId}", handler::delete)
-                .build();
-    }
-
-    @Bean
-    RouterFunction<ServerResponse> sizeRtr(SizeHandler handler) {
-        return RouterFunctions.route()
-                .POST(PATH_SIZE, handler::create)
-                .PUT(PATH_SIZE + "/{sizeId}", handler::update)
-                .DELETE(PATH_SIZE + "/{sizeId}", handler::delete)
                 .build();
     }
 

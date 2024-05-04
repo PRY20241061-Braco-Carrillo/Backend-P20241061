@@ -1,6 +1,7 @@
 package com.p20241061.management.infrastructure.services;
 
 
+import com.p20241061.management.api.mapping.ComplementMapper;
 import com.p20241061.management.api.mapping.NutritionalInformationMapper;
 import com.p20241061.management.api.mapping.ProductMapper;
 import com.p20241061.management.api.mapping.ProductVariantMapper;
@@ -29,13 +30,13 @@ import static com.p20241061.shared.models.enums.CampusName.*;
 public class ProductVariantService implements IProductVariantService {
 
     private final ProductVariantRepository productVariantRepository;
-    private final CookingTypeRepository cookingTypeRepository;
-    private final SizeRepository sizeRepository;
     private final ProductRepository productRepository;
     private final ProductVariantMapper productVariantMapper;
     private final ProductMapper productMapper;
     private final NutritionalInformationRepository nutritionalInformationRepository;
     private final NutritionalInformationMapper nutritionalInformationMapper;
+    private final ComplementRepository complementRepository;
+    private final ComplementMapper complementMapper;
 
 
     @Override
@@ -44,46 +45,39 @@ public class ProductVariantService implements IProductVariantService {
                 .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), PRODUCT_ENTITY)))
                 .flatMap(product -> nutritionalInformationRepository.findById(product.getNutritionalInformationId())
                         .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), NUTRITIONAL_INFORMATION_ENTITY)))
-                .flatMap(nutritionalInformation -> productVariantRepository.getProductVariantByProductId(productId)
+                .flatMap(nutritionalInformation -> complementRepository.getComplementByProductId(product.getProductId())
                         .collectList()
-                        .flatMap(productVariant -> Mono.just(GeneralResponse.<GetProductDetailResponse>builder()
-                                .code(SuccessCode.SUCCESS.name())
-                                .data(GetProductDetailResponse.builder()
-                                        .productVariants(productVariant)
-                                        .product(productMapper.modelToResponse(product, nutritionalInformationMapper.modelToResponse(nutritionalInformation)))
-                                        .build())
-                                .build())))
-                );
+                        .flatMap(complements -> productVariantRepository.getProductVariantByProductId(productId)
+                                .collectList()
+                                .flatMap(productVariant -> Mono.just(GeneralResponse.<GetProductDetailResponse>builder()
+                                        .code(SuccessCode.SUCCESS.name())
+                                        .data(GetProductDetailResponse.builder()
+                                                .productVariants(productVariant)
+                                                .product(productMapper.modelToResponse(product, nutritionalInformationMapper.modelToResponse(nutritionalInformation)))
+                                                .complements(complementMapper.modelToListResponse(complements))
+                                                .build())
+                                        .build())))
+                ));
     }
 
     @Override
     public Mono<GeneralResponse<String>> create(CreateProductVariantRequest request) {
-        return cookingTypeRepository.findById(request.getCookingTypeId())
-                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND,ErrorCode.NOT_FOUND.name(), COOKING_TYPE_ENTITY)))
-                .flatMap(cookingType -> sizeRepository.findById(request.getSizeId())
-                        .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), SIZE_ENTITY)))
-                        .flatMap(size -> productRepository.findById(request.getProductId())
+        return productRepository.findById(request.getProductId())
                                 .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), PRODUCT_ENTITY)))
-                                .flatMap(product -> productVariantRepository.save(productVariantMapper.createRequestToModel(request, cookingType.getCookingTypeId(), size.getSizeId(), product.getProductId()))
+                                .flatMap(product -> productVariantRepository.save(productVariantMapper.createRequestToModel(request,product.getProductId()))
                                         .flatMap(createdProductVariant -> Mono.just(GeneralResponse.<String>builder()
                                                 .code(SuccessCode.CREATED.name())
                                                 .data(PRODUCT_VARIANT_ENTITY)
-                                                .build())))));
+                                                .build())));
     }
 
     @Override
     public Mono<GeneralResponse<String>> update(UpdateProductVariantRequest request, UUID productVariantId) {
         return productVariantRepository.findById(productVariantId)
                 .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), PRODUCT_VARIANT_ENTITY)))
-                .flatMap(productVariant -> cookingTypeRepository.findById(request.getCookingTypeId())
-                        .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), COOKING_TYPE_ENTITY)))
-                        .flatMap(cookingType -> sizeRepository.findById(request.getSizeId())
-                                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), SIZE_ENTITY)))
-                                .flatMap(size -> productRepository.findById(request.getProductId())
+                                .flatMap(productVariant -> productRepository.findById(request.getProductId())
                                         .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), PRODUCT_ENTITY)))
                                         .flatMap(product -> {
-                                            productVariant.setCookingTypeId(cookingType.getCookingTypeId());
-                                            productVariant.setSizeId(size.getSizeId());
                                             productVariant.setProductId(product.getProductId());
                                             productVariant.setPrice(request.getPrice());
 
@@ -92,7 +86,7 @@ public class ProductVariantService implements IProductVariantService {
                                                     .data(PRODUCT_VARIANT_ENTITY)
                                                     .build()));
                                         })
-                                )));
+                                );
     }
 
     @Override

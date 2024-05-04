@@ -16,7 +16,8 @@ public class Complement {
     @Id
     private UUID complementId;
     private String name;
-    private Double price;
+    private Double amountPrice;
+    private String currencyPrice;
     private Boolean isSauce;
     private Boolean isAvailable;
 }

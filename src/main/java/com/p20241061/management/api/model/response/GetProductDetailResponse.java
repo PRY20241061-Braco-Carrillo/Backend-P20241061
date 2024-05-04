@@ -12,4 +12,5 @@ import java.util.List;
 public class GetProductDetailResponse {
     private ProductResponse product;
     private List<GetProductVariantByProductIdResponse> productVariants;
+    private List<ComplementResponse> complements;
 }

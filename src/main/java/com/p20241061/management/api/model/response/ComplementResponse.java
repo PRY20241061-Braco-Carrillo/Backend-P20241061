@@ -14,7 +14,7 @@ import java.util.UUID;
 public class ComplementResponse {
     private UUID complementId;
     private String name;
-    private Double price;
+    private Double amountPrice;
+    private String currencyPrice;
     private Boolean isSauce;
-    private Boolean isAvailable;
 }

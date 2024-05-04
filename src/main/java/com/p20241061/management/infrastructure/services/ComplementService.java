@@ -44,7 +44,6 @@ public class ComplementService implements IComplementService {
                 .flatMap(complement -> {
 
                     complement.setName(request.getName());
-                    complement.setPrice(request.getPrice());
                     complement.setIsSauce(request.getIsSauce());
                     complement.setIsAvailable(request.getIsAvailable());
 

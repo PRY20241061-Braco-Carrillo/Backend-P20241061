@@ -23,11 +23,6 @@ public class MappingConfiguration {
     }
 
     @Bean
-    public CookingTypeMapper cookingTypeMapper() {
-        return new CookingTypeMapper();
-    }
-
-    @Bean
     public MenuMapper menuMapper() {
         return new MenuMapper();
     }
@@ -57,8 +52,4 @@ public class MappingConfiguration {
         return new RestaurantMapper();
     }
 
-    @Bean
-    public SizeMapper sizeMapper() {
-        return new SizeMapper();
-    }
 }
