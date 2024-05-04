@@ -1,17 +1,13 @@
 package com.p20241061.management.infrastructure.services;
 
 
+import com.p20241061.management.api.mapping.NutritionalInformationMapper;
 import com.p20241061.management.api.mapping.ProductMapper;
 import com.p20241061.management.api.mapping.ProductVariantMapper;
 import com.p20241061.management.api.model.request.create.CreateProductVariantRequest;
 import com.p20241061.management.api.model.request.update.UpdateProductVariantRequest;
 import com.p20241061.management.api.model.response.GetProductDetailResponse;
-import com.p20241061.management.api.model.response.ProductVariantResponse;
-import com.p20241061.management.core.entities.ProductVariant;
-import com.p20241061.management.core.repositories.CookingTypeRepository;
-import com.p20241061.management.core.repositories.ProductRepository;
-import com.p20241061.management.core.repositories.ProductVariantRepository;
-import com.p20241061.management.core.repositories.SizeRepository;
+import com.p20241061.management.core.repositories.*;
 import com.p20241061.management.infrastructure.interfaces.IProductVariantService;
 import com.p20241061.shared.exceptions.CustomException;
 import com.p20241061.shared.models.enums.ErrorCode;
@@ -38,21 +34,26 @@ public class ProductVariantService implements IProductVariantService {
     private final ProductRepository productRepository;
     private final ProductVariantMapper productVariantMapper;
     private final ProductMapper productMapper;
+    private final NutritionalInformationRepository nutritionalInformationRepository;
+    private final NutritionalInformationMapper nutritionalInformationMapper;
 
 
     @Override
     public Mono<GeneralResponse<GetProductDetailResponse>> getProductDetailResponse(UUID productId) {
         return productRepository.findById(productId)
                 .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), PRODUCT_ENTITY)))
-                .flatMap(product -> productVariantRepository.getProductVariantByProductId(productId)
+                .flatMap(product -> nutritionalInformationRepository.findById(product.getNutritionalInformationId())
+                        .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), NUTRITIONAL_INFORMATION_ENTITY)))
+                .flatMap(nutritionalInformation -> productVariantRepository.getProductVariantByProductId(productId)
                         .collectList()
                         .flatMap(productVariant -> Mono.just(GeneralResponse.<GetProductDetailResponse>builder()
                                 .code(SuccessCode.SUCCESS.name())
                                 .data(GetProductDetailResponse.builder()
                                         .productVariants(productVariant)
-                                        .product(productMapper.modelToResponse(product))
+                                        .product(productMapper.modelToResponse(product, nutritionalInformationMapper.modelToResponse(nutritionalInformation)))
                                         .build())
-                                .build())));
+                                .build())))
+                );
     }
 
     @Override

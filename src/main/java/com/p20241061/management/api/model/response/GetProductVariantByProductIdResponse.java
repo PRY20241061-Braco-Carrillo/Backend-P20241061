@@ -9,7 +9,7 @@ import java.util.UUID;
 @Getter
 public class GetProductVariantByProductIdResponse {
     UUID productVariantId;
-    Double price;
-    String sizeName;
-    String cookingTypeName;
+    Double amountPrice;
+    String currencyPrice;
+    String variantInfo;
 }

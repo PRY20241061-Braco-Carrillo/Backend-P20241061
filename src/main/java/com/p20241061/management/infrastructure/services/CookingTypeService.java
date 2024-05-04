@@ -3,8 +3,6 @@ package com.p20241061.management.infrastructure.services;
 import com.p20241061.management.api.mapping.CookingTypeMapper;
 import com.p20241061.management.api.model.request.create.CreateCookingTypeRequest;
 import com.p20241061.management.api.model.request.update.UpdateCookingTypeRequest;
-import com.p20241061.management.api.model.response.CookingTypeResponse;
-import com.p20241061.management.core.entities.CookingType;
 import com.p20241061.management.core.repositories.CookingTypeRepository;
 import com.p20241061.management.infrastructure.interfaces.ICookingTypeService;
 import com.p20241061.shared.exceptions.CustomException;

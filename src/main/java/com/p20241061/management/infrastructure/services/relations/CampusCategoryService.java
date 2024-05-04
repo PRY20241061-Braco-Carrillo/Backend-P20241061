@@ -4,21 +4,18 @@ import com.p20241061.management.api.model.request.create.relations.CreateCampusC
 import com.p20241061.management.core.entities.relations.CampusCategory;
 import com.p20241061.management.core.repositories.CampusRepository;
 import com.p20241061.management.core.repositories.CategoryRepository;
-import com.p20241061.management.api.model.response.relations.GetCategoriesByCampusResponse;
 import com.p20241061.management.core.repositories.relations.CampusCategoryRepository;
 import com.p20241061.management.infrastructure.interfaces.relations.ICampusCategoryService;
 import com.p20241061.shared.exceptions.CustomException;
 import com.p20241061.shared.models.enums.ErrorCode;
 import com.p20241061.shared.models.enums.SuccessCode;
 import com.p20241061.shared.models.response.GeneralResponse;
-import com.p20241061.shared.utils.PaginatedRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
 import java.util.UUID;
 
 import static com.p20241061.shared.models.enums.CampusName.*;

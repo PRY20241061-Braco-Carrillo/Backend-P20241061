@@ -14,6 +14,7 @@ public class GetProductByCategoryIdResponse {
     private Integer maxCookingTime;
     private String unitOfTimeCookingTime;
     private String urlImage;
-    private Double price;
+    private Double amountPrice;
+    private String currencyPrice;
     private Boolean hasVariant;
 }

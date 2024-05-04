@@ -1,10 +1,10 @@
 package com.p20241061.management.api.mapping;
 
 import com.p20241061.management.api.model.request.create.CreateProductRequest;
+import com.p20241061.management.api.model.response.NutritionalInformationResponse;
 import com.p20241061.management.api.model.response.ProductResponse;
 import com.p20241061.management.core.entities.Product;
 import com.p20241061.shared.utils.EnhancedModelMapper;
-import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -14,8 +14,11 @@ public class ProductMapper {
     @Autowired
     EnhancedModelMapper mapper;
 
-    public ProductResponse modelToResponse(Product model) {
-        return mapper.map(model, ProductResponse.class);
+    public ProductResponse modelToResponse(Product model, NutritionalInformationResponse nutritionalInformationResponse) {
+        ProductResponse response = mapper.map(model, ProductResponse.class);
+        response.setNutritionalInformation(nutritionalInformationResponse);
+
+        return response;
     }
 
     public Product createRequestToModel(CreateProductRequest request, UUID nutritionalInformationId) {

@@ -3,8 +3,6 @@ package com.p20241061.management.infrastructure.services;
 import com.p20241061.management.api.mapping.PromotionMapper;
 import com.p20241061.management.api.model.request.create.CreatePromotionRequest;
 import com.p20241061.management.api.model.request.update.UpdatePromotionRequest;
-import com.p20241061.management.api.model.response.PromotionResponse;
-import com.p20241061.management.core.entities.Promotion;
 import com.p20241061.management.core.repositories.PromotionRepository;
 import com.p20241061.management.infrastructure.interfaces.IPromotionService;
 import com.p20241061.shared.exceptions.CustomException;

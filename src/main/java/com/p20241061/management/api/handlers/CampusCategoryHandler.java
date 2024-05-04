@@ -2,7 +2,6 @@ package com.p20241061.management.api.handlers;
 
 import com.p20241061.management.api.model.request.create.relations.CreateCampusCategoryRequest;
 import com.p20241061.management.infrastructure.interfaces.relations.ICampusCategoryService;
-import com.p20241061.shared.utils.PaginatedRequest;
 import com.p20241061.shared.validation.ObjectValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

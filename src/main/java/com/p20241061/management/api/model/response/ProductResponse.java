@@ -1,7 +1,5 @@
 package com.p20241061.management.api.model.response;
 
-import com.p20241061.management.core.entities.NutritionalInformation;
-import com.p20241061.management.core.entities.relations.CampusCategory;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,14 +14,17 @@ import java.util.UUID;
 public class ProductResponse {
     private UUID productId;
     private String name;
-    private String cookingTime;
+    private Integer  minCookingTime;
+    private Integer maxCookingTime;
+    private String unitOfTimeCookingTime;
     private String description;
     private Boolean isBreakfast;
     private Boolean isLunch;
     private Boolean isDinner;
     private String urlImage;
+    private String urlGlb;
     private Integer freeSauce;
-    private NutritionalInformation nutritionalInformation;
-    private CampusCategory campusCategory;
     private Boolean isAvailable;
+    private Boolean hasVariant;
+    private NutritionalInformationResponse nutritionalInformation;
 }

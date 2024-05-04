@@ -2,7 +2,6 @@ package com.p20241061.management.infrastructure.interfaces;
 
 import com.p20241061.management.api.model.request.create.CreateCategoryRequest;
 import com.p20241061.management.api.model.request.update.UpdateCategoryRequest;
-import com.p20241061.management.api.model.response.CategoryResponse;
 import com.p20241061.management.api.model.response.relations.GetCategoriesByCampusResponse;
 import com.p20241061.shared.models.response.GeneralResponse;
 import com.p20241061.shared.utils.PaginatedRequest;

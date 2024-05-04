@@ -3,7 +3,6 @@ package com.p20241061.security.infrastructure.services;
 import com.p20241061.security.api.config.JwtProvider;
 import com.p20241061.security.api.model.request.CreateUserRequest;
 import com.p20241061.security.api.model.request.LoginRequest;
-import com.p20241061.security.api.model.response.CreateUserResponse;
 import com.p20241061.security.api.model.response.LoginResponse;
 import com.p20241061.security.core.entities.User;
 import com.p20241061.security.core.enums.Role;

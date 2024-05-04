@@ -1,8 +1,6 @@
 package com.p20241061.management.infrastructure.services;
 
-import com.p20241061.management.api.mapping.NutritionalInformationMapper;
 import com.p20241061.management.api.model.request.update.UpdateNutritionalInformationRequest;
-import com.p20241061.management.api.model.response.NutritionalInformationResponse;
 import com.p20241061.management.core.repositories.NutritionalInformationRepository;
 import com.p20241061.management.infrastructure.interfaces.INutritionalInformationService;
 import com.p20241061.shared.exceptions.CustomException;

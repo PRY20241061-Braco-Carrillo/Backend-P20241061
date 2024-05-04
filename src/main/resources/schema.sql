@@ -306,14 +306,14 @@ VALUES
 
 INSERT INTO variant_type (variant_type_id, variant_type_name, name)
 VALUES
-    ('94d1748a-d6dc-4822-9f2b-d7c2795d0c2b', 'Size', 'Small'),
-    ('34fbb9d7-9d33-4b6f-a004-d9b40b2a8c70', 'Size', 'Medium'),
-    ('9a632da6-c7dc-4fd4-8918-d6020c847d84', 'Size', 'Large'),
-    ('cb13a087-3477-4da5-93f7-c5d92e1bba6e', 'Size', '1/4'),
-    ('fd01db11-86b3-4d65-a37a-93eb663695b7', 'Size', '1/8'),
-    ('02dc732a-5681-4ba1-af46-8b134c4e1950', 'Size', '1'),
-    ('ecf7ff67-5e12-4f14-9cb8-f377e1c9f79c', 'Cooking Type', 'Leña'),
-    ('f3b3b3b3-1b3b-4b3b-8b3b-3b3b3b3b3b3b', 'Cooking Type', 'Brasa');
+    ('94d1748a-d6dc-4822-9f2b-d7c2795d0c2b', 'CC06', 'Small'),
+    ('34fbb9d7-9d33-4b6f-a004-d9b40b2a8c70', 'CC06', 'Medium'),
+    ('9a632da6-c7dc-4fd4-8918-d6020c847d84', 'CC06', 'Large'),
+    ('cb13a087-3477-4da5-93f7-c5d92e1bba6e', 'CC06', '1/4'),
+    ('fd01db11-86b3-4d65-a37a-93eb663695b7', 'CC06', '1/8'),
+    ('02dc732a-5681-4ba1-af46-8b134c4e1950', 'CC06', '1'),
+    ('ecf7ff67-5e12-4f14-9cb8-f377e1c9f79c', 'CC01', 'Leña'),
+    ('f3b3b3b3-1b3b-4b3b-8b3b-3b3b3b3b3b3b', 'CC01', 'Brasa');
 
 INSERT INTO product_variant (product_variant_id, detail, amount_price, currency_price, is_available, campus_category_id, product_id)
 VALUES
@@ -341,8 +341,8 @@ VALUES
     ('3f333df6-90a4-4fda-8dd3-9485d27cee8a', 'd5f8c758-76f4-49e7-a979-7a479926a72a', 'f3b3b3b3-1b3b-4b3b-8b3b-3b3b3b3b3b3b'),
     ('7e57d004-2b97-0e7a-b45f-5387367791cd', '8015ed4a-1d05-4c8e-8481-582d669f2e18', 'fd01db11-86b3-4d65-a37a-93eb663695b7'),
     ('5c60ef1f-3a7d-4bdb-9c2c-36bd1f68a5a1', '8015ed4a-1d05-4c8e-8481-582d669f2e18', 'f3b3b3b3-1b3b-4b3b-8b3b-3b3b3b3b3b3b'),
-    ('4a7c7f58-4c5a-4c8f-9746-ee4f0fe53820', '5c63e9e9-ebc6-4e15-b77d-5a0fb2d8a1a7', '02dc732a-5681-4ba1-af46-8b134c4e1950'),
-    ('6fa459ea-ee8a-3ca4-894e-db77e160355e', '5c63e9e9-ebc6-4e15-b77d-5a0fb2d8a1a7', 'f3b3b3b3-1b3b-4b3b-8b3b-3b3b3b3b3b3b'),
+    ('4a7c7f58-4c5a-4c8f-9746-ee4f0fe53820', '5c63e9e9-ebc6-4e15-b77d-5a0fb2d8a1a9', '02dc732a-5681-4ba1-af46-8b134c4e1950'),
+    ('6fa459ea-ee8a-3ca4-894e-db77e160355e', '5c63e9e9-ebc6-4e15-b77d-5a0fb2d8a1a9', 'f3b3b3b3-1b3b-4b3b-8b3b-3b3b3b3b3b3b'),
     ('cd9fca4a-6a77-47d3-b46b-5b0e92f1e5d5', 'e5682c21-1fbf-4e78-893e-14636e2c3f9a', '94d1748a-d6dc-4822-9f2b-d7c2795d0c2b'),
     ('e6f67460-7d76-45d5-97de-62bb1e231c94', 'b00b545a-7a38-47e0-83b5-f66504cf2d9c', '34fbb9d7-9d33-4b6f-a004-d9b40b2a8c70'),
     ('ab142c3d-29e7-459d-916f-6d0c0cfbe20a', '4c8d8ab5-d13e-4824-9d7c-d9f7b3a30c13', '9a632da6-c7dc-4fd4-8918-d6020c847d84'),

@@ -16,14 +16,17 @@ public class Product {
     @Id
     private UUID productId;
     private String name;
-    private String cookingTime;
+    private Integer  minCookingTime;
+    private Integer maxCookingTime;
+    private String unitOfTimeCookingTime;
     private String description;
     private Boolean isBreakfast;
     private Boolean isLunch;
     private Boolean isDinner;
     private String urlImage;
+    private String urlGlb;
     private Integer freeSauce;
-    private UUID nutritionalInformationId;
-    private UUID campusCategoryId ;
     private Boolean isAvailable;
+    private Boolean hasVariant;
+    private UUID nutritionalInformationId;
 }

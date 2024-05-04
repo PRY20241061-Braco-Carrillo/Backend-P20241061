@@ -12,11 +12,12 @@ import java.util.UUID;
 @Repository
 public interface ProductVariantRepository extends ReactiveCrudRepository<ProductVariant, UUID> {
 
-    @Query("SELECT pv.product_variant_id, pv.price, ct.name AS cooking_type_name, s.name AS size_name " +
-            "FROM product_variant pv, cooking_type ct, size s " +
-            "WHERE pv.cooking_type_id = ct.cooking_type_id " +
-            "AND pv.size_id = s.size_id " +
-             "AND pv.is_available = true " +
-            "AND pv.product_id = :productId")
+    @Query("SELECT pv.product_variant_id, pv.amount_price, pv.currency_price, STRING_AGG(vt.variant_type_name || ': ' || vt.name, ', ') AS variant_info " +
+            "FROM product_variant pv, product_variant_type pvt, variant_type vt " +
+            "WHERE pv.product_variant_id  = pvt.product_variant_id " +
+            "AND pvt.variant_type_id  = vt.variant_type_id " +
+            "AND pv.is_available = true " +
+            "AND pv.product_id = :productId " +
+            "GROUP by pv.product_variant_id, pv.amount_price, pv.currency_price")
     Flux<GetProductVariantByProductIdResponse> getProductVariantByProductId(UUID productId);
 }

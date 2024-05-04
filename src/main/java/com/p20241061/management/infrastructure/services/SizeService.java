@@ -3,7 +3,6 @@ package com.p20241061.management.infrastructure.services;
 import com.p20241061.management.api.mapping.SizeMapper;
 import com.p20241061.management.api.model.request.create.CreateSizeRequest;
 import com.p20241061.management.api.model.request.update.UpdateSizeRequest;
-import com.p20241061.management.api.model.response.SizeResponse;
 import com.p20241061.management.core.repositories.SizeRepository;
 import com.p20241061.management.infrastructure.interfaces.ISizeService;
 import com.p20241061.shared.exceptions.CustomException;

@@ -4,7 +4,6 @@ import com.p20241061.management.api.mapping.RestaurantMapper;
 import com.p20241061.management.api.model.request.create.CreateRestaurantRequest;
 import com.p20241061.management.api.model.request.update.UpdateRestaurantRequest;
 import com.p20241061.management.api.model.response.RestaurantResponse;
-import com.p20241061.management.core.entities.Restaurant;
 import com.p20241061.management.core.repositories.RestaurantRepository;
 import com.p20241061.management.infrastructure.interfaces.IRestaurantService;
 import com.p20241061.shared.exceptions.CustomException;

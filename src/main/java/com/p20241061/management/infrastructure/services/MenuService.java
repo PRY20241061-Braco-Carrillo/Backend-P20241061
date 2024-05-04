@@ -3,8 +3,6 @@ package com.p20241061.management.infrastructure.services;
 import com.p20241061.management.api.mapping.MenuMapper;
 import com.p20241061.management.api.model.request.create.CreateMenuRequest;
 import com.p20241061.management.api.model.request.update.UpdateMenuRequest;
-import com.p20241061.management.api.model.response.MenuResponse;
-import com.p20241061.management.core.entities.Menu;
 import com.p20241061.management.core.repositories.MenuRepository;
 import com.p20241061.management.infrastructure.interfaces.IMenuService;
 import com.p20241061.shared.exceptions.CustomException;
