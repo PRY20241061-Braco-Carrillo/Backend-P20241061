@@ -12,8 +12,9 @@ import java.util.UUID;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class GetProductVariantByProductResponse {
-    UUID productVariantId;
-    Double amountPrice;
-    String currencyPrice;
-    String variantInfo;
+    private UUID productVariantId;
+    private Double amountPrice;
+    private String currencyPrice;
+    private Integer variantOrder;
+    private String variantInfo;
 }

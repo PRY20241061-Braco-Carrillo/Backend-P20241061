@@ -105,6 +105,7 @@ CREATE TABLE variant_type (
 CREATE TABLE product_variant (
     product_variant_id uuid  NOT NULL DEFAULT gen_random_uuid(),
     detail text  NOT NULL,
+    variant_order int  NOT NULL,
     amount_price decimal(12,2)  NOT NULL,
     currency_price varchar(25)  NOT NULL,
     is_available bool  NOT NULL,
@@ -210,6 +211,7 @@ CREATE TABLE  combo_complement (
 -- Table: product_complement
 CREATE TABLE product_complement (
     product_complement_id uuid  NOT NULL DEFAULT gen_random_uuid(),
+    free_amount int NOT NULL,
     product_id uuid NOT NULL,
     complement_id uuid NOT NULL,
     CONSTRAINT product_complement_pk PRIMARY KEY (product_complement_id),
@@ -304,28 +306,28 @@ VALUES
 
 INSERT INTO variant_type (variant_type_id, variant_type_name, name)
 VALUES
-    ('94d1748a-d6dc-4822-9f2b-d7c2795d0c2b', 'CC06', 'Small'),
-    ('34fbb9d7-9d33-4b6f-a004-d9b40b2a8c70', 'CC06', 'Medium'),
-    ('9a632da6-c7dc-4fd4-8918-d6020c847d84', 'CC06', 'Large'),
-    ('cb13a087-3477-4da5-93f7-c5d92e1bba6e', 'CC06', '1/4'),
-    ('fd01db11-86b3-4d65-a37a-93eb663695b7', 'CC06', '1/8'),
-    ('02dc732a-5681-4ba1-af46-8b134c4e1950', 'CC06', '1'),
+    ('94d1748a-d6dc-4822-9f2b-d7c2795d0c2b', 'CC05', 'Small'),
+    ('34fbb9d7-9d33-4b6f-a004-d9b40b2a8c70', 'CC05', 'Medium'),
+    ('9a632da6-c7dc-4fd4-8918-d6020c847d84', 'CC05', 'Large'),
+    ('cb13a087-3477-4da5-93f7-c5d92e1bba6e', 'CC05', '1/4'),
+    ('fd01db11-86b3-4d65-a37a-93eb663695b7', 'CC05', '1/8'),
+    ('02dc732a-5681-4ba1-af46-8b134c4e1950', 'CC05', '1'),
     ('ecf7ff67-5e12-4f14-9cb8-f377e1c9f79c', 'CC01', 'Leña'),
     ('f3b3b3b3-1b3b-4b3b-8b3b-3b3b3b3b3b3b', 'CC01', 'Brasa');
 
-INSERT INTO product_variant (product_variant_id, detail, amount_price, currency_price, is_available, campus_category_id, product_id)
+INSERT INTO product_variant (product_variant_id, detail, variant_order, amount_price, currency_price, is_available, campus_category_id, product_id)
 VALUES
-    ('5c63e9e9-ebc6-4e15-b77d-5a0fb2d8a1a7', '1/4 Leña', 10.99, 'USD', true, '4c1ef9d9-bded-4e0e-83c2-09c5bbed62f0', '86a1e63a-95a3-4540-95c8-dfe7b3b48a4b'),
-    ('a482c179-12c0-4a58-bdc2-4d4f8eef64cf', '1/8 Leña', 8.99, 'USD', true, '4c1ef9d9-bded-4e0e-83c2-09c5bbed62f0', '86a1e63a-95a3-4540-95c8-dfe7b3b48a4b'),
-    ('1b2463eb-cd36-41cb-a67d-3e5a475b6ec1', '1 Leña', 12.99, 'USD', true, '4c1ef9d9-bded-4e0e-83c2-09c5bbed62f0', '86a1e63a-95a3-4540-95c8-dfe7b3b48a4b'),
-    ('d5f8c758-76f4-49e7-a979-7a479926a72a', '1/4 Brasa', 10.00, 'USD', true, '4c1ef9d9-bded-4e0e-83c2-09c5bbed62f0', '86a1e63a-95a3-4540-95c8-dfe7b3b48a4b'),
-    ('8015ed4a-1d05-4c8e-8481-582d669f2e18', '1/8 Brasa', 8.00, 'USD', true, '4c1ef9d9-bded-4e0e-83c2-09c5bbed62f0', '86a1e63a-95a3-4540-95c8-dfe7b3b48a4b'),
-    ('5c63e9e9-ebc6-4e15-b77d-5a0fb2d8a1a9', '1 Brasa', 15.99, 'USD', true, '4c1ef9d9-bded-4e0e-83c2-09c5bbed62f0', '86a1e63a-95a3-4540-95c8-dfe7b3b48a4b'),
-    ('e5682c21-1fbf-4e78-893e-14636e2c3f9a', 'Small', 10.99, 'USD', true, '3c39460f-f8c9-4922-8b6b-77e55db4baf3', '7c4a43f1-1077-4cb2-b6e1-8f2b100c1cf2'),
-    ('b00b545a-7a38-47e0-83b5-f66504cf2d9c', 'Medium', 15.99, 'USD', true, '3c39460f-f8c9-4922-8b6b-77e55db4baf3', '7c4a43f1-1077-4cb2-b6e1-8f2b100c1cf2'),
-    ('4c8d8ab5-d13e-4824-9d7c-d9f7b3a30c13', 'Large', 20.99, 'USD', true, '3c39460f-f8c9-4922-8b6b-77e55db4baf3', '7c4a43f1-1077-4cb2-b6e1-8f2b100c1cf2'),
-    ('fca4c4a1-5f6b-478d-92bb-f3f9184c1e9a', 'Small', 10.99, 'USD', true, '9e45d48e-9187-4b5d-996e-486eaf9f00a0', '6a7f852e-537d-4a5f-bb6c-0578cc72bc7d'),
-    ('892f1d91-3636-46c7-8ff0-cc4a6c3c4ea5', 'Medium', 15.99, 'USD', true, '9e45d48e-9187-4b5d-996e-486eaf9f00a0', '6a7f852e-537d-4a5f-bb6c-0578cc72bc7d');
+    ('5c63e9e9-ebc6-4e15-b77d-5a0fb2d8a1a7', '1/4 Leña', 2, 10.99, 'USD', true, '4c1ef9d9-bded-4e0e-83c2-09c5bbed62f0', '86a1e63a-95a3-4540-95c8-dfe7b3b48a4b'),
+    ('a482c179-12c0-4a58-bdc2-4d4f8eef64cf', '1/8 Leña', 1, 8.99, 'USD', true, '4c1ef9d9-bded-4e0e-83c2-09c5bbed62f0', '86a1e63a-95a3-4540-95c8-dfe7b3b48a4b'),
+    ('1b2463eb-cd36-41cb-a67d-3e5a475b6ec1', '1 Leña', 3, 12.99, 'USD', true, '4c1ef9d9-bded-4e0e-83c2-09c5bbed62f0', '86a1e63a-95a3-4540-95c8-dfe7b3b48a4b'),
+    ('d5f8c758-76f4-49e7-a979-7a479926a72a', '1/4 Brasa', 2, 10.00, 'USD', true, '4c1ef9d9-bded-4e0e-83c2-09c5bbed62f0', '86a1e63a-95a3-4540-95c8-dfe7b3b48a4b'),
+    ('8015ed4a-1d05-4c8e-8481-582d669f2e18', '1/8 Brasa', 1, 8.00, 'USD', true, '4c1ef9d9-bded-4e0e-83c2-09c5bbed62f0', '86a1e63a-95a3-4540-95c8-dfe7b3b48a4b'),
+    ('5c63e9e9-ebc6-4e15-b77d-5a0fb2d8a1a9', '1 Brasa', 3, 15.99, 'USD', true, '4c1ef9d9-bded-4e0e-83c2-09c5bbed62f0', '86a1e63a-95a3-4540-95c8-dfe7b3b48a4b'),
+    ('e5682c21-1fbf-4e78-893e-14636e2c3f9a', 'Small', 1, 10.99, 'USD', true, '3c39460f-f8c9-4922-8b6b-77e55db4baf3', '7c4a43f1-1077-4cb2-b6e1-8f2b100c1cf2'),
+    ('b00b545a-7a38-47e0-83b5-f66504cf2d9c', 'Medium', 2, 15.99, 'USD', true, '3c39460f-f8c9-4922-8b6b-77e55db4baf3', '7c4a43f1-1077-4cb2-b6e1-8f2b100c1cf2'),
+    ('4c8d8ab5-d13e-4824-9d7c-d9f7b3a30c13', 'Large', 3, 20.99, 'USD', true, '3c39460f-f8c9-4922-8b6b-77e55db4baf3', '7c4a43f1-1077-4cb2-b6e1-8f2b100c1cf2'),
+    ('fca4c4a1-5f6b-478d-92bb-f3f9184c1e9a', 'Small', 1, 10.99, 'USD', true, '9e45d48e-9187-4b5d-996e-486eaf9f00a0', '6a7f852e-537d-4a5f-bb6c-0578cc72bc7d'),
+    ('892f1d91-3636-46c7-8ff0-cc4a6c3c4ea5', 'Medium', 2, 15.99, 'USD', true, '9e45d48e-9187-4b5d-996e-486eaf9f00a0', '6a7f852e-537d-4a5f-bb6c-0578cc72bc7d');
 
 INSERT INTO product_variant_type (product_variant_type_id, product_variant_id, variant_type_id)
 VALUES
@@ -394,14 +396,14 @@ VALUES
     ('20f56f6a-9c4f-4455-843b-5b29acccff77', 'Salsa de Ajo', 0.4, 'PEN', true, true),
     ('f5b7f6cb-4b78-4973-9d6f-4741d0072cb9', 'Porcion de Papas ', 7, 'PEN', false, true);
 
-INSERT INTO product_complement (product_complement_id, product_id, complement_id)
+INSERT INTO product_complement (product_complement_id, free_amount, product_id, complement_id)
 VALUES
-    ('3a7ec1f4-3b9d-41d3-8f80-d6f4ef54c800', '86a1e63a-95a3-4540-95c8-dfe7b3b48a4b', '22ed25d2-6178-49a2-8a82-3908c38e8c5a'),
-    ('e99e1ef7-2ef5-4e57-8270-cda08527fb1d', '86a1e63a-95a3-4540-95c8-dfe7b3b48a4b', 'c8b7f6cb-4b78-4973-9d6f-4741d0072cb9'),
-    ('d2a41d7e-9d3b-47b4-a24c-f5a88d45ad55', '86a1e63a-95a3-4540-95c8-dfe7b3b48a4b', 'f5b7f6cb-4b78-4973-9d6f-4741d0072cb9'),
-    ('f2a41d7e-9d3b-47b4-a24c-f5a88d45ad55', '7c4a43f1-1077-4cb2-b6e1-8f2b100c1cf2', '20f56f6a-9c4f-4455-843b-5b29acccff77'),
-    ('3b241101-e2bb-4255-8caf-4136c566a964', '6a7f852e-537d-4a5f-bb6c-0578cc72bc7d', '22ed25d2-6178-49a2-8a82-3908c38e8c5a'),
-    ('6ecd8c99-4036-403d-bf84-cf8400f67836', '6a7f852e-537d-4a5f-bb6c-0578cc72bc7d', 'c8b7f6cb-4b78-4973-9d6f-4741d0072cb9');
+    ('3a7ec1f4-3b9d-41d3-8f80-d6f4ef54c800', 2, '86a1e63a-95a3-4540-95c8-dfe7b3b48a4b', '22ed25d2-6178-49a2-8a82-3908c38e8c5a'),
+    ('e99e1ef7-2ef5-4e57-8270-cda08527fb1d', 2, '86a1e63a-95a3-4540-95c8-dfe7b3b48a4b', 'c8b7f6cb-4b78-4973-9d6f-4741d0072cb9'),
+    ('d2a41d7e-9d3b-47b4-a24c-f5a88d45ad55', 0, '86a1e63a-95a3-4540-95c8-dfe7b3b48a4b', 'f5b7f6cb-4b78-4973-9d6f-4741d0072cb9'),
+    ('f2a41d7e-9d3b-47b4-a24c-f5a88d45ad55', 1, '7c4a43f1-1077-4cb2-b6e1-8f2b100c1cf2', '20f56f6a-9c4f-4455-843b-5b29acccff77'),
+    ('3b241101-e2bb-4255-8caf-4136c566a964', 2, '6a7f852e-537d-4a5f-bb6c-0578cc72bc7d', '22ed25d2-6178-49a2-8a82-3908c38e8c5a'),
+    ('6ecd8c99-4036-403d-bf84-cf8400f67836', 2, '6a7f852e-537d-4a5f-bb6c-0578cc72bc7d', 'c8b7f6cb-4b78-4973-9d6f-4741d0072cb9');
 
 INSERT INTO combo_complement (combo_complement_id, complement_id, combo_id)
 VALUES
