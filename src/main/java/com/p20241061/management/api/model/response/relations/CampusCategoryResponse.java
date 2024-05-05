@@ -1,5 +1,6 @@
 package com.p20241061.management.api.model.response.relations;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.p20241061.management.core.entities.Campus;
 import com.p20241061.management.core.entities.Category;
 import lombok.AllArgsConstructor;
@@ -13,6 +14,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class CampusCategoryResponse {
     private UUID campusCategoryId;
     private Category category;

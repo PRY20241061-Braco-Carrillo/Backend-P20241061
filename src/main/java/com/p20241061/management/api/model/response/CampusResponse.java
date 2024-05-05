@@ -1,5 +1,6 @@
 package com.p20241061.management.api.model.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.p20241061.management.core.entities.Restaurant;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,6 +14,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class CampusResponse {
     private UUID campusId;
     private String name;

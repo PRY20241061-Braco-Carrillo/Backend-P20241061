@@ -1,5 +1,6 @@
 package com.p20241061.management.api.model.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -7,6 +8,7 @@ import java.util.UUID;
 
 @AllArgsConstructor
 @Getter
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class GetProductByCategoryResponse {
     private UUID productId;
     private String name;
