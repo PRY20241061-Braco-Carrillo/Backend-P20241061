@@ -1,4 +1,4 @@
-package com.p20241061.management.api.model.response;
+package com.p20241061.management.api.model.response.get;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -9,14 +9,16 @@ import java.util.UUID;
 @AllArgsConstructor
 @Getter
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class GetProductByCategoryResponse {
-    private UUID productId;
+public class GetPromotionByCampusCategoryResponse {
+    private UUID promotionId;
     private String name;
     private Integer minCookingTime;
     private Integer maxCookingTime;
     private String unitOfTimeCookingTime;
-    private String urlImage;
     private Double amountPrice;
     private String currencyPrice;
-    private Boolean hasVariant;
+    private Double discount;
+    private String discountType;
+    private String urlImage;
 }
+

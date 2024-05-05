@@ -1,6 +1,6 @@
 package com.p20241061.management.core.repositories;
 
-import com.p20241061.management.api.model.response.GetProductByCategoryResponse;
+import com.p20241061.management.api.model.response.get.GetProductByCategoryResponse;
 import com.p20241061.management.core.entities.Product;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;

@@ -1,7 +1,7 @@
 package com.p20241061.management.core.repositories;
 
-import com.p20241061.management.api.model.response.GetProductVariantPromotionDetailResponse;
-import com.p20241061.management.api.model.response.GetPromotionByCampusCategoryResponse;
+import com.p20241061.management.api.model.response.get.GetProductVariantPromotionDetailResponse;
+import com.p20241061.management.api.model.response.get.GetPromotionByCampusCategoryResponse;
 import com.p20241061.management.core.entities.Promotion;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;

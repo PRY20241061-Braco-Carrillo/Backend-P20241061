@@ -5,10 +5,9 @@ import com.p20241061.management.api.mapping.NutritionalInformationMapper;
 import com.p20241061.management.api.mapping.PromotionMapper;
 import com.p20241061.management.api.model.request.create.CreatePromotionRequest;
 import com.p20241061.management.api.model.request.update.UpdatePromotionRequest;
-import com.p20241061.management.api.model.response.GetComboPromotionResponse;
-import com.p20241061.management.api.model.response.GetProductVariantByProductResponse;
-import com.p20241061.management.api.model.response.GetProductVariantPromotionResponse;
-import com.p20241061.management.api.model.response.GetPromotionByCampusCategoryResponse;
+import com.p20241061.management.api.model.response.get.GetComboPromotionResponse;
+import com.p20241061.management.api.model.response.get.GetProductVariantPromotionResponse;
+import com.p20241061.management.api.model.response.get.GetPromotionByCampusCategoryResponse;
 import com.p20241061.management.core.repositories.ComplementRepository;
 import com.p20241061.management.core.repositories.NutritionalInformationRepository;
 import com.p20241061.management.core.repositories.PromotionRepository;
@@ -69,7 +68,7 @@ public class PromotionService  implements IPromotionService {
     }
 
     @Override
-    public Mono<GeneralResponse<List<GetPromotionByCampusCategoryResponse>>> getAllByCampusCategoryId(PaginatedRequest paginatedRequest, UUID campusCategoryId) {
+    public Mono<GeneralResponse<List<GetPromotionByCampusCategoryResponse>>> getAllByCampusCategoryId(UUID campusCategoryId) {
         return promotionRepository.getAllByCampusCategoryId(campusCategoryId)
                 .collectList()
                 .flatMap(promotions -> Mono.just(GeneralResponse.<List<GetPromotionByCampusCategoryResponse>>builder()

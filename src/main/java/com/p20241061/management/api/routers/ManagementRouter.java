@@ -22,6 +22,7 @@ public class ManagementRouter {
     private static final String PATH_PROMOTION = "/api/promotion";
     private static final String PATH_RESTAURANT = "/api/restaurant";
     private static final String PATH_CAMPUS_CATEGORY = "/api/campus-category";
+    private static final String PATH_COMBO = "/api/combo";
 
     @Bean
     RouterFunction<ServerResponse> campusRtr(CampusHandler handler) {
@@ -116,6 +117,13 @@ public class ManagementRouter {
                 .DELETE(PATH_CAMPUS_CATEGORY + "/{campusCategoryId}", handler::delete)
                 .build();
     }
+
+//    @Bean
+//    RouterFunction<ServerResponse> comboRtr(ComboHandler handler) {
+//        return RouterFunctions.route()
+//                .GET(PATH_COMBO, handler::getAll)
+//                .build();
+//    }
 
 
 }

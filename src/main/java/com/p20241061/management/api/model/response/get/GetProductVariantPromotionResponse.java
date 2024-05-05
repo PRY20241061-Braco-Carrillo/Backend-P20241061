@@ -1,6 +1,9 @@
-package com.p20241061.management.api.model.response;
+package com.p20241061.management.api.model.response.get;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.p20241061.management.api.model.response.ComplementResponse;
+import com.p20241061.management.api.model.response.NutritionalInformationResponse;
+import com.p20241061.management.api.model.response.PromotionResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

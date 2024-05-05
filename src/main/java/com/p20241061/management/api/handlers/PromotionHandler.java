@@ -43,10 +43,8 @@ public class PromotionHandler {
     public Mono<ServerResponse> getAllByCampusCategoryId(ServerRequest request) {
 
         UUID campusCategoryId = UUID.fromString(request.pathVariable("campusCategoryId"));
-        Integer pageNumber = Integer.parseInt(request.queryParam("pageNumber").orElse("0"));
-        Integer pageSize = Integer.parseInt(request.queryParam("pageSize").orElse("5"));
 
-        return promotionService.getAllByCampusCategoryId(new PaginatedRequest(pageNumber, pageSize, "name", true), campusCategoryId)
+        return promotionService.getAllByCampusCategoryId(campusCategoryId)
                 .flatMap(response -> ServerResponse.ok()
                         .contentType(MediaType.APPLICATION_JSON)
                         .bodyValue(response));

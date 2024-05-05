@@ -1,4 +1,4 @@
-package com.p20241061.management.api.model.response;
+package com.p20241061.management.api.model.response.get;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;

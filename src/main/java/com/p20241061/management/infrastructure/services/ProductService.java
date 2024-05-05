@@ -4,7 +4,7 @@ import com.p20241061.management.api.mapping.NutritionalInformationMapper;
 import com.p20241061.management.api.mapping.ProductMapper;
 import com.p20241061.management.api.model.request.create.CreateProductRequest;
 import com.p20241061.management.api.model.request.update.UpdateProductRequest;
-import com.p20241061.management.api.model.response.GetProductByCategoryResponse;
+import com.p20241061.management.api.model.response.get.GetProductByCategoryResponse;
 import com.p20241061.management.core.repositories.NutritionalInformationRepository;
 import com.p20241061.management.core.repositories.ProductRepository;
 import com.p20241061.management.core.repositories.relations.CampusCategoryRepository;
@@ -37,8 +37,8 @@ public class ProductService implements IProductService {
     private final NutritionalInformationMapper nutritionalInformationMapper;
 
     @Override
-    public Mono<GeneralResponse<List<GetProductByCategoryResponse>>> getAllByCampusCategory(PaginatedRequest paginatedRequest, UUID campusCategoryId, Boolean available) {
-        return paginatedRequest.paginateData(productRepository.getProductByCampusCategoryIdAndIsAvailable(campusCategoryId, available))
+    public Mono<GeneralResponse<List<GetProductByCategoryResponse>>> getAllByCampusCategory(UUID campusCategoryId, Boolean available) {
+        return productRepository.getProductByCampusCategoryIdAndIsAvailable(campusCategoryId, available)
                 .collectList()
                 .map(products -> GeneralResponse.<List<GetProductByCategoryResponse>>builder()
                         .code(SuccessCode.SUCCESS.name())

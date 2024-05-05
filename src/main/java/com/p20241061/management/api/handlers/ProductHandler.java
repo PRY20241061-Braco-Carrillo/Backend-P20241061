@@ -25,10 +25,8 @@ public class ProductHandler {
     public Mono<ServerResponse> getAllByCampusCategory(ServerRequest request) {
         UUID campusCategoryId = UUID.fromString(request.pathVariable("campusCategoryId"));
         Boolean available = request.queryParam("available").orElse("true").equals("true");
-        Integer pageNumber = Integer.parseInt(request.queryParam("pageNumber").orElse("0"));
-        Integer pageSize = Integer.parseInt(request.queryParam("pageSize").orElse("5"));
 
-        return productService.getAllByCampusCategory(new PaginatedRequest(pageNumber, pageSize, "name", true), campusCategoryId, available)
+        return productService.getAllByCampusCategory(campusCategoryId, available)
                 .flatMap(response -> ServerResponse.ok()
                         .contentType(MediaType.APPLICATION_JSON)
                         .bodyValue(response));
