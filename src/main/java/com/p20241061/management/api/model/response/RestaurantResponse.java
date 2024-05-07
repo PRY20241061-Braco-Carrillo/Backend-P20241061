@@ -16,7 +16,6 @@ import java.util.UUID;
 public class RestaurantResponse {
     private UUID restaurantId;
     private String name;
-    private String imageUrl;
     private String logoUrl;
     private Boolean isAvailable;
 }

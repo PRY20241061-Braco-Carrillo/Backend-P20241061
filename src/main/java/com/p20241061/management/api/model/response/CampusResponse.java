@@ -24,5 +24,7 @@ public class CampusResponse {
     private Boolean toTakeHome;
     private Boolean toDelivery;
     private Restaurant restaurant;
+    private String regexTableCode;
+    private String urlImage;
     private Boolean isAvailable;
 }

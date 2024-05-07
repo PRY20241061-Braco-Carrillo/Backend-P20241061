@@ -23,5 +23,7 @@ public class Campus {
     private Boolean toTakeHome;
     private Boolean toDelivery;
     private UUID restaurantId;
+    private String regexTableCode;
+    private String urlImage;
     private Boolean isAvailable;
 }

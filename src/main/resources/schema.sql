@@ -10,8 +10,7 @@ CREATE TABLE minim_product_price (
 CREATE TABLE restaurant (
     restaurant_id uuid  NOT NULL DEFAULT gen_random_uuid(),
     name varchar(255)  NOT NULL,
-    image_url varchar(255)  NULL,
-    logo_url varchar(255)  NULL,
+    logo_url varchar(255),
     is_available boolean  NOT NULL,
     CONSTRAINT restaurant_pk PRIMARY KEY (restaurant_id)
 );
@@ -28,6 +27,7 @@ CREATE TABLE campus (
     restaurant_id uuid  NOT NULL,
     regex_table_code varchar(255)  NOT NULL,
     is_available bool  NOT NULL,
+    url_image varchar(255),
     CONSTRAINT campus_pk PRIMARY KEY (campus_id),
     CONSTRAINT campus_restaurant FOREIGN KEY (restaurant_id) REFERENCES restaurant (restaurant_id)
 );
@@ -162,9 +162,13 @@ CREATE TABLE combo (
     combo_id uuid  NOT NULL DEFAULT gen_random_uuid(),
     name varchar(255) NOT NULL,
     amount_price decimal(12,2) NOT NULL,
-    free_sauce integer  NOT NULL,
     currency_price varchar(25) NOT NULL,
+    url_image varchar(255),
+    free_sauce integer  NOT NULL,
     complement_amount int  NOT NULL,
+    min_cooking_time int  NOT NULL,
+    max_cooking_time int  NOT NULL,
+    unit_of_time_cooking_time varchar(25)  NOT NULL,
     CONSTRAINT combo_pk PRIMARY KEY (combo_id)
 );
 
@@ -195,6 +199,7 @@ CREATE TABLE complement (
     currency_price varchar(25)  NOT NULL,
     is_sauce bool NOT NULL,
     is_available bool NOT NULL,
+    url_image varchar(255),
     CONSTRAINT complement_pk PRIMARY KEY (complement_id)
 );
 
@@ -203,6 +208,7 @@ CREATE TABLE  combo_complement (
     combo_complement_id uuid  NOT NULL DEFAULT gen_random_uuid(),
     complement_id uuid NOT NULL,
     combo_id uuid NOT NULL,
+    free_amount int NOT NULL,
     CONSTRAINT combo_complement_pk PRIMARY KEY (combo_complement_id),
     CONSTRAINT combo_complement_complement FOREIGN KEY (complement_id) REFERENCES complement (complement_id),
     CONSTRAINT combo_complement_combo FOREIGN KEY (combo_id) REFERENCES combo (combo_id)
@@ -270,21 +276,21 @@ CREATE TABLE "user" (
 );
 
 
-INSERT INTO restaurant (restaurant_id, name, is_available)
+INSERT INTO restaurant (restaurant_id, name, is_available, logo_url)
 VALUES
-    ('1f8a7d11-7d88-4a68-b98f-2a5a42d8aa01', 'Rustica', true);
+    ('1f8a7d11-7d88-4a68-b98f-2a5a42d8aa01', 'Rustica', true, 'https://iconape.com/wp-content/files/qp/378817/svg/378817.svg');
 
-INSERT INTO campus (campus_id, name, address, phone_number, open_hour, to_take_home, to_delivery, restaurant_id, regex_table_code, is_available)
+INSERT INTO campus (campus_id, name, address, phone_number, open_hour, to_take_home, to_delivery, restaurant_id, regex_table_code, is_available, url_image)
     VALUES
-        ('8c81aabb-dc05-4cf1-b9b3-1e3d3fd64ee2', 'Campus Central', '123 Main St', '+1234567890', '{"Monday":{"breakfast":{"opening":"12:00","closing":"14:00"},"lunch":{"opening":"12:00","closing":"14:00"},"dinner":{"opening":"19:00","closing":"22:00"}},"Tuesday":{"breakfast":{"opening":"12:00","closing":"14:00"},"lunch":{"opening":"12:00","closing":"14:00"},"dinner":{"opening":"19:00","closing":"22:00"}},"Wednesday":{"breakfast":{"opening":"12:00","closing":"14:00"},"lunch":{"opening":"12:00","closing":"14:00"},"dinner":{"opening":"19:00","closing":"22:00"}},"Thrusday":{"breakfast":{"opening":"12:00","closing":"14:00"},"lunch":{"opening":"12:00","closing":"14:00"},"dinner":{"opening":"19:00","closing":"22:00"}},"Friday":{"breakfast":{"opening":"12:00","closing":"14:00"},"lunch":{"opening":"12:00","closing":"14:00"},"dinner":{"opening":"19:00","closing":"22:00"}},"Saturday":{"breakfast":{"opening":"12:00","closing":"14:00"},"lunch":{"opening":"12:00","closing":"17:00"},"dinner":{"opening":"19:00","closing":"20:00"}},"Sunday":{"breakfast":{"opening":"12:00","closing":"14:00"},"lunch":{"opening":"12:00","closing":"14:00"},"dinner":{"opening":"19:00","closing":"22:00"}}}', true, true, '1f8a7d11-7d88-4a68-b98f-2a5a42d8aa01', '^[A-Z0-9]{4}$', true),
-        ('a08c52b4-fd41-4b56-9cf4-88f217e94a2a', 'Campus Norte', '456 Elm St', '+0987654321', '{"Monday":{"breakfast":{"opening":"12:00","closing":"14:00"},"lunch":{"opening":"12:00","closing":"14:00"},"dinner":{"opening":"19:00","closing":"22:00"}},"Tuesday":{"breakfast":{"opening":"12:00","closing":"14:00"},"lunch":{"opening":"12:00","closing":"14:00"},"dinner":{"opening":"19:00","closing":"22:00"}},"Wednesday":{"breakfast":{"opening":"12:00","closing":"14:00"},"lunch":{"opening":"12:00","closing":"14:00"},"dinner":{"opening":"19:00","closing":"22:00"}},"Thrusday":{"breakfast":{"opening":"12:00","closing":"14:00"},"lunch":{"opening":"12:00","closing":"14:00"},"dinner":{"opening":"19:00","closing":"22:00"}},"Friday":{"breakfast":{"opening":"12:00","closing":"14:00"},"lunch":{"opening":"12:00","closing":"14:00"},"dinner":{"opening":"19:00","closing":"22:00"}},"Saturday":{"breakfast":{"opening":"12:00","closing":"14:00"},"lunch":{"opening":"12:00","closing":"17:00"},"dinner":{"opening":"19:00","closing":"20:00"}},"Sunday":{"breakfast":{"opening":"12:00","closing":"14:00"},"lunch":{"opening":"12:00","closing":"14:00"},"dinner":{"opening":"19:00","closing":"22:00"}}}', true, true, '1f8a7d11-7d88-4a68-b98f-2a5a42d8aa01', '^[A-Z0-9]{4}$', true),
-        ('c0bb3d45-9779-4ebf-8a30-77f0b8ecb7c9', 'Campus Sur', '321 Pine St', '+5544332211', '{"Monday":{"breakfast":{"opening":"12:00","closing":"14:00"},"lunch":{"opening":"12:00","closing":"14:00"},"dinner":{"opening":"19:00","closing":"22:00"}},"Tuesday":{"breakfast":{"opening":"12:00","closing":"14:00"},"lunch":{"opening":"12:00","closing":"14:00"},"dinner":{"opening":"19:00","closing":"22:00"}},"Wednesday":{"breakfast":{"opening":"12:00","closing":"14:00"},"lunch":{"opening":"12:00","closing":"14:00"},"dinner":{"opening":"19:00","closing":"22:00"}},"Thrusday":{"breakfast":{"opening":"12:00","closing":"14:00"},"lunch":{"opening":"12:00","closing":"14:00"},"dinner":{"opening":"19:00","closing":"22:00"}},"Friday":{"breakfast":{"opening":"12:00","closing":"14:00"},"lunch":{"opening":"12:00","closing":"14:00"},"dinner":{"opening":"19:00","closing":"22:00"}},"Saturday":{"breakfast":{"opening":"12:00","closing":"14:00"},"lunch":{"opening":"12:00","closing":"17:00"},"dinner":{"opening":"19:00","closing":"20:00"}},"Sunday":{"breakfast":{"opening":"12:00","closing":"14:00"},"lunch":{"opening":"12:00","closing":"14:00"},"dinner":{"opening":"19:00","closing":"22:00"}}}', true, true, '1f8a7d11-7d88-4a68-b98f-2a5a42d8aa01', '^[A-Z0-9]{4}$', true);
+        ('8c81aabb-dc05-4cf1-b9b3-1e3d3fd64ee2', 'Campus Central', '123 Main St', '+1234567890', '{"Monday":{"breakfast":{"opening":"12:00","closing":"14:00"},"lunch":{"opening":"12:00","closing":"14:00"},"dinner":{"opening":"19:00","closing":"22:00"}},"Tuesday":{"breakfast":{"opening":"12:00","closing":"14:00"},"lunch":{"opening":"12:00","closing":"14:00"},"dinner":{"opening":"19:00","closing":"22:00"}},"Wednesday":{"breakfast":{"opening":"12:00","closing":"14:00"},"lunch":{"opening":"12:00","closing":"14:00"},"dinner":{"opening":"19:00","closing":"22:00"}},"Thrusday":{"breakfast":{"opening":"12:00","closing":"14:00"},"lunch":{"opening":"12:00","closing":"14:00"},"dinner":{"opening":"19:00","closing":"22:00"}},"Friday":{"breakfast":{"opening":"12:00","closing":"14:00"},"lunch":{"opening":"12:00","closing":"14:00"},"dinner":{"opening":"19:00","closing":"22:00"}},"Saturday":{"breakfast":{"opening":"12:00","closing":"14:00"},"lunch":{"opening":"12:00","closing":"17:00"},"dinner":{"opening":"19:00","closing":"20:00"}},"Sunday":{"breakfast":{"opening":"12:00","closing":"14:00"},"lunch":{"opening":"12:00","closing":"14:00"},"dinner":{"opening":"19:00","closing":"22:00"}}}', true, true, '1f8a7d11-7d88-4a68-b98f-2a5a42d8aa01', '^[A-Z0-9]{4}$', true, 'https://fastly.4sqi.net/img/general/600x600/14301254_zQumD2eNEGwFfJSYAUEwM-KoR_UZ-Cgh90Cgh0NpTGg.jpg'),
+        ('a08c52b4-fd41-4b56-9cf4-88f217e94a2a', 'Campus Norte', '456 Elm St', '+0987654321', '{"Monday":{"breakfast":{"opening":"12:00","closing":"14:00"},"lunch":{"opening":"12:00","closing":"14:00"},"dinner":{"opening":"19:00","closing":"22:00"}},"Tuesday":{"breakfast":{"opening":"12:00","closing":"14:00"},"lunch":{"opening":"12:00","closing":"14:00"},"dinner":{"opening":"19:00","closing":"22:00"}},"Wednesday":{"breakfast":{"opening":"12:00","closing":"14:00"},"lunch":{"opening":"12:00","closing":"14:00"},"dinner":{"opening":"19:00","closing":"22:00"}},"Thrusday":{"breakfast":{"opening":"12:00","closing":"14:00"},"lunch":{"opening":"12:00","closing":"14:00"},"dinner":{"opening":"19:00","closing":"22:00"}},"Friday":{"breakfast":{"opening":"12:00","closing":"14:00"},"lunch":{"opening":"12:00","closing":"14:00"},"dinner":{"opening":"19:00","closing":"22:00"}},"Saturday":{"breakfast":{"opening":"12:00","closing":"14:00"},"lunch":{"opening":"12:00","closing":"17:00"},"dinner":{"opening":"19:00","closing":"20:00"}},"Sunday":{"breakfast":{"opening":"12:00","closing":"14:00"},"lunch":{"opening":"12:00","closing":"14:00"},"dinner":{"opening":"19:00","closing":"22:00"}}}', true, true, '1f8a7d11-7d88-4a68-b98f-2a5a42d8aa01', '^[A-Z0-9]{4}$', true, 'https://plazanorte.pe/wp-content/uploads/2024/03/MG_3449-scaled.jpg'),
+        ('c0bb3d45-9779-4ebf-8a30-77f0b8ecb7c9', 'Campus Sur', '321 Pine St', '+5544332211', '{"Monday":{"breakfast":{"opening":"12:00","closing":"14:00"},"lunch":{"opening":"12:00","closing":"14:00"},"dinner":{"opening":"19:00","closing":"22:00"}},"Tuesday":{"breakfast":{"opening":"12:00","closing":"14:00"},"lunch":{"opening":"12:00","closing":"14:00"},"dinner":{"opening":"19:00","closing":"22:00"}},"Wednesday":{"breakfast":{"opening":"12:00","closing":"14:00"},"lunch":{"opening":"12:00","closing":"14:00"},"dinner":{"opening":"19:00","closing":"22:00"}},"Thrusday":{"breakfast":{"opening":"12:00","closing":"14:00"},"lunch":{"opening":"12:00","closing":"14:00"},"dinner":{"opening":"19:00","closing":"22:00"}},"Friday":{"breakfast":{"opening":"12:00","closing":"14:00"},"lunch":{"opening":"12:00","closing":"14:00"},"dinner":{"opening":"19:00","closing":"22:00"}},"Saturday":{"breakfast":{"opening":"12:00","closing":"14:00"},"lunch":{"opening":"12:00","closing":"17:00"},"dinner":{"opening":"19:00","closing":"20:00"}},"Sunday":{"breakfast":{"opening":"12:00","closing":"14:00"},"lunch":{"opening":"12:00","closing":"14:00"},"dinner":{"opening":"19:00","closing":"22:00"}}}', true, true, '1f8a7d11-7d88-4a68-b98f-2a5a42d8aa01', '^[A-Z0-9]{4}$', true, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9I0K4LIDqXreYTz4vop2CWmCE9FmXPv59crvG_FVv9A&s');
 
-INSERT INTO category (category_id, name, restaurant_id)
+INSERT INTO category (category_id, name, restaurant_id, url_image )
 VALUES
-    ('8b06a6d7-7a7c-4e9c-8da3-2d5fcfe3ccdf', 'Pizzas', '1f8a7d11-7d88-4a68-b98f-2a5a42d8aa01'),
-    ('a92e13c9-f1cd-47c7-b12d-8eb7b86e1f10', 'Pollo', '1f8a7d11-7d88-4a68-b98f-2a5a42d8aa01'),
-    ('e329d937-3b8e-40ad-a4fb-3ef7e1216a1f', 'Burgers', '1f8a7d11-7d88-4a68-b98f-2a5a42d8aa01');
+    ('8b06a6d7-7a7c-4e9c-8da3-2d5fcfe3ccdf', 'Pizzas', '1f8a7d11-7d88-4a68-b98f-2a5a42d8aa01', 'https://www.pizzaiolo.mx/img/blog/pizza-hecha-de-varios-tipos-de-pizza-02%20(1).png'),
+    ('a92e13c9-f1cd-47c7-b12d-8eb7b86e1f10', 'Pollo', '1f8a7d11-7d88-4a68-b98f-2a5a42d8aa01', 'https://www.lavanguardia.com/files/article_gallery_microformat/uploads/2018/06/15/5e9982d75e45b.jpeg'),
+    ('e329d937-3b8e-40ad-a4fb-3ef7e1216a1f', 'Burgers', '1f8a7d11-7d88-4a68-b98f-2a5a42d8aa01', 'https://images.rappi.pe/restaurants_background/burgerking1-1658872825495.jpg');
 
 INSERT INTO campus_category (campus_category_id, category_id, campus_id)
 VALUES
@@ -300,9 +306,9 @@ VALUES
 
 INSERT INTO product (product_id, name, min_cooking_time, max_cooking_time, unit_of_time_cooking_time, description, is_breakfast, is_lunch, is_dinner, url_image, url_glb, free_sauce, is_available, has_variant, nutritional_information_id)
 VALUES
-    ('7c4a43f1-1077-4cb2-b6e1-8f2b100c1cf2', 'Pepperoni Pizza', 15, 20, 'MIN', 'Classic pizza topped with pepperoni slices and mozzarella cheese', false, true, true, 'pepperoni_pizza.jpg', 'pepperoni_pizza.glb', 1, true, false, '85c9e308-27d0-41a3-85c5-76af48c8e441'),
-    ('86a1e63a-95a3-4540-95c8-dfe7b3b48a4b', 'Pollo a la Horneado', 30, 35, 'MIN', 'A grill peruvian chicken with extra fries potatoes', false, false, true, 'pollo_brasa.jpg', 'pollo_brasa.glb', 2, true, true, 'b5df9dd8-25d1-4ee8-a3f5-1e3e4715b001'),
-    ('6a7f852e-537d-4a5f-bb6c-0578cc72bc7d', 'Cheeseburger', 10, 15, 'MIN', 'Juicy beef patty topped with cheddar cheese, lettuce, tomato, and mayo', true, true, true, 'cheeseburger.jpg', 'cheeseburger.glb', 2, true, false, 'de5a77de-1909-4ac9-8c3a-07cf29a30128');
+    ('7c4a43f1-1077-4cb2-b6e1-8f2b100c1cf2', 'Pepperoni Pizza', 15, 20, 'MIN', 'Classic pizza topped with pepperoni slices and mozzarella cheese', false, true, true, 'https://www.sortirambnens.com/wp-content/uploads/2019/02/pizza-de-peperoni.jpg', 'pepperoni_pizza.glb', 1, true, false, '85c9e308-27d0-41a3-85c5-76af48c8e441'),
+    ('86a1e63a-95a3-4540-95c8-dfe7b3b48a4b', 'Pollo a la Horneado', 30, 35, 'MIN', 'A grill peruvian chicken with extra fries potatoes', false, false, true, 'https://estrellasupermercados.com/wp-content/uploads/2021/06/POLLOS.jpg', 'pollo_brasa.glb', 2, true, true, 'b5df9dd8-25d1-4ee8-a3f5-1e3e4715b001'),
+    ('6a7f852e-537d-4a5f-bb6c-0578cc72bc7d', 'Cheeseburger', 10, 15, 'MIN', 'Juicy beef patty topped with cheddar cheese, lettuce, tomato, and mayo', true, true, true, 'https://s23209.pcdn.co/wp-content/uploads/2022/07/220602_DD_The-Best-Ever-Cheeseburger_267.jpg', 'cheeseburger.glb', 2, true, false, 'de5a77de-1909-4ac9-8c3a-07cf29a30128');
 
 INSERT INTO variant_type (variant_type_id, variant_type_name, name)
 VALUES
@@ -360,8 +366,8 @@ VALUES
 
 INSERT INTO menu (menu_id, name, amount_price, currency_price, min_cooking_time, max_cooking_time, unit_of_time_cooking_time, url_image, is_available, campus_id)
 VALUES
-    ('2a0c2f9a-187a-4f10-8268-bf3c7017f79a', 'Menu Economico', 10.00, 'PEN', 15, 20, 'MIN', 'economico.jpg', true, '8c81aabb-dc05-4cf1-b9b3-1e3d3fd64ee2'),
-    ('5d1e125a-3a12-4c3a-8610-365bb4f11895', 'Menu Ejecutivo', 15.00, 'PEN', 20, 25, 'MIN', 'ejecutivo.jpg', true, '8c81aabb-dc05-4cf1-b9b3-1e3d3fd64ee2');
+    ('2a0c2f9a-187a-4f10-8268-bf3c7017f79a', 'Menu Economico', 10.00, 'PEN', 15, 20, 'MIN', 'https://cdn.recetasderechupete.com/wp-content/uploads/2023/01/Menu_Semanal_Economico.jpg', true, '8c81aabb-dc05-4cf1-b9b3-1e3d3fd64ee2'),
+    ('5d1e125a-3a12-4c3a-8610-365bb4f11895', 'Menu Ejecutivo', 15.00, 'PEN', 20, 25, 'MIN', 'https://d100mj7v0l85u5.cloudfront.net/s3fs-public/menu-ejecutivo-con-pollo.jpg', true, '8c81aabb-dc05-4cf1-b9b3-1e3d3fd64ee2');
 
 
 INSERT INTO product_menu (product_menu_id, is_principal_dish, is_initial_dish, is_dessert, is_drink, is_available, product_id, menu_id)
@@ -372,9 +378,9 @@ VALUES
     ('1aefc067-5f57-482d-aa5f-0490abbe41e9', true, false, false, false, true, '7c4a43f1-1077-4cb2-b6e1-8f2b100c1cf2', '5d1e125a-3a12-4c3a-8610-365bb4f11895');
 
 
-INSERT INTO combo (combo_id, name, amount_price, currency_price, free_sauce, complement_amount)
+INSERT INTO combo (combo_id, name, amount_price, currency_price, free_sauce, complement_amount, min_cooking_time, max_cooking_time, unit_of_time_cooking_time, url_image)
 VALUES
-    ('2f5d3d62-12d9-45c3-8c6f-4f415e1b3d39', 'Combo Mega Pollo Burguer', 25.99, 'PEN', 2, 2);
+    ('2f5d3d62-12d9-45c3-8c6f-4f415e1b3d39', 'Combo Mega Pollo Burguer', 25.99, 'PEN', 2, 2, 10, 15, 'MIN', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS2DbJTUAhjta6B9fu25aYNspKKxT-eho0_gHRX6YZhjzlIVXB6oje3u13QZnsBktxKFhQ&usqp=CAU');
 
 
 INSERT INTO combo_product (combo_product_id, product_amount, product_id, combo_id)
@@ -389,12 +395,12 @@ VALUES
     ('92b24c5b-7a11-42b6-842e-68a428c7318d', '69cf4a78-12a3-4d1d-a4f4-6ed9e51c8aa6', '5c63e9e9-ebc6-4e15-b77d-5a0fb2d8a1a7'),
     ('0b16248c-029d-4a27-b8b0-c8f6d5d847e5', '7b0e92f4-90e4-4a8d-b2a9-91e4b7babb2a', '892f1d91-3636-46c7-8ff0-cc4a6c3c4ea5');
 
-INSERT INTO complement (complement_id, name, amount_price, currency_price, is_sauce, is_available)
+INSERT INTO complement (complement_id, name, amount_price, currency_price, is_sauce, is_available, url_image)
 VALUES
-    ('22ed25d2-6178-49a2-8a82-3908c38e8c5a', 'Mayonesa', 0.2, 'PEN', true, true),
-    ('c8b7f6cb-4b78-4973-9d6f-4741d0072cb9', 'Mostaza', 0.2, 'PEN', true, true),
-    ('20f56f6a-9c4f-4455-843b-5b29acccff77', 'Salsa de Ajo', 0.4, 'PEN', true, true),
-    ('f5b7f6cb-4b78-4973-9d6f-4741d0072cb9', 'Porcion de Papas ', 7, 'PEN', false, true);
+    ('22ed25d2-6178-49a2-8a82-3908c38e8c5a', 'Mayonesa', 0.2, 'PEN', true, true, 'https://www.cocinavital.mx/wp-content/uploads/2019/09/mayonesa-casera.jpg'),
+    ('c8b7f6cb-4b78-4973-9d6f-4741d0072cb9', 'Mostaza', 0.2, 'PEN', true, true, 'https://www.cocinavital.mx/wp-content/uploads/2019/09/mayonesa-casera.jpg'),
+    ('20f56f6a-9c4f-4455-843b-5b29acccff77', 'Salsa de Ajo', 0.4, 'PEN', true, true, 'https://www.cocinavital.mx/wp-content/uploads/2019/09/mayonesa-casera.jpg'),
+    ('f5b7f6cb-4b78-4973-9d6f-4741d0072cb9', 'Porcion de Papas ', 7, 'PEN', false, true, 'https://www.cocinavital.mx/wp-content/uploads/2019/09/mayonesa-casera.jpg');
 
 INSERT INTO product_complement (product_complement_id, free_amount, product_id, complement_id)
 VALUES
@@ -405,17 +411,17 @@ VALUES
     ('3b241101-e2bb-4255-8caf-4136c566a964', 2, '6a7f852e-537d-4a5f-bb6c-0578cc72bc7d', '22ed25d2-6178-49a2-8a82-3908c38e8c5a'),
     ('6ecd8c99-4036-403d-bf84-cf8400f67836', 2, '6a7f852e-537d-4a5f-bb6c-0578cc72bc7d', 'c8b7f6cb-4b78-4973-9d6f-4741d0072cb9');
 
-INSERT INTO combo_complement (combo_complement_id, complement_id, combo_id)
+INSERT INTO combo_complement (combo_complement_id, complement_id, combo_id, free_amount)
 VALUES
-    ('66f6f95b-63dc-4ed3-9648-03a623e4bda4', '22ed25d2-6178-49a2-8a82-3908c38e8c5a', '2f5d3d62-12d9-45c3-8c6f-4f415e1b3d39'),
-    ('6db9f5e0-7ee2-4ab3-a409-3a3dbb4bea38', 'c8b7f6cb-4b78-4973-9d6f-4741d0072cb9', '2f5d3d62-12d9-45c3-8c6f-4f415e1b3d39'),
-    ('e3d78b94-66a0-4c1c-9030-67133e75ae3a', 'f5b7f6cb-4b78-4973-9d6f-4741d0072cb9', '2f5d3d62-12d9-45c3-8c6f-4f415e1b3d39');
+    ('66f6f95b-63dc-4ed3-9648-03a623e4bda4', '22ed25d2-6178-49a2-8a82-3908c38e8c5a', '2f5d3d62-12d9-45c3-8c6f-4f415e1b3d39', 2),
+    ('6db9f5e0-7ee2-4ab3-a409-3a3dbb4bea38', 'c8b7f6cb-4b78-4973-9d6f-4741d0072cb9', '2f5d3d62-12d9-45c3-8c6f-4f415e1b3d39', 2),
+    ('e3d78b94-66a0-4c1c-9030-67133e75ae3a', 'f5b7f6cb-4b78-4973-9d6f-4741d0072cb9', '2f5d3d62-12d9-45c3-8c6f-4f415e1b3d39', 1);
 
 
-INSERT INTO promotion (promotion_id, name, discount, discount_type, detail, free_sauce, free_complements, is_available, has_variant, combo_id)
+INSERT INTO promotion (promotion_id, name, discount, discount_type, detail, free_sauce, free_complements, is_available, has_variant, combo_id, url_image)
 VALUES
-    ('2b883221-2e51-47d7-a047-8b15b6b30fa7', 'Oferta de pollo', 10, 'percentage', '10% de descuento en el producto', 1, 0, true, true, NULL),
-    ('b9f19657-67ab-48ef-90a7-6fd0f0bf6b38', 'Pollo Burguer Oferta', 5, 'currency', 'Descuento de $5 en el combo', 2, 2, true, false, '2f5d3d62-12d9-45c3-8c6f-4f415e1b3d39');
+    ('2b883221-2e51-47d7-a047-8b15b6b30fa7', 'Oferta de pollo', 10, 'TD01', '10% de descuento en el producto', 1, 0, true, true, NULL, 'https://www.sortirambnens.com/wp-content/uploads/2019/02/pizza-de-peperoni.jpg'),
+    ('b9f19657-67ab-48ef-90a7-6fd0f0bf6b38', 'Pollo Burguer Oferta', 5, 'TD02', 'Descuento de $5 en el combo', 2, 2, true, false, '2f5d3d62-12d9-45c3-8c6f-4f415e1b3d39', 'https://www.sortirambnens.com/wp-content/uploads/2019/02/pizza-de-peperoni.jpg');
 
 
 INSERT INTO product_variant_promotion (product_variant_promotion_id, product_variant_id ,promotion_id)

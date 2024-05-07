@@ -75,8 +75,7 @@ public class RestaurantService implements IRestaurantService {
                                 return Mono.error(new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.ALREADY_EXISTS.name(), RESTAURANT_ENTITY));
                             }
                             restaurant.setName(request.getName());
-                            restaurant.setImageUrl(request.getImageUrl());
-                            restaurant.setLogoUrl(request.getLogoUrl());
+                            restaurant.setLogoUrl(request.getImageUrl());
                             restaurant.setIsAvailable(request.getIsAvailable());
 
                             return restaurantRepository.save(restaurant).flatMap(updatedRestaurant -> Mono.just(GeneralResponse.<String>builder()

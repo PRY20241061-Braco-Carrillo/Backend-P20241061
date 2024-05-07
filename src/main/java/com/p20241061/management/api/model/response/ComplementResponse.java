@@ -20,4 +20,5 @@ public class ComplementResponse {
     private Double amountPrice;
     private String currencyPrice;
     private Boolean isSauce;
+    private String urlImage;
 }

@@ -11,7 +11,7 @@ import java.util.UUID;
 @Repository
 public interface ComplementRepository extends ReactiveCrudRepository<Complement, UUID> {
 
-    @Query("select c.complement_id, c.name , c.amount_price, c.currency_price, pc.free_amount, c.is_sauce, c.is_available  from product p, product_complement pc , complement c "
+    @Query("select c.complement_id, c.name , c.amount_price, c.currency_price, pc.free_amount, c.is_sauce, c.is_available, c.url_image  from product p, product_complement pc , complement c "
             + "where p.product_id = pc.product_id "
             + "and pc.complement_id = c.complement_id  "
             + "and c.is_available = true "
