@@ -14,13 +14,22 @@ import reactor.core.publisher.Mono;
 @Slf4j
 @RequiredArgsConstructor
 public class ComboHandler {
-//    private final IComboService comboService;
-//    private final ObjectValidator objectValidator;
-//
-//    public Mono<ServerResponse> getAll(ServerRequest request) {
-//        return comboService.getAll()
-//                .flatMap(response -> ServerResponse.ok()
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .bodyValue(response));
-//    }
+    private final IComboService comboService;
+
+    public Mono<ServerResponse> getAll(ServerRequest request) {
+        return comboService.getAll()
+                .flatMap(response -> ServerResponse.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(response));
+    }
+
+    public Mono<ServerResponse> getComboDetailById(ServerRequest request) {
+
+        String comboId = request.pathVariable("comboId");
+
+        return comboService.getComboDetailById(comboId)
+                .flatMap(response -> ServerResponse.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(response));
+    }
 }

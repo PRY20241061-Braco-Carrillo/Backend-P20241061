@@ -1,10 +1,14 @@
 package com.p20241061.management.infrastructure.interfaces;
 
 import com.p20241061.management.api.model.response.ComboResponse;
+import com.p20241061.management.api.model.response.get.GetComboDetailResponse;
 import com.p20241061.shared.models.response.GeneralResponse;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 public interface IComboService {
 
-    Mono<GeneralResponse<ComboResponse>> getAll();
+    Mono<GeneralResponse<List<ComboResponse>>> getAll();
+    Mono<GeneralResponse<GetComboDetailResponse>> getComboDetailById(String comboId);
 }

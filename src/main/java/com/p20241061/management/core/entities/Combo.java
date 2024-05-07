@@ -1,16 +1,19 @@
-package com.p20241061.management.api.model.response;
+package com.p20241061.management.core.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Table;
 
-import java.util.List;
 import java.util.UUID;
 
+@Table("Combo")
 @Getter
-@Builder
+@Setter
 @AllArgsConstructor
-public class ComboResponse {
+@NoArgsConstructor
+@Builder
+public class Combo {
+    @Id
     private UUID comboId;
     private String name;
     private Integer maxCookingTime;
@@ -20,6 +23,5 @@ public class ComboResponse {
     private String currencyPrice;
     private String urlImage;
     private Integer freeSauce;
-    private List<ComboProductResponse> products;
+    private Boolean isAvailable;
 }
-

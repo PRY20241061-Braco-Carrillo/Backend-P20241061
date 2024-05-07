@@ -165,10 +165,10 @@ CREATE TABLE combo (
     currency_price varchar(25) NOT NULL,
     url_image varchar(255),
     free_sauce integer  NOT NULL,
-    complement_amount int  NOT NULL,
     min_cooking_time int  NOT NULL,
     max_cooking_time int  NOT NULL,
     unit_of_time_cooking_time varchar(25)  NOT NULL,
+    is_available bool NOT NULL,
     CONSTRAINT combo_pk PRIMARY KEY (combo_id)
 );
 
@@ -378,9 +378,9 @@ VALUES
     ('1aefc067-5f57-482d-aa5f-0490abbe41e9', true, false, false, false, true, '7c4a43f1-1077-4cb2-b6e1-8f2b100c1cf2', '5d1e125a-3a12-4c3a-8610-365bb4f11895');
 
 
-INSERT INTO combo (combo_id, name, amount_price, currency_price, free_sauce, complement_amount, min_cooking_time, max_cooking_time, unit_of_time_cooking_time, url_image)
+INSERT INTO combo (combo_id, name, amount_price, currency_price, free_sauce, min_cooking_time, max_cooking_time, unit_of_time_cooking_time, url_image, is_available)
 VALUES
-    ('2f5d3d62-12d9-45c3-8c6f-4f415e1b3d39', 'Combo Mega Pollo Burguer', 25.99, 'PEN', 2, 2, 10, 15, 'MIN', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS2DbJTUAhjta6B9fu25aYNspKKxT-eho0_gHRX6YZhjzlIVXB6oje3u13QZnsBktxKFhQ&usqp=CAU');
+    ('2f5d3d62-12d9-45c3-8c6f-4f415e1b3d39', 'Combo Mega Pollo Burguer', 25.99, 'PEN', 2, 10, 15, 'MIN', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS2DbJTUAhjta6B9fu25aYNspKKxT-eho0_gHRX6YZhjzlIVXB6oje3u13QZnsBktxKFhQ&usqp=CAU', true);
 
 
 INSERT INTO combo_product (combo_product_id, product_amount, product_id, combo_id)
