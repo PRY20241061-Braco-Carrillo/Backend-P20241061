@@ -6,9 +6,10 @@ import com.p20241061.shared.models.response.GeneralResponse;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface IComboService {
 
     Mono<GeneralResponse<List<ComboResponse>>> getAll();
-    Mono<GeneralResponse<GetComboDetailResponse>> getComboDetailById(String comboId);
+    Mono<GeneralResponse<GetComboDetailResponse>> getComboDetailById(UUID comboId);
 }

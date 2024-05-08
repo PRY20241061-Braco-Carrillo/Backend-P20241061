@@ -10,6 +10,8 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
+import java.util.UUID;
+
 @Component
 @Slf4j
 @RequiredArgsConstructor
@@ -25,7 +27,7 @@ public class ComboHandler {
 
     public Mono<ServerResponse> getComboDetailById(ServerRequest request) {
 
-        String comboId = request.pathVariable("comboId");
+        UUID comboId = UUID.fromString(request.pathVariable("comboId"));
 
         return comboService.getComboDetailById(comboId)
                 .flatMap(response -> ServerResponse.ok()

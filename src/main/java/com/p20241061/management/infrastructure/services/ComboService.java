@@ -2,6 +2,7 @@ package com.p20241061.management.infrastructure.services;
 
 import com.p20241061.management.api.model.response.ComboResponse;
 import com.p20241061.management.api.model.response.get.GetComboDetailResponse;
+import com.p20241061.management.api.model.response.get.GetComboProductDetailResponse;
 import com.p20241061.management.core.repositories.ComboRepository;
 import com.p20241061.management.infrastructure.interfaces.IComboService;
 import com.p20241061.shared.models.enums.SuccessCode;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -19,6 +21,7 @@ import java.util.List;
 public class ComboService implements IComboService {
 
     private final ComboRepository comboRepository;
+
     @Override
     public Mono<GeneralResponse<List<ComboResponse>>> getAll() {
         return comboRepository.getAllByIsAvailable(true)
@@ -45,7 +48,40 @@ public class ComboService implements IComboService {
     }
 
     @Override
-    public Mono<GeneralResponse<GetComboDetailResponse>> getComboDetailById(String comboId) {
-        return null;
+    public Mono<GeneralResponse<GetComboDetailResponse>> getComboDetailById(UUID comboId) {
+        return comboRepository.findById(comboId)
+                .flatMap(combo -> comboRepository.getProductByComboId(comboId)
+                        .flatMap(comboProduct -> comboRepository.getComboProductVariantByProductId(comboProduct.getProductId())
+                                .collectList()
+                                .map(productVariants -> GetComboProductDetailResponse.builder()
+                                        .productId(comboProduct.getProductId())
+                                        .name(comboProduct.getName())
+                                        .description(comboProduct.getDescription())
+                                        .urlImage(comboProduct.getUrlImage())
+                                        .productAmount(comboProduct.getProductAmount())
+                                        .productVariants(productVariants)
+                                        .build())
+                        )
+                        .collectList()
+                        .flatMap(comboProductDetail -> comboRepository.getComboComplementByComboId(comboId)
+                                .collectList()
+                                .flatMap(complement -> Mono.just(GeneralResponse.<GetComboDetailResponse>builder()
+                                        .code(SuccessCode.SUCCESS.name())
+                                        .data(GetComboDetailResponse.builder()
+                                                .comboId(combo.getComboId())
+                                                .name(combo.getName())
+                                                .maxCookingTime(combo.getMaxCookingTime())
+                                                .minCookingTime(combo.getMinCookingTime())
+                                                .unitOfTimeCookingTime(combo.getUnitOfTimeCookingTime())
+                                                .amountPrice(combo.getAmountPrice())
+                                                .currencyPrice(combo.getCurrencyPrice())
+                                                .urlImage(combo.getUrlImage())
+                                                .freeSauce(combo.getFreeSauce())
+                                                .products(comboProductDetail)
+                                                .complements(complement)
+                                                .build())
+                                        .build()))
+                        )
+                );
     }
 }
