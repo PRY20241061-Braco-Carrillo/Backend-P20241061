@@ -5,10 +5,7 @@ import com.p20241061.management.api.mapping.NutritionalInformationMapper;
 import com.p20241061.management.api.mapping.PromotionMapper;
 import com.p20241061.management.api.model.request.create.CreatePromotionRequest;
 import com.p20241061.management.api.model.request.update.UpdatePromotionRequest;
-import com.p20241061.management.api.model.response.get.GetComboPromotionDetailResponse;
-import com.p20241061.management.api.model.response.get.GetComboPromotionResponse;
-import com.p20241061.management.api.model.response.get.GetProductVariantPromotionResponse;
-import com.p20241061.management.api.model.response.get.GetPromotionByCampusCategoryResponse;
+import com.p20241061.management.api.model.response.get.*;
 import com.p20241061.management.core.repositories.ComboRepository;
 import com.p20241061.management.core.repositories.ComplementRepository;
 import com.p20241061.management.core.repositories.NutritionalInformationRepository;
@@ -104,8 +101,55 @@ public class PromotionService implements IPromotionService {
     }
 
     @Override
-    public Mono<GeneralResponse<GetComboPromotionDetailResponse>> getComboPromotionDetail(UUID comboId) {
-        return null;
+    public Mono<GeneralResponse<GetComboPromotionDetailResponse>> getComboPromotionDetail(UUID promotionId) {
+        return promotionRepository.findById(promotionId)
+                .flatMap(promotion -> comboRepository.findById(promotion.getComboId())
+                        .flatMap(combo -> comboRepository.getProductByComboId(promotion.getComboId())
+                                .flatMap(comboProduct -> comboRepository.getComboProductVariantByProductId(comboProduct.getProductId())
+                                        .collectList()
+                                        .map(productVariants -> GetComboProductDetailResponse.builder()
+                                                .productId(comboProduct.getProductId())
+                                                .name(comboProduct.getName())
+                                                .description(comboProduct.getDescription())
+                                                .urlImage(comboProduct.getUrlImage())
+                                                .productAmount(comboProduct.getProductAmount())
+                                                .productVariants(productVariants)
+                                                .build())
+                                )
+                                .collectList()
+                                .flatMap(comboProductDetail -> comboRepository.getComboComplementByComboId(promotion.getComboId())
+                                        .collectList()
+                                        .map(complement -> GetComboDetailResponse.builder()
+                                                .comboId(combo.getComboId())
+                                                .name(combo.getName())
+                                                .maxCookingTime(combo.getMaxCookingTime())
+                                                .minCookingTime(combo.getMinCookingTime())
+                                                .unitOfTimeCookingTime(combo.getUnitOfTimeCookingTime())
+                                                .amountPrice(combo.getAmountPrice())
+                                                .currencyPrice(combo.getCurrencyPrice())
+                                                .urlImage(combo.getUrlImage())
+                                                .freeSauce(combo.getFreeSauce())
+                                                .products(comboProductDetail)
+                                                .complements(complement)
+                                                .build()
+                                        )
+                                )
+                        )
+                .flatMap(comboDetail -> Mono.just(GeneralResponse.<GetComboPromotionDetailResponse>builder()
+                        .code(SuccessCode.SUCCESS.name())
+                        .data(GetComboPromotionDetailResponse.builder()
+                                .promotionId(promotion.getPromotionId())
+                                .name(promotion.getName())
+                                .discount(promotion.getDiscount())
+                                .discountType(promotion.getDiscountType())
+                                .detail(promotion.getDetail())
+                                .urlImage(promotion.getUrlImage())
+                                .freeSauce(promotion.getFreeSauce())
+                                .comboId(promotion.getComboId())
+                                .comboDetail(comboDetail)
+                                .build())
+                        .build())
+                ));
     }
 
     @Override

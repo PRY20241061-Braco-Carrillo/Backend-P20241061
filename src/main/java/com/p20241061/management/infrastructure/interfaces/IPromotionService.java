@@ -17,7 +17,7 @@ public interface IPromotionService {
     Mono<GeneralResponse<GetProductVariantPromotionResponse>> getProductVariantPromotionById(UUID promotionId);
     Mono<GeneralResponse<List<GetPromotionByCampusCategoryResponse>>> getAllByCampusCategoryId(UUID campusCategoryId);
     Mono<GeneralResponse<List<GetComboPromotionResponse>>> getAllComboPromotion();
-    Mono<GeneralResponse<GetComboPromotionDetailResponse>> getComboPromotionDetail(UUID comboId);
+    Mono<GeneralResponse<GetComboPromotionDetailResponse>> getComboPromotionDetail(UUID promotionId);
     Mono<GeneralResponse<String>> create(CreatePromotionRequest request);
     Mono<GeneralResponse<String>> update(UpdatePromotionRequest request, UUID promotionId);
     Mono<GeneralResponse<String>> delete(UUID promotionId);
