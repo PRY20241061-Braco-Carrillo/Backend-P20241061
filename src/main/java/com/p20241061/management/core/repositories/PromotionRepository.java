@@ -1,5 +1,6 @@
 package com.p20241061.management.core.repositories;
 
+import com.p20241061.management.api.model.response.get.GetComboPromotionResponse;
 import com.p20241061.management.api.model.response.get.GetProductVariantPromotionDetailResponse;
 import com.p20241061.management.api.model.response.get.GetPromotionByCampusCategoryResponse;
 import com.p20241061.management.core.entities.Promotion;
@@ -30,4 +31,9 @@ public interface PromotionRepository extends ReactiveCrudRepository<Promotion, U
             "left join product p2 on p2.product_id = pv.product_id " +
             "where p.promotion_id = :promotionId ")
     Flux<GetProductVariantPromotionDetailResponse> getVariantPromotionDetail(UUID promotionId);
+
+    @Query("select p.promotion_id, c.combo_id, p.name, c.min_cooking_time, c.max_cooking_time , c.unit_of_time_cooking_time, c.amount_price, c.currency_price, p.discount, p.discount_type, p.url_image " +
+            "from promotion p, combo c " +
+            "where p.combo_id  = c.combo_id")
+    Flux<GetComboPromotionResponse> getAllComboPromotion();
 }

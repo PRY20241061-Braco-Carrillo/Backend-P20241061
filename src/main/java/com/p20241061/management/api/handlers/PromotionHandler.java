@@ -31,20 +31,28 @@ public class PromotionHandler {
                         .bodyValue(response));
     }
 
-    public Mono<ServerResponse> getComboPromotionById(ServerRequest request) {
-        UUID promotionId = UUID.fromString(request.pathVariable("promotionId"));
-
-        return promotionService.getComboPromotionById(promotionId)
-                .flatMap(response -> ServerResponse.ok()
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .bodyValue(response));
-    }
-
     public Mono<ServerResponse> getAllByCampusCategoryId(ServerRequest request) {
 
         UUID campusCategoryId = UUID.fromString(request.pathVariable("campusCategoryId"));
 
         return promotionService.getAllByCampusCategoryId(campusCategoryId)
+                .flatMap(response -> ServerResponse.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(response));
+    }
+
+    public Mono<ServerResponse> getAllComboPromotion(ServerRequest request) {
+
+        return promotionService.getAllComboPromotion()
+                .flatMap(response -> ServerResponse.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(response));
+    }
+
+    public Mono<ServerResponse> getComboPromotionDetail(ServerRequest request) {
+        UUID promotionId = UUID.fromString(request.pathVariable("promotionId"));
+
+        return promotionService.getComboPromotionDetail(promotionId)
                 .flatMap(response -> ServerResponse.ok()
                         .contentType(MediaType.APPLICATION_JSON)
                         .bodyValue(response));

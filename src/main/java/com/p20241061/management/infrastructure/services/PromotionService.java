@@ -5,9 +5,11 @@ import com.p20241061.management.api.mapping.NutritionalInformationMapper;
 import com.p20241061.management.api.mapping.PromotionMapper;
 import com.p20241061.management.api.model.request.create.CreatePromotionRequest;
 import com.p20241061.management.api.model.request.update.UpdatePromotionRequest;
+import com.p20241061.management.api.model.response.get.GetComboPromotionDetailResponse;
 import com.p20241061.management.api.model.response.get.GetComboPromotionResponse;
 import com.p20241061.management.api.model.response.get.GetProductVariantPromotionResponse;
 import com.p20241061.management.api.model.response.get.GetPromotionByCampusCategoryResponse;
+import com.p20241061.management.core.repositories.ComboRepository;
 import com.p20241061.management.core.repositories.ComplementRepository;
 import com.p20241061.management.core.repositories.NutritionalInformationRepository;
 import com.p20241061.management.core.repositories.PromotionRepository;
@@ -16,7 +18,6 @@ import com.p20241061.shared.exceptions.CustomException;
 import com.p20241061.shared.models.enums.ErrorCode;
 import com.p20241061.shared.models.enums.SuccessCode;
 import com.p20241061.shared.models.response.GeneralResponse;
-import com.p20241061.shared.utils.PaginatedRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -31,7 +32,7 @@ import static com.p20241061.shared.models.enums.CampusName.PROMOTION_ENTITY;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class PromotionService  implements IPromotionService {
+public class PromotionService implements IPromotionService {
 
     private final PromotionRepository promotionRepository;
     private final PromotionMapper promotionMapper;
@@ -39,6 +40,7 @@ public class PromotionService  implements IPromotionService {
     private final NutritionalInformationMapper nutritionalInformationMapper;
     private final ComplementRepository complementRepository;
     private final ComplementMapper complementMapper;
+    private final ComboRepository comboRepository;
 
     @Override
     public Mono<GeneralResponse<GetProductVariantPromotionResponse>> getProductVariantPromotionById(UUID promotionId) {
@@ -57,14 +59,9 @@ public class PromotionService  implements IPromotionService {
                                                         .nutritionalInformation(nutritionalInformationMapper.modelToResponse(nutritionalInformation))
                                                         .complements(complementMapper.modelToListResponse(complements))
                                                         .build())
-                                                .build()) )
-                ))
-        );
-    }
-
-    @Override
-    public Mono<GeneralResponse<List<GetComboPromotionResponse>>> getComboPromotionById(UUID promotionId) {
-        return null;
+                                                .build()))
+                                ))
+                );
     }
 
     @Override
@@ -76,6 +73,39 @@ public class PromotionService  implements IPromotionService {
                         .data(promotions)
                         .build())
                 );
+    }
+
+    @Override
+    public Mono<GeneralResponse<List<GetComboPromotionResponse>>> getAllComboPromotion() {
+        return promotionRepository.getAllComboPromotion()
+                .flatMap(comboPromotion -> comboRepository.getProductByComboId(comboPromotion.getComboId())
+                        .collectList()
+                        .map(comboProduct -> GetComboPromotionResponse.builder()
+                                .promotionId(comboPromotion.getPromotionId())
+                                .comboId(comboPromotion.getComboId())
+                                .name(comboPromotion.getName())
+                                .minCookingTime(comboPromotion.getMinCookingTime())
+                                .maxCookingTime(comboPromotion.getMaxCookingTime())
+                                .unitOfTimeCookingTime(comboPromotion.getUnitOfTimeCookingTime())
+                                .amountPrice(comboPromotion.getAmountPrice())
+                                .currencyPrice(comboPromotion.getCurrencyPrice())
+                                .discount(comboPromotion.getDiscount())
+                                .discountType(comboPromotion.getDiscountType())
+                                .urlImage(comboPromotion.getUrlImage())
+                                .products(comboProduct)
+                                .build())
+                )
+                .collectList()
+                .flatMap(comboPromotions -> Mono.just(GeneralResponse.<List<GetComboPromotionResponse>>builder()
+                        .code(SuccessCode.SUCCESS.name())
+                        .data(comboPromotions)
+                        .build())
+                );
+    }
+
+    @Override
+    public Mono<GeneralResponse<GetComboPromotionDetailResponse>> getComboPromotionDetail(UUID comboId) {
+        return null;
     }
 
     @Override

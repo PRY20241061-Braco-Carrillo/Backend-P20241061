@@ -11,6 +11,7 @@ import java.util.UUID;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class GetPromotionByCampusCategoryResponse {
     private UUID promotionId;
+    private UUID comboId;
     private String name;
     private Integer minCookingTime;
     private Integer maxCookingTime;
