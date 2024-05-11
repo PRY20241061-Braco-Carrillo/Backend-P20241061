@@ -21,6 +21,26 @@ public class MenuHandler {
     private final IMenuService menuService;
     private final ObjectValidator objectValidator;
 
+    public Mono<ServerResponse> getAllByCampus(ServerRequest request) {
+        UUID campusId = UUID.fromString(request.pathVariable("campusId"));
+
+        return menuService.getAllByCampus(campusId)
+                        .flatMap(response -> ServerResponse.ok()
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .bodyValue(response)
+                );
+    }
+
+    public Mono<ServerResponse> getMenuDetailById(ServerRequest request) {
+        UUID menuId = UUID.fromString(request.pathVariable("menuId"));
+
+        return menuService.getMenuDetailById(menuId)
+                .flatMap(response -> ServerResponse.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(response)
+                );
+    }
+
     public Mono<ServerResponse> create(ServerRequest request) {
         Mono<CreateMenuRequest> menuRequest = request.bodyToMono(CreateMenuRequest.class)
                 .doOnNext(objectValidator::validate);

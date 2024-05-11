@@ -157,6 +157,16 @@ CREATE TABLE product_menu (
     CONSTRAINT product_menu_menu FOREIGN KEY (menu_id) REFERENCES menu (menu_id)
 );
 
+-- Table: menu_product_variant
+CREATE TABLE menu_product_variant (
+    menu_product_variant_id uuid  NOT NULL DEFAULT gen_random_uuid(),
+    product_variant_id uuid  NOT NULL,
+    product_menu_id uuid NOT NULL,
+    CONSTRAINT menu_product_variant_pk PRIMARY KEY (menu_product_variant_id),
+    CONSTRAINT menu_product_variant_product_variant FOREIGN KEY (product_variant_id) REFERENCES product_variant (product_variant_id),
+    CONSTRAINT menu_product_variant_product_menu FOREIGN KEY (product_menu_id) REFERENCES product_menu (product_menu_id)
+);
+
 -- Table: combo
 CREATE TABLE combo (
     combo_id uuid  NOT NULL DEFAULT gen_random_uuid(),
@@ -290,25 +300,39 @@ INSERT INTO category (category_id, name, restaurant_id, url_image )
 VALUES
     ('8b06a6d7-7a7c-4e9c-8da3-2d5fcfe3ccdf', 'Pizzas', '1f8a7d11-7d88-4a68-b98f-2a5a42d8aa01', 'https://www.pizzaiolo.mx/img/blog/pizza-hecha-de-varios-tipos-de-pizza-02%20(1).png'),
     ('a92e13c9-f1cd-47c7-b12d-8eb7b86e1f10', 'Pollo', '1f8a7d11-7d88-4a68-b98f-2a5a42d8aa01', 'https://www.lavanguardia.com/files/article_gallery_microformat/uploads/2018/06/15/5e9982d75e45b.jpeg'),
-    ('e329d937-3b8e-40ad-a4fb-3ef7e1216a1f', 'Burgers', '1f8a7d11-7d88-4a68-b98f-2a5a42d8aa01', 'https://images.rappi.pe/restaurants_background/burgerking1-1658872825495.jpg');
+    ('e329d937-3b8e-40ad-a4fb-3ef7e1216a1f', 'Burgers', '1f8a7d11-7d88-4a68-b98f-2a5a42d8aa01', 'https://images.rappi.pe/restaurants_background/burgerking1-1658872825495.jpg'),
+    ('0eb7436a-746f-44b7-976b-4f0d7ea5cec6', 'Bebidas', '1f8a7d11-7d88-4a68-b98f-2a5a42d8aa01', 'https://images.rappi.pe/limonada/burgerking1-1658872825495.jpg'),
+    ('9eb7436a-746f-44b7-976b-4f0d7ea5cec6', 'Sopas', '1f8a7d11-7d88-4a68-b98f-2a5a42d8aa01', 'https://images.rappi.pe/sopas/burgerking1-1658872825495.jpg'),
+    ('8eb7436a-746f-44b7-976b-4f0d7ea5cec6', 'Postres', '1f8a7d11-7d88-4a68-b98f-2a5a42d8aa01', 'https://images.rappi.pe/postres/burgerking1-1658872825495.jpg');
 
 INSERT INTO campus_category (campus_category_id, category_id, campus_id)
 VALUES
     ('3c39460f-f8c9-4922-8b6b-77e55db4baf3', '8b06a6d7-7a7c-4e9c-8da3-2d5fcfe3ccdf', '8c81aabb-dc05-4cf1-b9b3-1e3d3fd64ee2'),
     ('4c1ef9d9-bded-4e0e-83c2-09c5bbed62f0', 'a92e13c9-f1cd-47c7-b12d-8eb7b86e1f10', '8c81aabb-dc05-4cf1-b9b3-1e3d3fd64ee2'),
-    ('9e45d48e-9187-4b5d-996e-486eaf9f00a0', 'e329d937-3b8e-40ad-a4fb-3ef7e1216a1f', '8c81aabb-dc05-4cf1-b9b3-1e3d3fd64ee2');
+    ('9e45d48e-9187-4b5d-996e-486eaf9f00a0', 'e329d937-3b8e-40ad-a4fb-3ef7e1216a1f', '8c81aabb-dc05-4cf1-b9b3-1e3d3fd64ee2'),
+    ('9e45d48e-9187-4b5d-996e-769eaf9f00a0', '0eb7436a-746f-44b7-976b-4f0d7ea5cec6', '8c81aabb-dc05-4cf1-b9b3-1e3d3fd64ee2'),
+    ('f135b2cd-1ac4-42b5-8517-024ba910db37', '9eb7436a-746f-44b7-976b-4f0d7ea5cec6', '8c81aabb-dc05-4cf1-b9b3-1e3d3fd64ee2'),
+    ('9e45d48e-9187-4b5d-996e-769eaf9f77d0', '8eb7436a-746f-44b7-976b-4f0d7ea5cec6', '8c81aabb-dc05-4cf1-b9b3-1e3d3fd64ee2');
 
 INSERT INTO nutritional_information (nutritional_information_id, calories, proteins, total_fat, carbohydrates, is_vegan, is_vegetarian, is_low_calories, is_high_protein, is_without_gluten, is_without_nut, is_without_lactose, is_without_eggs, is_without_seafood, is_without_pig)
 VALUES
     ('85c9e308-27d0-41a3-85c5-76af48c8e441', 500, 20, 25, 50, false, false, false, true, false, true, true, true, true, true),
     ('b5df9dd8-25d1-4ee8-a3f5-1e3e4715b001', 400, 15, 20, 40, true, true, true, false, true, true, false, true, false, true),
-    ('de5a77de-1909-4ac9-8c3a-07cf29a30128', 600, 30, 30, 60, false, false, false, true, true, false, false, true, true, true);
+    ('de5a77de-1909-4ac9-8c3a-07cf29a30128', 600, 30, 30, 60, false, false, false, true, true, false, false, true, true, true),
+    ('b5df9dd8-25d1-4ee8-a3f5-1e3e4715b002', 300, 10, 15, 30, true, true, true, false, true, true, false, true, false, true),
+    ('de5a77de-1909-4ac9-8c3a-07cf29a30129', 700, 35, 35, 70, false, false, false, true, true, false, false, true, true, true),
+    ('b5df9dd8-25d1-4ee8-a3f5-1e3e4715b003', 200, 5, 10, 20, true, true, true, false, true, true, false, true, false, true),
+    ('de5a77de-1909-4ac9-8c3a-07cf29a30130', 800, 40, 40, 80, false, false, false, true, true, false, false, true, true, true);
 
 INSERT INTO product (product_id, name, min_cooking_time, max_cooking_time, unit_of_time_cooking_time, description, is_breakfast, is_lunch, is_dinner, url_image, url_glb, free_sauce, is_available, has_variant, nutritional_information_id)
 VALUES
     ('7c4a43f1-1077-4cb2-b6e1-8f2b100c1cf2', 'Pepperoni Pizza', 15, 20, 'MIN', 'Classic pizza topped with pepperoni slices and mozzarella cheese', false, true, true, 'https://www.sortirambnens.com/wp-content/uploads/2019/02/pizza-de-peperoni.jpg', 'pepperoni_pizza.glb', 1, true, false, '85c9e308-27d0-41a3-85c5-76af48c8e441'),
     ('86a1e63a-95a3-4540-95c8-dfe7b3b48a4b', 'Pollo a la Horneado', 30, 35, 'MIN', 'A grill peruvian chicken with extra fries potatoes', false, false, true, 'https://estrellasupermercados.com/wp-content/uploads/2021/06/POLLOS.jpg', 'pollo_brasa.glb', 2, true, true, 'b5df9dd8-25d1-4ee8-a3f5-1e3e4715b001'),
-    ('6a7f852e-537d-4a5f-bb6c-0578cc72bc7d', 'Cheeseburger', 10, 15, 'MIN', 'Juicy beef patty topped with cheddar cheese, lettuce, tomato, and mayo', true, true, true, 'https://s23209.pcdn.co/wp-content/uploads/2022/07/220602_DD_The-Best-Ever-Cheeseburger_267.jpg', 'cheeseburger.glb', 2, true, false, 'de5a77de-1909-4ac9-8c3a-07cf29a30128');
+    ('6a7f852e-537d-4a5f-bb6c-0578cc72bc7d', 'Cheeseburger', 10, 15, 'MIN', 'Juicy beef patty topped with cheddar cheese, lettuce, tomato, and mayo', true, true, true, 'https://s23209.pcdn.co/wp-content/uploads/2022/07/220602_DD_The-Best-Ever-Cheeseburger_267.jpg', 'cheeseburger.glb', 2, true, false, 'de5a77de-1909-4ac9-8c3a-07cf29a30128'),
+    ('6a7f852e-537d-4a5f-bb6c-0456cc72bc7e', 'Arroz con pollo', 10, 15, 'MIN', 'Arroz y pollo ', false, true, true, 'https://www.cocinavital.mx/wp-content/uploads/2019/07/hamburguesa-de-pollo.jpg', 'hamburguesa_pollo.glb', 0, true, true, 'b5df9dd8-25d1-4ee8-a3f5-1e3e4715b002'),
+    ('6a7f852e-537d-4a5f-bb6c-0578cc72bc7e', 'Limonada', 1, 5, 'MIN', 'Bebida en base a limon, agua y azucar ', true, true, true, 'https://www.cocinavital.mx/wp-content/uploads/2019/07/hamburguesa-de-pollo.jpg', 'hamburguesa_pollo.glb', 0, true, true, 'de5a77de-1909-4ac9-8c3a-07cf29a30129'),
+    ('f076b7e2-3f28-4b86-a244-56ca274ee3c9', 'Menestron', 5, 10, 'MIN', 'Sopa en base de arroz y culandro', false, true, true, 'https://www.cocinavital.mx/wp-content/uploads/2019/07/hamburguesa-de-pollo.jpg', 'hamburguesa_pollo.glb', 0, true, false, 'b5df9dd8-25d1-4ee8-a3f5-1e3e4715b003'),
+    ('a2018f48-3db0-41ff-9c34-dd9d72021041', 'Arroz con Leche', 3, 8, 'MIN', 'Postre en base a arroz y leche ', false, true, true, 'https://www.cocinavital.mx/wp-content/uploads/2019/07/hamburguesa-de-pollo.jpg', 'hamburguesa_pollo.glb', 0, true, false, 'de5a77de-1909-4ac9-8c3a-07cf29a30130');
 
 INSERT INTO variant_type (variant_type_id, variant_type_name, name)
 VALUES
@@ -319,7 +343,11 @@ VALUES
     ('fd01db11-86b3-4d65-a37a-93eb663695b7', 'CC05', '1/8'),
     ('02dc732a-5681-4ba1-af46-8b134c4e1950', 'CC05', '1'),
     ('ecf7ff67-5e12-4f14-9cb8-f377e1c9f79c', 'CC01', 'Leña'),
-    ('f3b3b3b3-1b3b-4b3b-8b3b-3b3b3b3b3b3b', 'CC01', 'Brasa');
+    ('f3b3b3b3-1b3b-4b3b-8b3b-3b3b3b3b3b3b', 'CC01', 'Brasa'),
+    ('85be1aa5-fc24-4840-8887-666dda515c03', 'CC04', '1L'),
+    ('f11d7315-d166-44be-be97-67bb32a2eeab', 'CC04', '1.5L'),
+    ('b082b85c-1634-40e7-90c4-220a3bf7f780', 'CC02', 'Pierna'),
+    ('6573d9f3-d01a-4452-bfc1-34516d4fcd16', 'CC02', 'Pecho');
 
 INSERT INTO product_variant (product_variant_id, detail, variant_order, amount_price, currency_price, is_available, campus_category_id, product_id)
 VALUES
@@ -333,7 +361,13 @@ VALUES
     ('b00b545a-7a38-47e0-83b5-f66504cf2d9c', 'Medium', 2, 15.99, 'USD', true, '3c39460f-f8c9-4922-8b6b-77e55db4baf3', '7c4a43f1-1077-4cb2-b6e1-8f2b100c1cf2'),
     ('4c8d8ab5-d13e-4824-9d7c-d9f7b3a30c13', 'Large', 3, 20.99, 'USD', true, '3c39460f-f8c9-4922-8b6b-77e55db4baf3', '7c4a43f1-1077-4cb2-b6e1-8f2b100c1cf2'),
     ('fca4c4a1-5f6b-478d-92bb-f3f9184c1e9a', 'Small', 1, 10.99, 'USD', true, '9e45d48e-9187-4b5d-996e-486eaf9f00a0', '6a7f852e-537d-4a5f-bb6c-0578cc72bc7d'),
-    ('892f1d91-3636-46c7-8ff0-cc4a6c3c4ea5', 'Medium', 2, 15.99, 'USD', true, '9e45d48e-9187-4b5d-996e-486eaf9f00a0', '6a7f852e-537d-4a5f-bb6c-0578cc72bc7d');
+    ('892f1d91-3636-46c7-8ff0-cc4a6c3c4ea5', 'Medium', 2, 15.99, 'USD', true, '9e45d48e-9187-4b5d-996e-486eaf9f00a0', '6a7f852e-537d-4a5f-bb6c-0578cc72bc7d'),
+    ('87436519-753f-48fd-bb4a-dea2f97a095a', '1 litro', 1, 15.00, 'PEN', true, '9e45d48e-9187-4b5d-996e-769eaf9f00a0', '6a7f852e-537d-4a5f-bb6c-0578cc72bc7e'),
+    ('6eecdab9-f7bd-4922-a35d-54e2f674ab1e', '1,5 litros', 2, 18.00, 'PEN', true, '9e45d48e-9187-4b5d-996e-769eaf9f00a0', '6a7f852e-537d-4a5f-bb6c-0578cc72bc7e'),
+    ('a5d13a22-137b-4742-bc67-dbf22a41b8a4', 'Arroz con pollo parte Pierna', 1, 15.00, 'PEN', true, '4c1ef9d9-bded-4e0e-83c2-09c5bbed62f0', '6a7f852e-537d-4a5f-bb6c-0456cc72bc7e'),
+    ('fd62d619-a62f-47d9-9ec3-a4f87b033fd8', 'Arroz con pollo parte  Pecho', 2, 18.00, 'PEN', true, '4c1ef9d9-bded-4e0e-83c2-09c5bbed62f0', '6a7f852e-537d-4a5f-bb6c-0456cc72bc7e'),
+    ('56f2ec6d-ac2e-4846-842b-84a82673eaf5', 'Menestron', 1, 15.00, 'PEN', true, 'f135b2cd-1ac4-42b5-8517-024ba910db37', 'f076b7e2-3f28-4b86-a244-56ca274ee3c9'),
+    ('38a2f128-80e4-40ae-9c2e-09fa23f149b0', 'Arroz con Leche', 2, 18.00, 'PEN', true, '9e45d48e-9187-4b5d-996e-769eaf9f77d0', 'a2018f48-3db0-41ff-9c34-dd9d72021041');
 
 INSERT INTO product_variant_type (product_variant_type_id, product_variant_id, variant_type_id)
 VALUES
@@ -353,14 +387,22 @@ VALUES
     ('e6f67460-7d76-45d5-97de-62bb1e231c94', 'b00b545a-7a38-47e0-83b5-f66504cf2d9c', '34fbb9d7-9d33-4b6f-a004-d9b40b2a8c70'),
     ('ab142c3d-29e7-459d-916f-6d0c0cfbe20a', '4c8d8ab5-d13e-4824-9d7c-d9f7b3a30c13', '9a632da6-c7dc-4fd4-8918-d6020c847d84'),
     ('8c3cf22e-f33b-4989-bb5c-6cf0a5c25ab9', 'fca4c4a1-5f6b-478d-92bb-f3f9184c1e9a', '94d1748a-d6dc-4822-9f2b-d7c2795d0c2b'),
-    ('28c7b71e-15d1-49e5-a91a-5d2aa0e94f80', '892f1d91-3636-46c7-8ff0-cc4a6c3c4ea5', '34fbb9d7-9d33-4b6f-a004-d9b40b2a8c70');
+    ('28c7b71e-15d1-49e5-a91a-5d2aa0e94f80', '892f1d91-3636-46c7-8ff0-cc4a6c3c4ea5', '34fbb9d7-9d33-4b6f-a004-d9b40b2a8c70'),
+    ('f3b3b3b3-1b3b-4b3b-8b3b-3b3b3b3b3b5b', '87436519-753f-48fd-bb4a-dea2f97a095a', '85be1aa5-fc24-4840-8887-666dda515c03'),
+    ('d0ddb30e-0ceb-4d01-b172-ee8114045d32', '6eecdab9-f7bd-4922-a35d-54e2f674ab1e', 'f11d7315-d166-44be-be97-67bb32a2eeab'),
+    ('dd1df679-4add-47c8-8be0-bdfee0625c4a', 'a5d13a22-137b-4742-bc67-dbf22a41b8a4', 'b082b85c-1634-40e7-90c4-220a3bf7f780'),
+    ('0bd4c578-2683-4fb8-bbad-c13e0af99961', 'fd62d619-a62f-47d9-9ec3-a4f87b033fd8', '6573d9f3-d01a-4452-bfc1-34516d4fcd16');
 
 
 INSERT INTO minim_product_price (minim_product_price_id, product_variant_id, campus_category_id)
 VALUES
     ('d4dbbb9b-6b90-4b5c-88e1-34a0abdf6371', '8015ed4a-1d05-4c8e-8481-582d669f2e18', '4c1ef9d9-bded-4e0e-83c2-09c5bbed62f0'),
     ('eeb1b7cd-19da-4b1b-af79-6a7e30127dc8', 'e5682c21-1fbf-4e78-893e-14636e2c3f9a', '3c39460f-f8c9-4922-8b6b-77e55db4baf3'),
-    ('b1cb4606-4e70-49d7-9812-34491d21d488', 'fca4c4a1-5f6b-478d-92bb-f3f9184c1e9a', '9e45d48e-9187-4b5d-996e-486eaf9f00a0');
+    ('b1cb4606-4e70-49d7-9812-34491d21d488', 'fca4c4a1-5f6b-478d-92bb-f3f9184c1e9a', '9e45d48e-9187-4b5d-996e-486eaf9f00a0'),
+    ('3e313ff6-8a87-4d32-a880-406506c74d0e', '87436519-753f-48fd-bb4a-dea2f97a095a', '9e45d48e-9187-4b5d-996e-769eaf9f00a0'),
+    ('5bc11094-d98f-40d1-8f18-f059d1ad3ba3', 'a5d13a22-137b-4742-bc67-dbf22a41b8a4', '4c1ef9d9-bded-4e0e-83c2-09c5bbed62f0'),
+    ('8168dd9d-0459-4f17-8d9d-cbc9ee934c43', '56f2ec6d-ac2e-4846-842b-84a82673eaf5', 'f135b2cd-1ac4-42b5-8517-024ba910db37'),
+    ('ed670cb5-b720-43a9-a2f6-42413b09911e', '38a2f128-80e4-40ae-9c2e-09fa23f149b0', '9e45d48e-9187-4b5d-996e-769eaf9f77d0');
 
 
 
@@ -370,12 +412,27 @@ VALUES
     ('5d1e125a-3a12-4c3a-8610-365bb4f11895', 'Menu Ejecutivo', 15.00, 'PEN', 20, 25, 'MIN', 'https://d100mj7v0l85u5.cloudfront.net/s3fs-public/menu-ejecutivo-con-pollo.jpg', true, '8c81aabb-dc05-4cf1-b9b3-1e3d3fd64ee2');
 
 
+
 INSERT INTO product_menu (product_menu_id, is_principal_dish, is_initial_dish, is_dessert, is_drink, is_available, product_id, menu_id)
 VALUES
     ('8f98373a-cb7d-43ad-99ec-30f5baf3db7a', false, false, false, false, true, '7c4a43f1-1077-4cb2-b6e1-8f2b100c1cf2', '2a0c2f9a-187a-4f10-8268-bf3c7017f79a'),
     ('1fc5157c-f2d0-4e1e-9f47-97a0aeed19a7', true, true, false, false, true, '86a1e63a-95a3-4540-95c8-dfe7b3b48a4b', '2a0c2f9a-187a-4f10-8268-bf3c7017f79a'),
-    ('ab1f987a-08f5-4f92-ae14-7f6a5f291eb1', false, true, false, false, true, '6a7f852e-537d-4a5f-bb6c-0578cc72bc7d', '5d1e125a-3a12-4c3a-8610-365bb4f11895'),
-    ('1aefc067-5f57-482d-aa5f-0490abbe41e9', true, false, false, false, true, '7c4a43f1-1077-4cb2-b6e1-8f2b100c1cf2', '5d1e125a-3a12-4c3a-8610-365bb4f11895');
+    ('ab1f987a-08f5-4f92-ae14-7f6a5f291eb1', false, true, false, true, true, '6a7f852e-537d-4a5f-bb6c-0578cc72bc7e', '2a0c2f9a-187a-4f10-8268-bf3c7017f79a'),
+    ('1aefc067-5f57-482d-aa5f-0490abbe41e9', true, false, false, false, true, '6a7f852e-537d-4a5f-bb6c-0456cc72bc7e', '5d1e125a-3a12-4c3a-8610-365bb4f11895'),
+    ('69cf4a78-12a3-4d1d-a4f4-6ed9e51c8aa6', false, false, false, true, true, '6a7f852e-537d-4a5f-bb6c-0578cc72bc7e', '5d1e125a-3a12-4c3a-8610-365bb4f11895'),
+    ('865ac6e9-aa2c-4ef2-ba86-5a2e8f3616f0', false, true, false, false, true, 'f076b7e2-3f28-4b86-a244-56ca274ee3c9', '5d1e125a-3a12-4c3a-8610-365bb4f11895'),
+    ('651110d9-ba32-49e1-b920-4b78b1a5e7e3', false, false, true, false, true, 'a2018f48-3db0-41ff-9c34-dd9d72021041', '5d1e125a-3a12-4c3a-8610-365bb4f11895');
+
+INSERT INTO menu_product_variant (menu_product_variant_id, product_variant_id, product_menu_id)
+VALUES
+    ('f4265c6b-86e9-4c82-92ec-96bc5ec52b68', 'b00b545a-7a38-47e0-83b5-f66504cf2d9c', '8f98373a-cb7d-43ad-99ec-30f5baf3db7a'),
+    ('865ac6e9-aa2c-4ef2-ba86-5a2e8f3616f0', 'a482c179-12c0-4a58-bdc2-4d4f8eef64cf', '1fc5157c-f2d0-4e1e-9f47-97a0aeed19a7'),
+    ('0f3e70a6-80cc-4823-8a53-5ab6a3de4813', '87436519-753f-48fd-bb4a-dea2f97a095a', 'ab1f987a-08f5-4f92-ae14-7f6a5f291eb1'),
+    ('e27a155f-5313-47fd-aa6b-1ad784835f63', 'a5d13a22-137b-4742-bc67-dbf22a41b8a4', '1aefc067-5f57-482d-aa5f-0490abbe41e9'),
+    ('f44b16bb-2aec-4406-b2a9-93e5b66b5e3e', 'fd62d619-a62f-47d9-9ec3-a4f87b033fd8', '1aefc067-5f57-482d-aa5f-0490abbe41e9'),
+    ('fed0d348-ee0f-4ba6-88d3-b43d54d3fe51', '87436519-753f-48fd-bb4a-dea2f97a095a', '69cf4a78-12a3-4d1d-a4f4-6ed9e51c8aa6'),
+    ('af0771a0-9219-4419-8ef9-3c80d36af181', '56f2ec6d-ac2e-4846-842b-84a82673eaf5', '865ac6e9-aa2c-4ef2-ba86-5a2e8f3616f0'),
+    ('1fbefa77-69cc-418c-a6b6-45a92060c429', '38a2f128-80e4-40ae-9c2e-09fa23f149b0', '651110d9-ba32-49e1-b920-4b78b1a5e7e3');
 
 
 INSERT INTO combo (combo_id, name, amount_price, currency_price, free_sauce, min_cooking_time, max_cooking_time, unit_of_time_cooking_time, url_image, is_available)
