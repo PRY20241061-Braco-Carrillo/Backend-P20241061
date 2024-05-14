@@ -2,7 +2,7 @@ package com.p20241061.management.core.repositories;
 
 import com.p20241061.management.api.model.response.ComboProductResponse;
 import com.p20241061.management.api.model.response.get.GetComboComplementResponse;
-import com.p20241061.management.api.model.response.get.GetComboProductVariantResponse;
+import com.p20241061.management.api.model.response.get.GetProductVariantResponse;
 import com.p20241061.management.core.entities.Combo;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
@@ -30,7 +30,7 @@ public interface ComboRepository extends ReactiveCrudRepository<Combo, UUID> {
             "and vt.variant_type_id  = pvt.variant_type_id " +
             "and cp.product_id = :productId " +
             "group by pv.product_variant_id, cp.product_amount, pv.detail, pv.variant_order")
-    Flux<GetComboProductVariantResponse> getComboProductVariantByProductId(UUID productId);
+    Flux<GetProductVariantResponse> getComboProductVariantByProductId(UUID productId);
 
     @Query("select  c.complement_id, c.name, c.amount_price, c.currency_price, c.is_sauce, c.url_image, cc.free_amount  " +
             "from combo_complement cc, complement c " +

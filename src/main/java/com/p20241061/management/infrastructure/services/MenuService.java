@@ -32,7 +32,13 @@ public class MenuService implements IMenuService {
 
     @Override
     public Mono<GeneralResponse<List<MenuResponse>>> getAllByCampus(UUID campusId) {
-        return null;
+        return menuRepository.getMenuByCampusId(campusId)
+                .collectList()
+                .flatMap(menuResponses -> Mono.just(GeneralResponse.<List<MenuResponse>>builder()
+                        .code(SuccessCode.SUCCESS.name())
+                        .data(menuMapper.modelToListResponse(menuResponses))
+                        .build())
+                );
     }
 
     @Override
@@ -55,8 +61,6 @@ public class MenuService implements IMenuService {
                 .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), MENU_ENTITY)))
                 .flatMap(menu -> {
                     menu.setName(request.getName());
-                    menu.setPrice(request.getPrice());
-                    menu.setCookingTime(request.getCookingTime());
                     menu.setUrlImage(request.getUrlImage());
 
                     return menuRepository.save(menu).flatMap(updatedMenu -> Mono.just(GeneralResponse.<String>builder()

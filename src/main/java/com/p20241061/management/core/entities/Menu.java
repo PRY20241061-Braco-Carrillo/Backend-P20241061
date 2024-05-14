@@ -16,7 +16,12 @@ public class Menu {
     @Id
     private UUID menuId;
     private String name;
-    private Double price;
-    private String cookingTime;
+    private Double amountPrice;
+    private String currencyPrice;
+    private Integer minCookingTime;
+    private Integer maxCookingTime;
+    private String unitOfTimeCookingTime;
     private String urlImage;
+    private Boolean isAvailable;
+    private UUID campusId;
 }
