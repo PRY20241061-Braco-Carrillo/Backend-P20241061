@@ -3,11 +3,13 @@ package com.p20241061.management.api.model.response.get;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import reactor.core.publisher.Flux;
+import lombok.Setter;
 
+import java.util.List;
 import java.util.UUID;
 
 @Getter
+@Setter
 @AllArgsConstructor
 @Builder
 public class GetProductsToMenuDetailResponse {
@@ -16,5 +18,5 @@ public class GetProductsToMenuDetailResponse {
     private String name;
     private String description;
     private String urlImage;
-    private Flux<GetProductVariantResponse> variants;
+    private List<GetProductVariantResponse> variants;
 }

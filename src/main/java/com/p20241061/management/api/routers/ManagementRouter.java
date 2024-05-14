@@ -56,7 +56,7 @@ public class ManagementRouter {
     RouterFunction<ServerResponse> menuRtr(MenuHandler handler) {
         return RouterFunctions.route()
                 .GET(PATH_MENU + "/{campusId}", handler::getAllByCampus)
-                .GET(PATH_MENU + "/{menuId}", handler::getMenuDetailById)
+                .GET(PATH_MENU + "/detail/{menuId}", handler::getMenuDetailById)
                 .POST(PATH_MENU, handler::create)
                 .PUT(PATH_MENU + "/{menuId}", handler::update)
                 .DELETE(PATH_MENU + "/{menuId}", handler::delete)

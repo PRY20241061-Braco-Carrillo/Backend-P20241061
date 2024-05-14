@@ -8,6 +8,7 @@ import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.UUID;
 
@@ -20,28 +21,28 @@ public interface MenuRepository extends ReactiveCrudRepository<Menu, UUID> {
             "where pm.product_id = p.product_id " +
             "and pm.menu_id = :menuId " +
             "and pm.is_dessert = true")
-    Flux<GetProductsToMenuDetailResponse> getDessertToMenuDetail(UUID menuId, String productType);
+    Mono<GetProductsToMenuDetailResponse> getDessertToMenuDetail(UUID menuId);
 
     @Query("select p.product_id, pm.product_menu_id, p.name, p.description, p.url_image " +
             "from product_menu pm, product p " +
             "where pm.product_id = p.product_id " +
             "and pm.menu_id = :menuId " +
             "and pm.is_initial_dish = true")
-    Flux<GetProductsToMenuDetailResponse> getInitialDishToMenuDetail(UUID menuId, String productType);
+    Mono<GetProductsToMenuDetailResponse> getInitialDishToMenuDetail(UUID menuId);
 
     @Query("select p.product_id, pm.product_menu_id, p.name, p.description, p.url_image " +
             "from product_menu pm, product p " +
             "where pm.product_id = p.product_id " +
             "and pm.menu_id = :menuId " +
             "and pm.is_principal_dish = true")
-    Flux<GetProductsToMenuDetailResponse> getPrincipalDishToMenuDetail(UUID menuId, String productType);
+    Mono<GetProductsToMenuDetailResponse> getPrincipalDishToMenuDetail(UUID menuId);
 
     @Query("select p.product_id, pm.product_menu_id, p.name, p.description, p.url_image " +
             "from product_menu pm, product p " +
             "where pm.product_id = p.product_id " +
             "and pm.menu_id = :menuId " +
             "and pm.is_drink = true")
-    Flux<GetProductsToMenuDetailResponse> getDrinkToMenuDetail(UUID menuId, String productType);
+    Mono<GetProductsToMenuDetailResponse> getDrinkToMenuDetail(UUID menuId);
 
     @Query("select pv.product_variant_id, pv.detail, pv.variant_order, STRING_AGG(vt.variant_type_name || ': ' || vt.name, ', ') AS variant_info " +
             "from menu_product_variant mpv, product_variant pv, product_variant_type pvt, variant_type vt " +
