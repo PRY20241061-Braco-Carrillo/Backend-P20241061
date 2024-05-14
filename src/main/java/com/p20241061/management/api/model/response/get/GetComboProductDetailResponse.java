@@ -16,5 +16,5 @@ public class GetComboProductDetailResponse {
     private String description;
     private String urlImage;
     private Integer productAmount;
-    private List<GetComboProductVariantResponse> productVariants;
+    private List<GetProductVariantResponse> productVariants;
 }

@@ -32,12 +32,65 @@ public class MenuService implements IMenuService {
 
     @Override
     public Mono<GeneralResponse<List<MenuResponse>>> getAllByCampus(UUID campusId) {
-        return null;
+        return menuRepository.getMenuByCampusId(campusId)
+                .collectList()
+                .flatMap(menuResponses -> Mono.just(GeneralResponse.<List<MenuResponse>>builder()
+                        .code(SuccessCode.SUCCESS.name())
+                        .data(menuMapper.modelToListResponse(menuResponses))
+                        .build())
+                );
     }
 
     @Override
     public Mono<GeneralResponse<GetMenuDetailsResponse>> getMenuDetailById(UUID menuId) {
-        return null;
+        return menuRepository.findById(menuId)
+                .flatMap(menu -> menuRepository.getDessertToMenuDetail(menuId)
+                        .flatMap(dessert -> menuRepository.getProductVariantByProductToMenu(dessert.getProductMenuId())
+                                .collectList()
+                                .map(productVariants -> {
+                                    dessert.setVariants(productVariants);
+                                    return dessert;
+                                }))
+                        .flatMap(finalDessert -> menuRepository.getDrinkToMenuDetail(menuId)
+                                .flatMap(drink -> menuRepository.getProductVariantByProductToMenu(drink.getProductMenuId())
+                                        .collectList()
+                                        .map(productVariants -> {
+                                            drink.setVariants(productVariants);
+                                            return drink;
+                                        }))
+                                .flatMap(finalDrink -> menuRepository.getInitialDishToMenuDetail(menuId)
+                                                .flatMap(initialDish -> menuRepository.getProductVariantByProductToMenu(initialDish.getProductMenuId())
+                                                        .collectList()
+                                                        .map(productVariants -> {
+                                                            initialDish.setVariants(productVariants);
+                                                            return initialDish;
+                                                        }))
+                                                .flatMap(finalInitialDishes -> menuRepository.getPrincipalDishToMenuDetail(menuId)
+                                                        .flatMap(principalDish -> menuRepository.getProductVariantByProductToMenu(principalDish.getProductMenuId())
+                                                                .collectList()
+                                                                .map(productVariants -> {
+                                                                    principalDish.setVariants(productVariants);
+                                                                    return principalDish;
+                                                                }))
+                .flatMap(finalPrincipalDish -> Mono.just(GeneralResponse.<GetMenuDetailsResponse>builder()
+                        .code(SuccessCode.SUCCESS.name())
+                        .data(GetMenuDetailsResponse
+                                .builder()
+                                .menuId(menu.getMenuId())
+                                .name(menu.getName())
+                                .amountPrice(menu.getAmountPrice())
+                                .currencyPrice(menu.getCurrencyPrice())
+                                .minCookingTime(menu.getMinCookingTime())
+                                .maxCookingTime(menu.getMaxCookingTime())
+                                .unitOfTimeCookingTime(menu.getUnitOfTimeCookingTime())
+                                .urlImage(menu.getUrlImage())
+                                .desserts(finalDessert)
+                                .drinks(finalDrink)
+                                .initialDishes(finalInitialDishes)
+                                .principalDishes(finalPrincipalDish)
+                                .build())
+                        .build()))
+                ))));
     }
 
     @Override
@@ -55,8 +108,6 @@ public class MenuService implements IMenuService {
                 .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), MENU_ENTITY)))
                 .flatMap(menu -> {
                     menu.setName(request.getName());
-                    menu.setPrice(request.getPrice());
-                    menu.setCookingTime(request.getCookingTime());
                     menu.setUrlImage(request.getUrlImage());
 
                     return menuRepository.save(menu).flatMap(updatedMenu -> Mono.just(GeneralResponse.<String>builder()

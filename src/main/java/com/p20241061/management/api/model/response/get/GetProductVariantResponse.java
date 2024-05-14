@@ -9,7 +9,7 @@ import java.util.UUID;
 @Getter
 @AllArgsConstructor
 @Builder
-public class GetComboProductVariantResponse {
+public class GetProductVariantResponse {
     private UUID productVariantId;
     private String detail;
     private Integer variantOrder;
