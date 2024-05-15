@@ -73,8 +73,8 @@ public class PromotionService implements IPromotionService {
     }
 
     @Override
-    public Mono<GeneralResponse<List<GetComboPromotionResponse>>> getAllComboPromotion() {
-        return promotionRepository.getAllComboPromotion()
+    public Mono<GeneralResponse<List<GetComboPromotionResponse>>> getAllComboPromotion(UUID campusId) {
+        return promotionRepository.getAllComboPromotion(campusId)
                 .flatMap(comboPromotion -> comboRepository.getProductByComboId(comboPromotion.getComboId())
                         .collectList()
                         .map(comboProduct -> GetComboPromotionResponse.builder()

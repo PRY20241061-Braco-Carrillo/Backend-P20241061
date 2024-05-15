@@ -178,7 +178,6 @@ CREATE TABLE combo (
     min_cooking_time int  NOT NULL,
     max_cooking_time int  NOT NULL,
     unit_of_time_cooking_time varchar(25)  NOT NULL,
-    is_available bool NOT NULL,
     CONSTRAINT combo_pk PRIMARY KEY (combo_id)
 );
 
@@ -208,7 +207,6 @@ CREATE TABLE complement (
     amount_price decimal(12,2)  NOT NULL,
     currency_price varchar(25)  NOT NULL,
     is_sauce bool NOT NULL,
-    is_available bool NOT NULL,
     url_image varchar(255),
     CONSTRAINT complement_pk PRIMARY KEY (complement_id)
 );
@@ -285,6 +283,183 @@ CREATE TABLE "user" (
     CONSTRAINT user_pk PRIMARY KEY (user_id)
 );
 
+-- Table: campus_combo_promotion
+CREATE TABLE campus_combo_promotion (
+    campus_promotion_id uuid  NOT NULL DEFAULT gen_random_uuid(),
+    is_available bool NOT NULL,
+    campus_id uuid NOT NULL,
+    promotion_id uuid NOT NULL,
+    CONSTRAINT campus_combo_promotion_p PRIMARY KEY (campus_promotion_id),
+    CONSTRAINT campus_combo_promotion_campus FOREIGN KEY (campus_id) REFERENCES campus (campus_id),
+    CONSTRAINT campus_combo_promotion_promotion FOREIGN KEY (promotion_id) REFERENCES promotion (promotion_id)
+);
+
+-- Table: campus_complement
+CREATE TABLE campus_complement (
+    campus_complement_id uuid  NOT NULL DEFAULT gen_random_uuid(),
+    is_available bool NOT NULL,
+    complement_id uuid NOT NULL,
+    campus_id uuid NOT NULL,
+    CONSTRAINT campus_complement_p PRIMARY KEY (campus_complement_id),
+    CONSTRAINT campus_complement_campus FOREIGN KEY (campus_id) REFERENCES campus (campus_id),
+    CONSTRAINT campus_complement_complement FOREIGN KEY (complement_id) REFERENCES complement (complement_id)
+);
+
+-- Table: campus_combo
+CREATE TABLE campus_combo (
+    campus_combo_id uuid  NOT NULL DEFAULT gen_random_uuid(),
+    is_available bool NOT NULL,
+    combo_id uuid NOT NULL,
+    campus_id uuid NOT NULL,
+    CONSTRAINT campus_combo_p PRIMARY KEY (campus_combo_id),
+    CONSTRAINT campus_combo_campus FOREIGN KEY (campus_id) REFERENCES campus (campus_id),
+    CONSTRAINT campus_combo_combo FOREIGN KEY (combo_id) REFERENCES combo (combo_id)
+);
+
+-- Table: order_request
+CREATE TABLE order_request (
+    order_request_id uuid  NOT NULL DEFAULT gen_random_uuid(),
+    order_request_date date NOT NULL,
+    confirmation_token varchar(25) NOT NULL,
+    total_price decimal(12,2) NOT NULL,
+    CONSTRAINT order_request_p PRIMARY KEY (order_request_id)
+);
+
+-- Table: "order"
+CREATE TABLE "order" (
+    order_id uuid  NOT NULL DEFAULT gen_random_uuid(),
+    order_status varchar(25) NOT NULL,
+    table_number varchar(25) NULL,
+    for_table bool NULL,
+    user_id uuid NULL,
+    order_request_id uuid NOT NULL,
+    CONSTRAINT order_p PRIMARY KEY (order_id),
+    CONSTRAINT order_user FOREIGN KEY (user_id) REFERENCES "user" (user_id),
+    CONSTRAINT order_order_request FOREIGN KEY (order_request_id) REFERENCES order_request (order_request_id)
+);
+
+-- Table: order_combo
+CREATE TABLE order_combo (
+    order_combo_id uuid  NOT NULL DEFAULT gen_random_uuid(),
+    unit_price decimal(12,2) NOT NULL,
+    combo_amount int NOT NULL,
+    combo_id uuid NULL,
+    order_request_id uuid NOT NULL,
+    CONSTRAINT order_combo_p PRIMARY KEY (order_combo_id),
+    CONSTRAINT order_combo_combo FOREIGN KEY (combo_id) REFERENCES combo (combo_id),
+    CONSTRAINT order_combo_order_request FOREIGN KEY (order_request_id) REFERENCES order_request (order_request_id)
+);
+
+-- Table: order_combo_complement
+CREATE TABLE order_combo_complement (
+    order_combo_complement_id uuid  NOT NULL DEFAULT gen_random_uuid(),
+    complement_amount int NOT NULL,
+    combo_complement_id uuid NULL,
+    order_combo_id uuid NOT NULL,
+    CONSTRAINT order_combo_complement_p PRIMARY KEY (order_combo_complement_id),
+    CONSTRAINT order_combo_complement_combo FOREIGN KEY (combo_complement_id) REFERENCES combo_complement (combo_complement_id),
+    CONSTRAINT order_combo_complement_order_combo FOREIGN KEY (order_combo_id) REFERENCES order_combo (order_combo_id)
+);
+
+-- Table: order_combo_product
+CREATE TABLE order_combo_product (
+    order_combo_product_id uuid  NOT NULL DEFAULT gen_random_uuid(),
+    product_amount int NOT NULL,
+    order_combo_id uuid NULL,
+    product_variant_id uuid NOT NULL,
+    CONSTRAINT order_combo_product_p PRIMARY KEY (order_combo_product_id),
+    CONSTRAINT order_combo_product_product_variant FOREIGN KEY (product_variant_id) REFERENCES product_variant (product_variant_id),
+    CONSTRAINT order_combo_product_order_combo FOREIGN KEY (order_combo_id) REFERENCES order_combo (order_combo_id)
+);
+
+-- Table: order_complement
+CREATE TABLE order_complement (
+    order_complement_id uuid  NOT NULL DEFAULT gen_random_uuid(),
+    unit_price decimal(12,2) NOT NULL,
+    complement_amount int NOT NULL,
+    complement_id uuid NULL,
+    order_request_id uuid NOT NULL,
+    CONSTRAINT order_complement_p PRIMARY KEY (order_complement_id),
+    CONSTRAINT order_complement_complement FOREIGN KEY (complement_id) REFERENCES complement (complement_id),
+    CONSTRAINT order_complement_order_request FOREIGN KEY (order_request_id) REFERENCES order_request (order_request_id)
+);
+
+-- Table: order_menu
+CREATE TABLE order_menu (
+    order_menu_id uuid  NOT NULL DEFAULT gen_random_uuid(),
+    unit_price decimal(12,2) NOT NULL,
+    menu_amount int NOT NULL,
+    menu_id uuid NULL,
+    order_request_id uuid NOT NULL,
+    CONSTRAINT order_menu_p PRIMARY KEY (order_menu_id),
+    CONSTRAINT order_menu_menu FOREIGN KEY (menu_id) REFERENCES menu (menu_id),
+    CONSTRAINT order_menu_order_request FOREIGN KEY (order_request_id) REFERENCES order_request (order_request_id)
+);
+
+-- Table: order_menu_product
+CREATE TABLE order_menu_product (
+    order_menu_product_id uuid  NOT NULL DEFAULT gen_random_uuid(),
+    order_menu_id uuid NULL,
+    product_variant_id uuid NOT NULL,
+    CONSTRAINT order_menu_product_p PRIMARY KEY (order_menu_product_id),
+    CONSTRAINT order_menu_product_order_menu FOREIGN KEY (order_menu_id) REFERENCES order_menu (order_menu_id),
+    CONSTRAINT order_menu_product_product_variant FOREIGN KEY (product_variant_id) REFERENCES product_variant (product_variant_id)
+);
+
+-- Table: order_product
+CREATE TABLE order_product (
+    order_product_id uuid  NOT NULL DEFAULT gen_random_uuid(),
+    unit_price decimal(12,2) NOT NULL,
+    product_amount int NOT NULL,
+    order_request_id uuid NOT NULL,
+    product_variant_id uuid NULL,
+    CONSTRAINT order_product_p PRIMARY KEY (order_product_id),
+    CONSTRAINT order_product_order_request FOREIGN KEY (order_request_id) REFERENCES order_request (order_request_id),
+    CONSTRAINT order_product_product_variant FOREIGN KEY (product_variant_id) REFERENCES product_variant (product_variant_id)
+);
+
+-- Table: order_promotion
+CREATE TABLE order_promotion (
+    order_promotion_id uuid  NOT NULL DEFAULT gen_random_uuid(),
+    unit_price decimal(12,2) NOT NULL,
+    promotion_amount int NOT NULL,
+    order_request_id uuid NOT NULL,
+    promotion_id uuid NULL,
+    CONSTRAINT order_promotion_p PRIMARY KEY (order_promotion_id),
+    CONSTRAINT order_promotion_order_request FOREIGN KEY (order_request_id) REFERENCES order_request (order_request_id),
+    CONSTRAINT order_promotion_promotion FOREIGN KEY (promotion_id) REFERENCES promotion (promotion_id)
+);
+
+-- Table: order_promotion_combo
+CREATE TABLE order_promotion_combo (
+    order_promotion_combo_id uuid  NOT NULL DEFAULT gen_random_uuid(),
+    order_combo_id uuid NOT NULL,
+    order_promotion_id uuid NULL,
+    CONSTRAINT order_promotion_combo_p PRIMARY KEY (order_promotion_id),
+    CONSTRAINT order_promotion_combo_order_combo FOREIGN KEY (order_combo_id) REFERENCES order_combo (order_combo_id),
+    CONSTRAINT order_promotion_combo_order_promotion FOREIGN KEY (order_promotion_id) REFERENCES order_promotion (order_promotion_id)
+);
+
+-- Table: order_promotion_complement
+CREATE TABLE order_promotion_complement (
+    order_promotion_complement_id uuid  NOT NULL DEFAULT gen_random_uuid(),
+    complement_amount int NOT NULL,
+    order_promotion_id uuid NOT NULL,
+    complement_promotion_id uuid NULL,
+    CONSTRAINT order_promotion_complement_p PRIMARY KEY (order_promotion_complement_id),
+    CONSTRAINT order_promotion_complement_order_promotion FOREIGN KEY (order_promotion_id) REFERENCES order_promotion (order_promotion_id),
+    CONSTRAINT order_promotion_complement_complement_promotion FOREIGN KEY (complement_promotion_id) REFERENCES complement_promotion (complement_promotion_id)
+);
+
+-- Table: order_promotion_product
+CREATE TABLE order_promotion_product (
+    order_promotion_product_id uuid  NOT NULL DEFAULT gen_random_uuid(),
+    product_variant_id uuid NOT NULL,
+    order_promotion_id uuid NULL,
+    CONSTRAINT order_promotion_product_p PRIMARY KEY (order_promotion_product_id),
+    CONSTRAINT order_promotion_product_order_promotion FOREIGN KEY (order_promotion_id) REFERENCES order_promotion (order_promotion_id),
+    CONSTRAINT order_promotion_product_product_variant FOREIGN KEY (product_variant_id) REFERENCES product_variant (product_variant_id)
+);
 
 INSERT INTO restaurant (restaurant_id, name, is_available, logo_url)
 VALUES
@@ -435,10 +610,13 @@ VALUES
     ('1fbefa77-69cc-418c-a6b6-45a92060c429', '38a2f128-80e4-40ae-9c2e-09fa23f149b0', '651110d9-ba32-49e1-b920-4b78b1a5e7e3');
 
 
-INSERT INTO combo (combo_id, name, amount_price, currency_price, free_sauce, min_cooking_time, max_cooking_time, unit_of_time_cooking_time, url_image, is_available)
+INSERT INTO combo (combo_id, name, amount_price, currency_price, free_sauce, min_cooking_time, max_cooking_time, unit_of_time_cooking_time, url_image)
 VALUES
-    ('2f5d3d62-12d9-45c3-8c6f-4f415e1b3d39', 'Combo Mega Pollo Burguer', 25.99, 'PEN', 2, 10, 15, 'MIN', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS2DbJTUAhjta6B9fu25aYNspKKxT-eho0_gHRX6YZhjzlIVXB6oje3u13QZnsBktxKFhQ&usqp=CAU', true);
+    ('2f5d3d62-12d9-45c3-8c6f-4f415e1b3d39', 'Combo Mega Pollo Burguer', 25.99, 'PEN', 2, 10, 15, 'MIN', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS2DbJTUAhjta6B9fu25aYNspKKxT-eho0_gHRX6YZhjzlIVXB6oje3u13QZnsBktxKFhQ&usqp=CAU');
 
+INSERT INTO campus_combo (campus_combo_id, is_available, combo_id, campus_id)
+VALUES
+    ('5f816b64-10b2-4e80-bda8-3747cbecf5b7', true, '2f5d3d62-12d9-45c3-8c6f-4f415e1b3d39', '8c81aabb-dc05-4cf1-b9b3-1e3d3fd64ee2');
 
 INSERT INTO combo_product (combo_product_id, product_amount, product_id, combo_id)
 VALUES
@@ -452,12 +630,19 @@ VALUES
     ('92b24c5b-7a11-42b6-842e-68a428c7318d', '69cf4a78-12a3-4d1d-a4f4-6ed9e51c8aa6', '5c63e9e9-ebc6-4e15-b77d-5a0fb2d8a1a7'),
     ('0b16248c-029d-4a27-b8b0-c8f6d5d847e5', '7b0e92f4-90e4-4a8d-b2a9-91e4b7babb2a', '892f1d91-3636-46c7-8ff0-cc4a6c3c4ea5');
 
-INSERT INTO complement (complement_id, name, amount_price, currency_price, is_sauce, is_available, url_image)
+INSERT INTO complement (complement_id, name, amount_price, currency_price, is_sauce, url_image)
 VALUES
-    ('22ed25d2-6178-49a2-8a82-3908c38e8c5a', 'Mayonesa', 0.2, 'PEN', true, true, 'https://www.cocinavital.mx/wp-content/uploads/2019/09/mayonesa-casera.jpg'),
-    ('c8b7f6cb-4b78-4973-9d6f-4741d0072cb9', 'Mostaza', 0.2, 'PEN', true, true, 'https://www.cocinavital.mx/wp-content/uploads/2019/09/mayonesa-casera.jpg'),
-    ('20f56f6a-9c4f-4455-843b-5b29acccff77', 'Salsa de Ajo', 0.4, 'PEN', true, true, 'https://www.cocinavital.mx/wp-content/uploads/2019/09/mayonesa-casera.jpg'),
-    ('f5b7f6cb-4b78-4973-9d6f-4741d0072cb9', 'Porcion de Papas ', 7, 'PEN', false, true, 'https://www.cocinavital.mx/wp-content/uploads/2019/09/mayonesa-casera.jpg');
+    ('22ed25d2-6178-49a2-8a82-3908c38e8c5a', 'Mayonesa', 0.2, 'PEN', true, 'https://www.cocinavital.mx/wp-content/uploads/2019/09/mayonesa-casera.jpg'),
+    ('c8b7f6cb-4b78-4973-9d6f-4741d0072cb9', 'Mostaza', 0.2, 'PEN', true, 'https://www.cocinavital.mx/wp-content/uploads/2019/09/mayonesa-casera.jpg'),
+    ('20f56f6a-9c4f-4455-843b-5b29acccff77', 'Salsa de Ajo', 0.4, 'PEN', true, 'https://www.cocinavital.mx/wp-content/uploads/2019/09/mayonesa-casera.jpg'),
+    ('f5b7f6cb-4b78-4973-9d6f-4741d0072cb9', 'Porcion de Papas ', 7, 'PEN', false, 'https://www.cocinavital.mx/wp-content/uploads/2019/09/mayonesa-casera.jpg');
+
+INSERT INTO campus_complement (campus_complement_id, is_available, complement_id, campus_id)
+VALUES
+    ('70758c48-ec64-44cf-bf23-436165e0d058', true, '22ed25d2-6178-49a2-8a82-3908c38e8c5a', '8c81aabb-dc05-4cf1-b9b3-1e3d3fd64ee2'),
+    ('d9cd0f01-52d5-4996-9fd4-94b73bc9f35b', true, 'c8b7f6cb-4b78-4973-9d6f-4741d0072cb9', '8c81aabb-dc05-4cf1-b9b3-1e3d3fd64ee2'),
+    ('9178bb38-a66d-4ffc-b56b-0a1167363ae7', true, '20f56f6a-9c4f-4455-843b-5b29acccff77', '8c81aabb-dc05-4cf1-b9b3-1e3d3fd64ee2'),
+    ('a9bfc9d6-8035-48be-8c05-b7191ec731e9', true, 'f5b7f6cb-4b78-4973-9d6f-4741d0072cb9', '8c81aabb-dc05-4cf1-b9b3-1e3d3fd64ee2');
 
 INSERT INTO product_complement (product_complement_id, free_amount, product_id, complement_id)
 VALUES
@@ -480,6 +665,10 @@ VALUES
     ('2b883221-2e51-47d7-a047-8b15b6b30fa7', 'Oferta de pollo', 10, 'TD01', '10% de descuento en el producto', 1, 0, true, true, NULL, 'https://www.sortirambnens.com/wp-content/uploads/2019/02/pizza-de-peperoni.jpg'),
     ('b9f19657-67ab-48ef-90a7-6fd0f0bf6b38', 'Pollo Burguer Oferta', 5, 'TD02', 'Descuento de $5 en el combo', 2, 2, true, false, '2f5d3d62-12d9-45c3-8c6f-4f415e1b3d39', 'https://www.sortirambnens.com/wp-content/uploads/2019/02/pizza-de-peperoni.jpg');
 
+INSERT INTO campus_combo_promotion (campus_promotion_id, is_available, campus_id, promotion_id)
+VALUES
+    ('e873c37a-db9e-4020-ab1d-e8f1fe756c3f', true, '8c81aabb-dc05-4cf1-b9b3-1e3d3fd64ee2', '2b883221-2e51-47d7-a047-8b15b6b30fa7'),
+    ('58ef63ad-e501-4af1-9d76-00d1d03d9eae', true, '8c81aabb-dc05-4cf1-b9b3-1e3d3fd64ee2', 'b9f19657-67ab-48ef-90a7-6fd0f0bf6b38');
 
 INSERT INTO product_variant_promotion (product_variant_promotion_id, product_variant_id ,promotion_id)
 VALUES
