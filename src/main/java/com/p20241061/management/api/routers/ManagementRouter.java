@@ -124,7 +124,7 @@ public class ManagementRouter {
     @Bean
     RouterFunction<ServerResponse> comboRtr(ComboHandler handler) {
         return RouterFunctions.route()
-                .GET(PATH_COMBO, handler::getAll)
+                .GET(PATH_COMBO + "/campus/{campusId}", handler::getAll)
                 .GET(PATH_COMBO + "/{comboId}", handler::getComboDetailById)
                 .build();
     }

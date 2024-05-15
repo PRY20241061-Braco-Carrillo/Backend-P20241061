@@ -14,7 +14,11 @@ import java.util.UUID;
 @Repository
 public interface ComboRepository extends ReactiveCrudRepository<Combo, UUID> {
 
-    Flux<Combo> getAllByIsAvailable(Boolean isAvailable);
+    @Query("select c.combo_id, c.name, c.amount_price, c.currency_price, c.url_image, c.free_sauce, c.min_cooking_time, c.max_cooking_time, c.unit_of_time_cooking_time " +
+            "from combo c, campus_combo cc " +
+            "where c.combo_id = cc.combo_id " +
+            "and cc.campus_id = :campusId")
+    Flux<Combo> getAllCombos(UUID campusId);
 
     @Query("select p.product_id, p.name, p.description , p.url_image, cp.product_amount  " +
             "from product p, combo_product cp " +

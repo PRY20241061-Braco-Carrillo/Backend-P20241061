@@ -23,5 +23,4 @@ public class Combo {
     private String currencyPrice;
     private String urlImage;
     private Integer freeSauce;
-    private Boolean isAvailable;
 }
