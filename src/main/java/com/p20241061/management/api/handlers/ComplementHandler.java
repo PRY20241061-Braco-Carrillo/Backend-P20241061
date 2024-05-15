@@ -21,6 +21,16 @@ public class ComplementHandler {
     private final IComplementService complementService;
     private final ObjectValidator objectValidator;
 
+
+    public Mono<ServerResponse> getComplementsByCampusId(ServerRequest request) {
+        UUID campusId = UUID.fromString(request.pathVariable("campusId"));
+
+        return complementService.getComplementsByCampusId(campusId)
+                .flatMap(response -> ServerResponse.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(response));
+    }
+
     public Mono<ServerResponse> create(ServerRequest request) {
         Mono<CreateComplementRequest> complementRequest = request.bodyToMono(CreateComplementRequest.class)
                 .doOnNext(objectValidator::validate);

@@ -46,6 +46,7 @@ public class ManagementRouter {
     @Bean
     RouterFunction<ServerResponse> complementRtr(ComplementHandler handler) {
         return RouterFunctions.route()
+                .GET(PATH_COMPLEMENT + "/campus/{campusId}", handler::getComplementsByCampusId)
                 .POST(PATH_COMPLEMENT, handler::create)
                 .PUT(PATH_COMPLEMENT + "/{complementId}", handler::update)
                 .DELETE(PATH_COMPLEMENT + "/{complementId}", handler::delete)

@@ -3,6 +3,7 @@ package com.p20241061.management.infrastructure.services;
 import com.p20241061.management.api.mapping.ComplementMapper;
 import com.p20241061.management.api.model.request.create.CreateComplementRequest;
 import com.p20241061.management.api.model.request.update.UpdateComplementRequest;
+import com.p20241061.management.api.model.response.ComplementResponse;
 import com.p20241061.management.core.repositories.ComplementRepository;
 import com.p20241061.management.infrastructure.interfaces.IComplementService;
 import com.p20241061.shared.exceptions.CustomException;
@@ -15,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
 import java.util.UUID;
 
 import static com.p20241061.shared.models.enums.CampusName.COMPLEMENT_ENTITY;
@@ -26,6 +28,17 @@ public class ComplementService implements IComplementService {
 
     private final ComplementRepository complementRepository;
     private final ComplementMapper complementMapper;
+
+    @Override
+    public Mono<GeneralResponse<List<ComplementResponse>>> getComplementsByCampusId(UUID campusId) {
+        return complementRepository.getAllComplementsByCampusId(campusId)
+                .collectList()
+                .flatMap(complement -> Mono.just(GeneralResponse.<List<ComplementResponse>>builder()
+                        .code(SuccessCode.SUCCESS.name())
+                        .data(complementMapper.modelToListResponse(complement))
+                        .build())
+                );
+    }
 
     @Override
     public Mono<GeneralResponse<String>> create(CreateComplementRequest request) {
@@ -45,7 +58,6 @@ public class ComplementService implements IComplementService {
 
                     complement.setName(request.getName());
                     complement.setIsSauce(request.getIsSauce());
-                    complement.setIsAvailable(request.getIsAvailable());
 
                     return complementRepository.save(complement)
                             .flatMap(updatedComplement -> Mono.just(GeneralResponse.<String>builder()

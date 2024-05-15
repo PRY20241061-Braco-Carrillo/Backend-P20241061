@@ -17,10 +17,8 @@ public class ComplementMapper {
     }
 
     public Complement createRequestToModel(CreateComplementRequest request) {
-        Complement complement = mapper.map(request, Complement.class);
-        complement.setIsAvailable(true);
 
-        return complement;
+        return mapper.map(request, Complement.class);
     }
 
     public List<ComplementResponse> modelToListResponse(List<Complement> models) {
