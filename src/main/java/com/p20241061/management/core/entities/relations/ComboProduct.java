@@ -6,16 +6,16 @@ import org.springframework.data.relational.core.mapping.Table;
 
 import java.util.UUID;
 
-@Table("product_complement")
+@Table("combo_product")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ProductComplement {
+public class ComboProduct {
     @Id
-    private UUID productComplementId;
-    private Integer freeAmount;
+    private UUID comboProductId;
+    private Integer productAmount;
     private UUID productId;
-    private UUID complementId;
+    private UUID comboId;
 }

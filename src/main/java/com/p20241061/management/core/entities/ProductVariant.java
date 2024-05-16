@@ -15,8 +15,11 @@ import java.util.UUID;
 public class ProductVariant {
     @Id
     private UUID productVariantId;
-    private Double price;
+    private String detail;
+    private Integer variantOrder;
+    private Boolean isAvailable;
+    private Double amountPrice;
+    private String currencyPrice;
     private UUID productId;
-    private UUID cookingTypeId;
-    private UUID sizeId;
+    private UUID campusCategoryId;
 }

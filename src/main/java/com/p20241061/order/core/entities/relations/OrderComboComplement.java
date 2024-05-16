@@ -6,17 +6,17 @@ import org.springframework.data.relational.core.mapping.Table;
 
 import java.util.UUID;
 
-@Table("order_promotion")
+@Table("order_combo_complement")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class OrderPromotion {
+public class OrderComboComplement {
+
     @Id
-    private UUID orderPromotionId;
-    private Double unitPrice;
-    private Integer promotionAmount;
-    private UUID promotionId;
-    private UUID orderRequestId;
+    private UUID orderComboComplementId;
+    private Integer complementAmount;
+    private UUID comboComplementId;
+    private UUID orderComboId;
 }

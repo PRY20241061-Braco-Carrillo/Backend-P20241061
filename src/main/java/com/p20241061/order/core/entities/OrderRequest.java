@@ -18,5 +18,5 @@ public class OrderRequest {
     private UUID orderRequestId;
     private LocalDateTime orderRequestDate;
     private Integer confirmationToken;
-    private Double price;
+    private Double totalPrice;
 }

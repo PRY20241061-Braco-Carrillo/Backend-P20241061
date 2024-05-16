@@ -79,7 +79,6 @@ public class ProductVariantService implements IProductVariantService {
                                         .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), PRODUCT_ENTITY)))
                                         .flatMap(product -> {
                                             productVariant.setProductId(product.getProductId());
-                                            productVariant.setPrice(request.getPrice());
 
                                             return productVariantRepository.save(productVariant).flatMap(updatedProductVariant -> Mono.just(GeneralResponse.<String>builder()
                                                     .code(SuccessCode.UPDATED.name())

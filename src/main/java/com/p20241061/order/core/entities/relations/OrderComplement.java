@@ -15,6 +15,8 @@ import java.util.UUID;
 public class OrderComplement {
     @Id
     private UUID orderComplementId;
-    private UUID productComplementId;
+    private Double unitPrice;
+    private Integer complementAmount;
     private UUID orderRequestId;
+    private UUID complementId;
 }
