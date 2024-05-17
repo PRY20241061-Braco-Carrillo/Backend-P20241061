@@ -1,9 +1,8 @@
 package com.p20241061.management.api.handlers;
 
-import com.p20241061.management.api.model.request.create.CreatePromotionRequest;
-import com.p20241061.management.api.model.request.update.UpdatePromotionRequest;
-import com.p20241061.management.infrastructure.interfaces.IPromotionService;
-import com.p20241061.shared.utils.PaginatedRequest;
+import com.p20241061.management.api.model.request.promotion.create.CreatePromotionRequest;
+import com.p20241061.management.api.model.request.promotion.update.UpdatePromotionRequest;
+import com.p20241061.management.infrastructure.interfaces.promotion.IPromotionService;
 import com.p20241061.shared.validation.ObjectValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

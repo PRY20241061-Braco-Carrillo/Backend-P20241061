@@ -1,9 +1,8 @@
 package com.p20241061.management.api.handlers;
 
-import com.p20241061.management.api.model.request.create.CreateProductRequest;
-import com.p20241061.management.api.model.request.update.UpdateProductRequest;
-import com.p20241061.management.infrastructure.interfaces.IProductService;
-import com.p20241061.shared.utils.PaginatedRequest;
+import com.p20241061.management.api.model.request.product.create.CreateProductRequest;
+import com.p20241061.management.api.model.request.product.update.UpdateProductRequest;
+import com.p20241061.management.infrastructure.interfaces.product.IProductService;
 import com.p20241061.shared.validation.ObjectValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

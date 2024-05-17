@@ -1,8 +1,8 @@
 package com.p20241061.management.api.mapping;
 
-import com.p20241061.management.api.model.request.create.CreateComplementRequest;
-import com.p20241061.management.api.model.response.ComplementResponse;
-import com.p20241061.management.core.entities.Complement;
+import com.p20241061.management.api.model.request.complement.create.CreateComplementRequest;
+import com.p20241061.management.api.model.response.complement.ComplementResponse;
+import com.p20241061.management.core.entities.complement.Complement;
 import com.p20241061.shared.utils.EnhancedModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 

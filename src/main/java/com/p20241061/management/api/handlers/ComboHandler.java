@@ -1,7 +1,6 @@
 package com.p20241061.management.api.handlers;
 
-import com.p20241061.management.infrastructure.interfaces.IComboService;
-import com.p20241061.shared.validation.ObjectValidator;
+import com.p20241061.management.infrastructure.interfaces.combo.IComboService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;

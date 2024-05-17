@@ -3,9 +3,9 @@ package com.p20241061.management.api.mapping;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.p20241061.management.api.model.request.create.CreateCampusRequest;
-import com.p20241061.management.api.model.response.CampusResponse;
-import com.p20241061.management.core.entities.Campus;
+import com.p20241061.management.api.model.request.restaurant.create.CreateCampusRequest;
+import com.p20241061.management.api.model.response.restaurant.CampusResponse;
+import com.p20241061.management.core.entities.restaurant.Campus;
 import com.p20241061.shared.utils.EnhancedModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 

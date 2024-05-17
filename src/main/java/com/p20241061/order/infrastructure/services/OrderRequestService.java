@@ -1,7 +1,7 @@
 package com.p20241061.order.infrastructure.services;
 
-import com.p20241061.order.api.model.request.create.CreateOrderRequestRequest;
-import com.p20241061.order.core.repositories.OrderRequestRepository;
+import com.p20241061.order.api.model.request.order_request.CreateOrderRequestRequest;
+import com.p20241061.order.core.repositories.order_request.OrderRequestRepository;
 import com.p20241061.order.infrastructure.interfaces.IOrderRequestService;
 import com.p20241061.shared.models.response.GeneralResponse;
 import lombok.RequiredArgsConstructor;
