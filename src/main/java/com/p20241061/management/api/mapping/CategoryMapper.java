@@ -1,8 +1,8 @@
 package com.p20241061.management.api.mapping;
 
-import com.p20241061.management.api.model.request.create.CreateCategoryRequest;
-import com.p20241061.management.api.model.response.CategoryResponse;
-import com.p20241061.management.core.entities.Category;
+import com.p20241061.management.api.model.request.category.create.CreateCategoryRequest;
+import com.p20241061.management.api.model.response.category.CategoryResponse;
+import com.p20241061.management.core.entities.category.Category;
 import com.p20241061.shared.utils.EnhancedModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 

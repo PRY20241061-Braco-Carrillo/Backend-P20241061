@@ -1,6 +1,6 @@
 package com.p20241061.order.infrastructure.services;
 
-import com.p20241061.order.api.model.request.create.CreateOrderRequest;
+import com.p20241061.order.api.model.request.order.CreateOrderRequest;
 import com.p20241061.order.infrastructure.interfaces.IOrderService;
 import com.p20241061.shared.models.response.GeneralResponse;
 import lombok.RequiredArgsConstructor;

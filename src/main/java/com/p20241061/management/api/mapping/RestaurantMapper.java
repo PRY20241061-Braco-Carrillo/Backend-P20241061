@@ -1,8 +1,8 @@
 package com.p20241061.management.api.mapping;
 
-import com.p20241061.management.api.model.request.create.CreateRestaurantRequest;
-import com.p20241061.management.api.model.response.RestaurantResponse;
-import com.p20241061.management.core.entities.Restaurant;
+import com.p20241061.management.api.model.request.restaurant.create.CreateRestaurantRequest;
+import com.p20241061.management.api.model.response.restaurant.RestaurantResponse;
+import com.p20241061.management.core.entities.restaurant.Restaurant;
 import com.p20241061.shared.utils.EnhancedModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 

@@ -1,8 +1,8 @@
 package com.p20241061.management.api.mapping;
 
-import com.p20241061.management.api.model.request.create.CreateProductVariantRequest;
-import com.p20241061.management.api.model.response.ProductVariantResponse;
-import com.p20241061.management.core.entities.ProductVariant;
+import com.p20241061.management.api.model.request.product_variant.create.CreateProductVariantRequest;
+import com.p20241061.management.api.model.response.product_variant.ProductVariantResponse;
+import com.p20241061.management.core.entities.product_variant.ProductVariant;
 import com.p20241061.shared.utils.EnhancedModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 

@@ -1,8 +1,8 @@
 package com.p20241061.management.api.handlers;
 
-import com.p20241061.management.api.model.request.create.CreateComplementRequest;
-import com.p20241061.management.api.model.request.update.UpdateComplementRequest;
-import com.p20241061.management.infrastructure.interfaces.IComplementService;
+import com.p20241061.management.api.model.request.complement.create.CreateComplementRequest;
+import com.p20241061.management.api.model.request.complement.update.UpdateComplementRequest;
+import com.p20241061.management.infrastructure.interfaces.complement.IComplementService;
 import com.p20241061.shared.validation.ObjectValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
