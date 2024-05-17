@@ -1,4 +1,4 @@
-package com.p20241061.management.core.entities;
+package com.p20241061.order.core.entities.relations;
 
 import lombok.*;
 import org.springframework.data.annotation.Id;
@@ -6,15 +6,15 @@ import org.springframework.data.relational.core.mapping.Table;
 
 import java.util.UUID;
 
-@Table("cooking_type")
+@Table("order_menu_product")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CookingType {
+public class OrderMenuProduct {
     @Id
-    private UUID cookingTypeId;
-    private String name;
-    private Boolean isAvailable;
+    private UUID orderMenuProductId;
+    private UUID orderMenuId;
+    private UUID productVariantId;
 }

@@ -15,6 +15,11 @@ import java.util.UUID;
 public class ProductMenu {
     @Id
     private UUID productMenuId;
+    private Boolean isPrincipalDish;
+    private Boolean isInitialDish;
+    private Boolean isDessert;
+    private Boolean isDrink;
+    private Boolean isAvailable;
     private UUID productId;
     private UUID menuId;
 }

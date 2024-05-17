@@ -10,6 +10,6 @@ import java.util.UUID;
 
 public interface IComboService {
 
-    Mono<GeneralResponse<List<ComboResponse>>> getAll();
+    Mono<GeneralResponse<List<ComboResponse>>> getAll(UUID campusId);
     Mono<GeneralResponse<GetComboDetailResponse>> getComboDetailById(UUID comboId);
 }

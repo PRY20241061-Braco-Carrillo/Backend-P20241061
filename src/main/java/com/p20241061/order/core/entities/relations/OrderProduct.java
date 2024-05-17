@@ -15,6 +15,8 @@ import java.util.UUID;
 public class OrderProduct {
     @Id
     private UUID orderProductId;
-    private UUID productId;
+    private Integer productAmount;
+    private Double unitPrice;
+    private UUID productVariantId;
     private UUID orderRequestId;
 }

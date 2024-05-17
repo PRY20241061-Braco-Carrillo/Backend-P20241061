@@ -23,8 +23,8 @@ public class ComboService implements IComboService {
     private final ComboRepository comboRepository;
 
     @Override
-    public Mono<GeneralResponse<List<ComboResponse>>> getAll() {
-        return comboRepository.getAllByIsAvailable(true)
+    public Mono<GeneralResponse<List<ComboResponse>>> getAll(UUID campusId) {
+        return comboRepository.getAllCombos(campusId)
                 .flatMap(combos -> comboRepository.getProductByComboId(combos.getComboId())
                         .collectList()
                         .map(comboProduct -> ComboResponse.builder()

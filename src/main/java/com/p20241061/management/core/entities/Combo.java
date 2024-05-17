@@ -6,7 +6,7 @@ import org.springframework.data.relational.core.mapping.Table;
 
 import java.util.UUID;
 
-@Table("Combo")
+@Table("combo")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -23,5 +23,4 @@ public class Combo {
     private String currencyPrice;
     private String urlImage;
     private Integer freeSauce;
-    private Boolean isAvailable;
 }

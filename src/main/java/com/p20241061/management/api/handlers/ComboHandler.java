@@ -19,7 +19,10 @@ public class ComboHandler {
     private final IComboService comboService;
 
     public Mono<ServerResponse> getAll(ServerRequest request) {
-        return comboService.getAll()
+
+        UUID campusId = UUID.fromString(request.pathVariable("campusId"));
+
+        return comboService.getAll(campusId)
                 .flatMap(response -> ServerResponse.ok()
                         .contentType(MediaType.APPLICATION_JSON)
                         .bodyValue(response));

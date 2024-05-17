@@ -11,10 +11,18 @@ import java.util.UUID;
 @Repository
 public interface ComplementRepository extends ReactiveCrudRepository<Complement, UUID> {
 
-    @Query("select c.complement_id, c.name , c.amount_price, c.currency_price, pc.free_amount, c.is_sauce, c.is_available, c.url_image  from product p, product_complement pc , complement c "
+    @Query("select c.complement_id , c.name, c.amount_price, c.currency_price, c.url_image, c.is_sauce " +
+            "from complement c, campus_complement cc " +
+            "where c.complement_id = cc.complement_id " +
+            "and cc.is_available = true " +
+            "and cc.campus_id = :campusId")
+    Flux<Complement> getAllComplementsByCampusId(UUID campusId);
+
+    @Query("select c.complement_id, c.name , c.amount_price, c.currency_price, pc.free_amount, c.is_sauce, cc.is_available, c.url_image  from product p, product_complement pc , complement c, campus_complement cc "
             + "where p.product_id = pc.product_id "
             + "and pc.complement_id = c.complement_id  "
-            + "and c.is_available = true "
+            + "and cc.complement_id = c.complement_id  "
+            + "and cc.is_available = true "
             + "and p.product_id = :productId " )
     Flux<Complement> getComplementByProductId(UUID productId);
 }

@@ -6,18 +6,15 @@ import org.springframework.data.relational.core.mapping.Table;
 
 import java.util.UUID;
 
-@Table("complement")
+@Table("variant_type")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Complement {
+public class VariantType {
     @Id
-    private UUID complementId;
+    private UUID variantTypeId;
+    private String variantTypename;
     private String name;
-    private Double amountPrice;
-    private String currencyPrice;
-    private Boolean isSauce;
-    private String urlImage;
 }

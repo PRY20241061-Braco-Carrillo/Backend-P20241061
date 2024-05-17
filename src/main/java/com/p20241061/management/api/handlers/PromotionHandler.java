@@ -43,7 +43,9 @@ public class PromotionHandler {
 
     public Mono<ServerResponse> getAllComboPromotion(ServerRequest request) {
 
-        return promotionService.getAllComboPromotion()
+        UUID campusId = UUID.fromString(request.pathVariable("campusId"));
+
+        return promotionService.getAllComboPromotion(campusId)
                 .flatMap(response -> ServerResponse.ok()
                         .contentType(MediaType.APPLICATION_JSON)
                         .bodyValue(response));

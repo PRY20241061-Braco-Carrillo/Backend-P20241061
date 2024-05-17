@@ -1,4 +1,4 @@
-package com.p20241061.management.core.entities;
+package com.p20241061.management.core.entities.relations;
 
 import lombok.*;
 import org.springframework.data.annotation.Id;
@@ -6,16 +6,16 @@ import org.springframework.data.relational.core.mapping.Table;
 
 import java.util.UUID;
 
-@Table("size")
+@Table("campus_combo_promotion")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Size {
-
+public class CampusComboPromotion {
     @Id
-    private UUID sizeId;
-    private String name;
+    private UUID campusComboPromotionId;
     private Boolean isAvailable;
+    private UUID campusId;
+    private UUID promotionId;
 }

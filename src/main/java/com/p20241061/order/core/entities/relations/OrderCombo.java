@@ -1,4 +1,4 @@
-package com.p20241061.order.core.entities;
+package com.p20241061.order.core.entities.relations;
 
 import lombok.*;
 import org.springframework.data.annotation.Id;
@@ -6,18 +6,17 @@ import org.springframework.data.relational.core.mapping.Table;
 
 import java.util.UUID;
 
-@Table("order")
+@Table("order_combo")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Order {
+public class OrderCombo {
     @Id
-    private UUID orderId;
+    private UUID orderComboId;
+    private Double unitPrice;
+    private Integer comboAmount;
+    private UUID comboId;
     private UUID orderRequestId;
-    private String orderStatus;
-    private String tableNumber;
-    private Boolean forTable;
-    private UUID userId;
 }
