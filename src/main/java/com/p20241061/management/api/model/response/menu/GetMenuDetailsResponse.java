@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -18,8 +19,8 @@ public class GetMenuDetailsResponse {
     private Integer maxCookingTime;
     private String unitOfTimeCookingTime;
     private String urlImage;
-    private GetProductsToMenuDetailResponse desserts;
-    private GetProductsToMenuDetailResponse drinks;
-    private GetProductsToMenuDetailResponse initialDishes;
-    private GetProductsToMenuDetailResponse principalDishes;
+    private List<GetProductsToMenuDetailResponse> desserts;
+    private List<GetProductsToMenuDetailResponse> drinks;
+    private List<GetProductsToMenuDetailResponse> initialDishes;
+    private List<GetProductsToMenuDetailResponse> principalDishes;
 }

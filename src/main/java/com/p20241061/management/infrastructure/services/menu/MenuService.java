@@ -51,6 +51,7 @@ public class MenuService implements IMenuService {
                                     dessert.setVariants(productVariants);
                                     return dessert;
                                 }))
+                        .collectList()
                         .flatMap(finalDessert -> menuRepository.getDrinkToMenuDetail(menuId)
                                 .flatMap(drink -> menuRepository.getProductVariantByProductToMenu(drink.getProductMenuId())
                                         .collectList()
@@ -58,6 +59,7 @@ public class MenuService implements IMenuService {
                                             drink.setVariants(productVariants);
                                             return drink;
                                         }))
+                                .collectList()
                                 .flatMap(finalDrink -> menuRepository.getInitialDishToMenuDetail(menuId)
                                         .flatMap(initialDish -> menuRepository.getProductVariantByProductToMenu(initialDish.getProductMenuId())
                                                 .collectList()
@@ -65,6 +67,7 @@ public class MenuService implements IMenuService {
                                                     initialDish.setVariants(productVariants);
                                                     return initialDish;
                                                 }))
+                                        .collectList()
                                         .flatMap(finalInitialDishes -> menuRepository.getPrincipalDishToMenuDetail(menuId)
                                                 .flatMap(principalDish -> menuRepository.getProductVariantByProductToMenu(principalDish.getProductMenuId())
                                                         .collectList()
@@ -72,6 +75,7 @@ public class MenuService implements IMenuService {
                                                             principalDish.setVariants(productVariants);
                                                             return principalDish;
                                                         }))
+                                                .collectList()
                                                 .flatMap(finalPrincipalDish -> Mono.just(GeneralResponse.<GetMenuDetailsResponse>builder()
                                                         .code(SuccessCode.SUCCESS.name())
                                                         .data(GetMenuDetailsResponse
