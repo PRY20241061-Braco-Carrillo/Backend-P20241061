@@ -20,35 +20,35 @@ public interface MenuRepository extends ReactiveCrudRepository<Menu, UUID> {
             "where pm.product_id = p.product_id " +
             "and pm.menu_id = :menuId " +
             "and pm.is_dessert = true")
-    Mono<GetProductsToMenuDetailResponse> getDessertToMenuDetail(UUID menuId);
+    Flux<GetProductsToMenuDetailResponse> getDessertToMenuDetail(UUID menuId);
 
     @Query("select p.product_id, pm.product_menu_id, p.name, p.description, p.url_image " +
             "from product_menu pm, product p " +
             "where pm.product_id = p.product_id " +
             "and pm.menu_id = :menuId " +
             "and pm.is_initial_dish = true")
-    Mono<GetProductsToMenuDetailResponse> getInitialDishToMenuDetail(UUID menuId);
+    Flux<GetProductsToMenuDetailResponse> getInitialDishToMenuDetail(UUID menuId);
 
     @Query("select p.product_id, pm.product_menu_id, p.name, p.description, p.url_image " +
             "from product_menu pm, product p " +
             "where pm.product_id = p.product_id " +
             "and pm.menu_id = :menuId " +
             "and pm.is_principal_dish = true")
-    Mono<GetProductsToMenuDetailResponse> getPrincipalDishToMenuDetail(UUID menuId);
+    Flux<GetProductsToMenuDetailResponse> getPrincipalDishToMenuDetail(UUID menuId);
 
     @Query("select p.product_id, pm.product_menu_id, p.name, p.description, p.url_image " +
             "from product_menu pm, product p " +
             "where pm.product_id = p.product_id " +
             "and pm.menu_id = :menuId " +
             "and pm.is_drink = true")
-    Mono<GetProductsToMenuDetailResponse> getDrinkToMenuDetail(UUID menuId);
+    Flux<GetProductsToMenuDetailResponse> getDrinkToMenuDetail(UUID menuId);
 
-    @Query("select pv.product_variant_id, pv.detail, pv.variant_order, STRING_AGG(vt.variant_type_name || ': ' || vt.name, ', ') AS variant_info " +
-            "from menu_product_variant mpv, product_variant pv, product_variant_type pvt, variant_type vt " +
-            "where mpv.product_variant_id = pv.product_variant_id  " +
-            "and pv.product_variant_id = pvt.product_variant_id " +
-            "and pvt.variant_type_id = vt.variant_type_id " +
-            "and mpv.product_menu_id = :productMenuId " +
-            "group by (pv.product_variant_id, pv.detail, pv.variant_order)")
+    @Query("SELECT pv.product_variant_id, pv.detail, pv.variant_order, STRING_AGG(vt.variant_type_name || ': ' || vt.name, ', ') AS variant_info " +
+            "FROM menu_product_variant mpv " +
+            "LEFT JOIN product_variant pv ON mpv.product_variant_id = pv.product_variant_id " +
+            "LEFT JOIN product_variant_type pvt ON pv.product_variant_id = pvt.product_variant_id " +
+            "LEFT JOIN variant_type vt ON pvt.variant_type_id = vt.variant_type_id " +
+            "WHERE mpv.product_menu_id = :productMenuId " +
+            "GROUP BY pv.product_variant_id, pv.detail, pv.variant_order;")
     Flux<GetProductVariantResponse> getProductVariantByProductToMenu(UUID productMenuId);
 }
