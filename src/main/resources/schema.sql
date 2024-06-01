@@ -41,6 +41,9 @@ CREATE TABLE category
     category_id   uuid         NOT NULL DEFAULT gen_random_uuid(),
     name          varchar(255) NOT NULL,
     url_image     varchar(255),
+    is_promotion  bool         NOT NULL,
+    is_combo      bool         NOT NULL,
+    is_menu       bool         NOT NULL,
     restaurant_id uuid         NOT NULL,
     CONSTRAINT category_pk PRIMARY KEY (category_id),
     CONSTRAINT category_restaurant FOREIGN KEY (restaurant_id) REFERENCES restaurant (restaurant_id)
@@ -519,19 +522,16 @@ VALUES ('8c81aabb-dc05-4cf1-b9b3-1e3d3fd64ee2', 'Campus Central', '123 Main St',
         true, true, '1f8a7d11-7d88-4a68-b98f-2a5a42d8aa01', '^[A-Z0-9]{4}$', true,
         'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9I0K4LIDqXreYTz4vop2CWmCE9FmXPv59crvG_FVv9A&s');
 
-INSERT INTO category (category_id, name, restaurant_id, url_image)
-VALUES ('8b06a6d7-7a7c-4e9c-8da3-2d5fcfe3ccdf', 'Pizzas', '1f8a7d11-7d88-4a68-b98f-2a5a42d8aa01',
-        'https://www.pizzaiolo.mx/img/blog/pizza-hecha-de-varios-tipos-de-pizza-02%20(1).png'),
-       ('a92e13c9-f1cd-47c7-b12d-8eb7b86e1f10', 'Pollo', '1f8a7d11-7d88-4a68-b98f-2a5a42d8aa01',
-        'https://www.lavanguardia.com/files/article_gallery_microformat/uploads/2018/06/15/5e9982d75e45b.jpeg'),
-       ('e329d937-3b8e-40ad-a4fb-3ef7e1216a1f', 'Burgers', '1f8a7d11-7d88-4a68-b98f-2a5a42d8aa01',
-        'https://images.rappi.pe/restaurants_background/burgerking1-1658872825495.jpg'),
-       ('0eb7436a-746f-44b7-976b-4f0d7ea5cec6', 'Bebidas', '1f8a7d11-7d88-4a68-b98f-2a5a42d8aa01',
-        'https://images.rappi.pe/limonada/burgerking1-1658872825495.jpg'),
-       ('9eb7436a-746f-44b7-976b-4f0d7ea5cec6', 'Sopas', '1f8a7d11-7d88-4a68-b98f-2a5a42d8aa01',
-        'https://images.rappi.pe/sopas/burgerking1-1658872825495.jpg'),
-       ('8eb7436a-746f-44b7-976b-4f0d7ea5cec6', 'Postres', '1f8a7d11-7d88-4a68-b98f-2a5a42d8aa01',
-        'https://images.rappi.pe/postres/burgerking1-1658872825495.jpg');
+INSERT INTO category (category_id, name, restaurant_id, is_combo, is_menu, is_promotion, url_image)
+VALUES ('8b06a6d7-7a7c-4e9c-8da3-2d5fcfe3ccdf', 'Pizzas', '1f8a7d11-7d88-4a68-b98f-2a5a42d8aa01', false, false, false, 'https://www.pizzaiolo.mx/img/blog/pizza-hecha-de-varios-tipos-de-pizza-02%20(1).png'),
+    ('a92e13c9-f1cd-47c7-b12d-8eb7b86e1f10', 'Pollo', '1f8a7d11-7d88-4a68-b98f-2a5a42d8aa01', false, false, false, 'https://www.lavanguardia.com/files/article_gallery_microformat/uploads/2018/06/15/5e9982d75e45b.jpeg'),
+    ('e329d937-3b8e-40ad-a4fb-3ef7e1216a1f', 'Burgers', '1f8a7d11-7d88-4a68-b98f-2a5a42d8aa01', false, false, false, 'https://images.rappi.pe/restaurants_background/burgerking1-1658872825495.jpg'),
+    ('0eb7436a-746f-44b7-976b-4f0d7ea5cec6', 'Bebidas', '1f8a7d11-7d88-4a68-b98f-2a5a42d8aa01', false, false, false, 'https://images.rappi.pe/limonada/burgerking1-1658872825495.jpg'),
+    ('9eb7436a-746f-44b7-976b-4f0d7ea5cec6', 'Sopas', '1f8a7d11-7d88-4a68-b98f-2a5a42d8aa01', false, false, false, 'https://images.rappi.pe/sopas/burgerking1-1658872825495.jpg'),
+    ('8eb7436a-746f-44b7-976b-4f0d7ea5cec6', 'Postres', '1f8a7d11-7d88-4a68-b98f-2a5a42d8aa01', false, false, false, 'https://images.rappi.pe/postres/burgerking1-1658872825495.jpg'),
+    ('818de9de-f928-48c4-85f7-d608da461fdf', 'Combo', '1f8a7d11-7d88-4a68-b98f-2a5a42d8aa01', true, false, false, 'https://images.rappi.pe/postres/burgerking1-1658872825495.jpg'),
+    ('30174205-6f4e-4584-b2a4-1b48481721f5', 'Menu', '1f8a7d11-7d88-4a68-b98f-2a5a42d8aa01', false, true, false, 'https://images.rappi.pe/postres/burgerking1-1658872825495.jpg'),
+    ('ea92c063-b46f-4a7f-9665-84bbc4fe7edf', 'Promociones', '1f8a7d11-7d88-4a68-b98f-2a5a42d8aa01', false, false, true, 'https://images.rappi.pe/postres/burgerking1-1658872825495.jpg');
 
 INSERT INTO campus_category (campus_category_id, category_id, campus_id)
 VALUES ('3c39460f-f8c9-4922-8b6b-77e55db4baf3', '8b06a6d7-7a7c-4e9c-8da3-2d5fcfe3ccdf',
@@ -545,6 +545,12 @@ VALUES ('3c39460f-f8c9-4922-8b6b-77e55db4baf3', '8b06a6d7-7a7c-4e9c-8da3-2d5fcfe
        ('f135b2cd-1ac4-42b5-8517-024ba910db37', '9eb7436a-746f-44b7-976b-4f0d7ea5cec6',
         '8c81aabb-dc05-4cf1-b9b3-1e3d3fd64ee2'),
        ('9e45d48e-9187-4b5d-996e-769eaf9f77d0', '8eb7436a-746f-44b7-976b-4f0d7ea5cec6',
+        '8c81aabb-dc05-4cf1-b9b3-1e3d3fd64ee2'),
+       ('9e45d48e-9187-4b5d-996e-787eaf9f77d0', '818de9de-f928-48c4-85f7-d608da461fdf',
+        '8c81aabb-dc05-4cf1-b9b3-1e3d3fd64ee2'),
+       ('9e45d48e-9187-4b5d-875e-769eaf9f77d0', '30174205-6f4e-4584-b2a4-1b48481721f5',
+        '8c81aabb-dc05-4cf1-b9b3-1e3d3fd64ee2'),
+       ('9e45d48e-9187-4b5d-242e-769eaf9f77d0', 'ea92c063-b46f-4a7f-9665-84bbc4fe7edf',
         '8c81aabb-dc05-4cf1-b9b3-1e3d3fd64ee2');
 
 INSERT INTO nutritional_information (nutritional_information_id, calories, proteins, total_fat, carbohydrates, is_vegan,

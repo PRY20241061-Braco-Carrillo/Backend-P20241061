@@ -18,4 +18,7 @@ public class Category {
     private String name;
     private String urlImage;
     private UUID restaurantId;
+    private Boolean isPromotion;
+    private Boolean isCombo;
+    private Boolean isMenu;
 }
