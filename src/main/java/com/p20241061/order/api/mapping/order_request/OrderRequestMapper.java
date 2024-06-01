@@ -14,7 +14,7 @@ public class OrderRequestMapper {
     EnhancedModelMapper mapper;
     private static final AtomicInteger counter = new AtomicInteger(0);
 
-    public OrderRequest createRequestToModel(CreateOrderRequestRequest request) {
+    public OrderRequest  createRequestToModel(CreateOrderRequestRequest request) {
         return OrderRequest.builder()
                 .totalPrice(getOrderRequestTotalPrice(request))
                 .orderRequestDate(LocalDateTime.now())

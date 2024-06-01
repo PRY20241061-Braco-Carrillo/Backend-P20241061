@@ -6,7 +6,7 @@ import org.springframework.data.relational.core.mapping.Table;
 
 import java.util.UUID;
 
-@Table("order")
+@Table("\"order\"")
 @Getter
 @Setter
 @AllArgsConstructor

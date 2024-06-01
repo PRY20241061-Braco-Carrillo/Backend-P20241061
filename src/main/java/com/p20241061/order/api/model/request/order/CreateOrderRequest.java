@@ -12,5 +12,8 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 public class CreateOrderRequest {
-    public UUID orderRequestId;
+    private String tableNumber;
+    private Boolean forTable;
+    private UUID userId;
+    private UUID orderRequestId;
 }
