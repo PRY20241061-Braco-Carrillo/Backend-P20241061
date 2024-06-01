@@ -1,8 +1,8 @@
 package com.p20241061.management.api.handlers;
 
-import com.p20241061.management.api.model.request.create.CreateMenuRequest;
-import com.p20241061.management.api.model.request.update.UpdateMenuRequest;
-import com.p20241061.management.infrastructure.interfaces.IMenuService;
+import com.p20241061.management.api.model.request.menu.create.CreateMenuRequest;
+import com.p20241061.management.api.model.request.menu.update.UpdateMenuRequest;
+import com.p20241061.management.infrastructure.interfaces.menu.IMenuService;
 import com.p20241061.shared.validation.ObjectValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,9 +25,9 @@ public class MenuHandler {
         UUID campusId = UUID.fromString(request.pathVariable("campusId"));
 
         return menuService.getAllByCampus(campusId)
-                        .flatMap(response -> ServerResponse.ok()
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .bodyValue(response)
+                .flatMap(response -> ServerResponse.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(response)
                 );
     }
 

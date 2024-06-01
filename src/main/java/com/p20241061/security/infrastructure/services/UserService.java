@@ -3,6 +3,7 @@ package com.p20241061.security.infrastructure.services;
 import com.p20241061.security.api.config.JwtProvider;
 import com.p20241061.security.api.model.request.CreateUserRequest;
 import com.p20241061.security.api.model.request.LoginRequest;
+import com.p20241061.security.api.model.response.InviteAccessResponse;
 import com.p20241061.security.api.model.response.LoginResponse;
 import com.p20241061.security.core.entities.User;
 import com.p20241061.security.core.enums.Role;
@@ -15,6 +16,7 @@ import com.p20241061.shared.models.response.GeneralResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -87,10 +89,26 @@ public class UserService implements IUserService {
 
         return userExists.flatMap(exists -> exists
                 ? Mono.error(new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.ALREADY_EXISTS.name(), USER_ENTITY))
-                :  userRepository.save(user).flatMap(
-                        u -> Mono.just( GeneralResponse.<String>builder()
-                                        .code(SuccessCode.CREATED.name())
-                                        .data(USER_ENTITY)
-                                .build())));
+                : userRepository.save(user).flatMap(
+                u -> Mono.just(GeneralResponse.<String>builder()
+                        .code(SuccessCode.CREATED.name())
+                        .data(USER_ENTITY)
+                        .build())));
+    }
+
+    @Override
+    public Mono<GeneralResponse<InviteAccessResponse>> inviteAccess() {
+        String token = jwtProvider.generateToken(User.builder()
+                        .roles(Role.ROLE_INVITED.name())
+                        .email("invite@invite.com")
+                .build());
+
+        return Mono.just(GeneralResponse.<InviteAccessResponse>builder()
+                .code(SuccessCode.SUCCESS.name())
+                .data(InviteAccessResponse.builder()
+                        .role(Role.ROLE_INVITED.name())
+                        .token(token)
+                        .build())
+                .build());
     }
 }

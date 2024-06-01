@@ -1,8 +1,8 @@
 package com.p20241061.management.api.mapping;
 
-import com.p20241061.management.api.model.request.create.CreateComplementRequest;
-import com.p20241061.management.api.model.response.ComplementResponse;
-import com.p20241061.management.core.entities.Complement;
+import com.p20241061.management.api.model.request.complement.create.CreateComplementRequest;
+import com.p20241061.management.api.model.response.complement.ComplementResponse;
+import com.p20241061.management.core.entities.complement.Complement;
 import com.p20241061.shared.utils.EnhancedModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -17,10 +17,8 @@ public class ComplementMapper {
     }
 
     public Complement createRequestToModel(CreateComplementRequest request) {
-        Complement complement = mapper.map(request, Complement.class);
-        complement.setIsAvailable(true);
 
-        return complement;
+        return mapper.map(request, Complement.class);
     }
 
     public List<ComplementResponse> modelToListResponse(List<Complement> models) {

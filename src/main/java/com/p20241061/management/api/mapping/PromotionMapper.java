@@ -1,8 +1,8 @@
 package com.p20241061.management.api.mapping;
 
-import com.p20241061.management.api.model.request.create.CreatePromotionRequest;
-import com.p20241061.management.api.model.response.PromotionResponse;
-import com.p20241061.management.core.entities.Promotion;
+import com.p20241061.management.api.model.request.promotion.create.CreatePromotionRequest;
+import com.p20241061.management.api.model.response.promotion.PromotionResponse;
+import com.p20241061.management.core.entities.promotion.Promotion;
 import com.p20241061.shared.utils.EnhancedModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 

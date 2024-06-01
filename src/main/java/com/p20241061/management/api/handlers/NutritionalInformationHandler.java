@@ -1,7 +1,7 @@
 package com.p20241061.management.api.handlers;
 
-import com.p20241061.management.api.model.request.update.UpdateNutritionalInformationRequest;
-import com.p20241061.management.infrastructure.interfaces.INutritionalInformationService;
+import com.p20241061.management.api.model.request.product.update.UpdateNutritionalInformationRequest;
+import com.p20241061.management.infrastructure.interfaces.product.INutritionalInformationService;
 import com.p20241061.shared.validation.ObjectValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

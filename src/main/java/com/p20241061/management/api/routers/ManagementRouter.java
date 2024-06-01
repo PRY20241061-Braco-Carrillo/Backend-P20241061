@@ -34,6 +34,7 @@ public class ManagementRouter {
                 .DELETE(PATH_CAMPUS + "/{campusId}", handler::delete)
                 .build();
     }
+
     @Bean
     RouterFunction<ServerResponse> categoryRtr(CategoryHandler handler) {
         return RouterFunctions.route()
@@ -43,9 +44,11 @@ public class ManagementRouter {
                 .DELETE(PATH_CATEGORY + "/{categoryId}", handler::delete)
                 .build();
     }
+
     @Bean
     RouterFunction<ServerResponse> complementRtr(ComplementHandler handler) {
         return RouterFunctions.route()
+                .GET(PATH_COMPLEMENT + "/campus/{campusId}", handler::getComplementsByCampusId)
                 .POST(PATH_COMPLEMENT, handler::create)
                 .PUT(PATH_COMPLEMENT + "/{complementId}", handler::update)
                 .DELETE(PATH_COMPLEMENT + "/{complementId}", handler::delete)
@@ -93,9 +96,10 @@ public class ManagementRouter {
     @Bean
     RouterFunction<ServerResponse> promotionRtr(PromotionHandler handler) {
         return RouterFunctions.route()
+                .GET(PATH_PROMOTION + "/campus/{campusId}", handler::getAllByCampus)
                 .GET(PATH_PROMOTION + "/campus-category/{campusCategoryId}", handler::getAllByCampusCategoryId)
                 .GET(PATH_PROMOTION + "/productVariant/{promotionId}", handler::getProductVariantPromotionById)
-                .GET(PATH_PROMOTION + "/combo", handler::getAllComboPromotion)
+                .GET(PATH_PROMOTION + "/combo/campus/{campusId}", handler::getAllComboPromotion)
                 .GET(PATH_PROMOTION + "/combo/{promotionId}", handler::getComboPromotionDetail)
                 .POST(PATH_PROMOTION, handler::create)
                 .PUT(PATH_PROMOTION + "/{promotionId}", handler::update)
@@ -124,7 +128,7 @@ public class ManagementRouter {
     @Bean
     RouterFunction<ServerResponse> comboRtr(ComboHandler handler) {
         return RouterFunctions.route()
-                .GET(PATH_COMBO, handler::getAll)
+                .GET(PATH_COMBO + "/campus/{campusId}", handler::getAll)
                 .GET(PATH_COMBO + "/{comboId}", handler::getComboDetailById)
                 .build();
     }

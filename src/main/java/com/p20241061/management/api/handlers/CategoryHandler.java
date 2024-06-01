@@ -1,8 +1,8 @@
 package com.p20241061.management.api.handlers;
 
-import com.p20241061.management.api.model.request.create.CreateCategoryRequest;
-import com.p20241061.management.api.model.request.update.UpdateCategoryRequest;
-import com.p20241061.management.infrastructure.interfaces.ICategoryService;
+import com.p20241061.management.api.model.request.category.create.CreateCategoryRequest;
+import com.p20241061.management.api.model.request.category.update.UpdateCategoryRequest;
+import com.p20241061.management.infrastructure.interfaces.category.ICategoryService;
 import com.p20241061.shared.utils.PaginatedRequest;
 import com.p20241061.shared.validation.ObjectValidator;
 import lombok.RequiredArgsConstructor;

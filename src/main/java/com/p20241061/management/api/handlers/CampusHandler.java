@@ -1,8 +1,8 @@
 package com.p20241061.management.api.handlers;
 
-import com.p20241061.management.api.model.request.create.CreateCampusRequest;
-import com.p20241061.management.api.model.request.update.UpdateCampusRequest;
-import com.p20241061.management.infrastructure.interfaces.ICampusService;
+import com.p20241061.management.api.model.request.restaurant.create.CreateCampusRequest;
+import com.p20241061.management.api.model.request.restaurant.update.UpdateCampusRequest;
+import com.p20241061.management.infrastructure.interfaces.restaurant.ICampusService;
 import com.p20241061.shared.utils.PaginatedRequest;
 import com.p20241061.shared.validation.ObjectValidator;
 import lombok.RequiredArgsConstructor;

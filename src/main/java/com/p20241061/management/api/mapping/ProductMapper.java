@@ -1,9 +1,9 @@
 package com.p20241061.management.api.mapping;
 
-import com.p20241061.management.api.model.request.create.CreateProductRequest;
-import com.p20241061.management.api.model.response.NutritionalInformationResponse;
-import com.p20241061.management.api.model.response.ProductResponse;
-import com.p20241061.management.core.entities.Product;
+import com.p20241061.management.api.model.request.product.create.CreateProductRequest;
+import com.p20241061.management.api.model.response.product.NutritionalInformationResponse;
+import com.p20241061.management.api.model.response.product.ProductResponse;
+import com.p20241061.management.core.entities.product.Product;
 import com.p20241061.shared.utils.EnhancedModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 

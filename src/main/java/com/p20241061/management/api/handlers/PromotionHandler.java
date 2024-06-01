@@ -1,9 +1,8 @@
 package com.p20241061.management.api.handlers;
 
-import com.p20241061.management.api.model.request.create.CreatePromotionRequest;
-import com.p20241061.management.api.model.request.update.UpdatePromotionRequest;
-import com.p20241061.management.infrastructure.interfaces.IPromotionService;
-import com.p20241061.shared.utils.PaginatedRequest;
+import com.p20241061.management.api.model.request.promotion.create.CreatePromotionRequest;
+import com.p20241061.management.api.model.request.promotion.update.UpdatePromotionRequest;
+import com.p20241061.management.infrastructure.interfaces.promotion.IPromotionService;
 import com.p20241061.shared.validation.ObjectValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +20,16 @@ import java.util.UUID;
 public class PromotionHandler {
     private final IPromotionService promotionService;
     private final ObjectValidator objectValidator;
+
+    public Mono<ServerResponse> getAllByCampus(ServerRequest request) {
+
+        UUID campusId = UUID.fromString(request.pathVariable("campusId"));
+
+        return promotionService.getAllByCampus(campusId)
+                .flatMap(response -> ServerResponse.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(response));
+    }
 
     public Mono<ServerResponse> getProductVariantPromotionById(ServerRequest request) {
         UUID promotionId = UUID.fromString(request.pathVariable("promotionId"));
@@ -43,7 +52,9 @@ public class PromotionHandler {
 
     public Mono<ServerResponse> getAllComboPromotion(ServerRequest request) {
 
-        return promotionService.getAllComboPromotion()
+        UUID campusId = UUID.fromString(request.pathVariable("campusId"));
+
+        return promotionService.getAllComboPromotion(campusId)
                 .flatMap(response -> ServerResponse.ok()
                         .contentType(MediaType.APPLICATION_JSON)
                         .bodyValue(response));

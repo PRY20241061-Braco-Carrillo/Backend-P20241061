@@ -1,8 +1,8 @@
 package com.p20241061.management.api.handlers;
 
-import com.p20241061.management.api.model.request.create.CreateComplementRequest;
-import com.p20241061.management.api.model.request.update.UpdateComplementRequest;
-import com.p20241061.management.infrastructure.interfaces.IComplementService;
+import com.p20241061.management.api.model.request.complement.create.CreateComplementRequest;
+import com.p20241061.management.api.model.request.complement.update.UpdateComplementRequest;
+import com.p20241061.management.infrastructure.interfaces.complement.IComplementService;
 import com.p20241061.shared.validation.ObjectValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +20,16 @@ import java.util.UUID;
 public class ComplementHandler {
     private final IComplementService complementService;
     private final ObjectValidator objectValidator;
+
+
+    public Mono<ServerResponse> getComplementsByCampusId(ServerRequest request) {
+        UUID campusId = UUID.fromString(request.pathVariable("campusId"));
+
+        return complementService.getComplementsByCampusId(campusId)
+                .flatMap(response -> ServerResponse.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(response));
+    }
 
     public Mono<ServerResponse> create(ServerRequest request) {
         Mono<CreateComplementRequest> complementRequest = request.bodyToMono(CreateComplementRequest.class)

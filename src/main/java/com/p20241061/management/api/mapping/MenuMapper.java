@@ -1,8 +1,8 @@
 package com.p20241061.management.api.mapping;
 
-import com.p20241061.management.api.model.request.create.CreateMenuRequest;
-import com.p20241061.management.api.model.response.MenuResponse;
-import com.p20241061.management.core.entities.Menu;
+import com.p20241061.management.api.model.request.menu.create.CreateMenuRequest;
+import com.p20241061.management.api.model.response.menu.MenuResponse;
+import com.p20241061.management.core.entities.menu.Menu;
 import com.p20241061.shared.utils.EnhancedModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
