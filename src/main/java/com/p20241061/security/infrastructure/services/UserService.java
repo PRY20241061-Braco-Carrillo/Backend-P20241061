@@ -87,10 +87,10 @@ public class UserService implements IUserService {
 
         return userExists.flatMap(exists -> exists
                 ? Mono.error(new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.ALREADY_EXISTS.name(), USER_ENTITY))
-                :  userRepository.save(user).flatMap(
-                        u -> Mono.just( GeneralResponse.<String>builder()
-                                        .code(SuccessCode.CREATED.name())
-                                        .data(USER_ENTITY)
-                                .build())));
+                : userRepository.save(user).flatMap(
+                u -> Mono.just(GeneralResponse.<String>builder()
+                        .code(SuccessCode.CREATED.name())
+                        .data(USER_ENTITY)
+                        .build())));
     }
 }

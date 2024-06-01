@@ -11,5 +11,6 @@ import java.util.UUID;
 @Repository
 public interface RestaurantRepository extends ReactiveCrudRepository<Restaurant, UUID> {
     Flux<Restaurant> findByIsAvailable(Boolean isAvailable);
+
     Mono<Boolean> existsByName(String name);
 }

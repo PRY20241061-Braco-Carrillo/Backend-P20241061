@@ -29,25 +29,25 @@ public class NutritionalInformationService implements INutritionalInformationSer
         return nutritionalInformationRepository.findById(nutritionalInformationId)
                 .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), NUTRITIONAL_INFORMATION_ENTITY)))
                 .flatMap(nutritionalInformation -> {
-                    nutritionalInformation.setCalories(request.getCalories());
-                    nutritionalInformation.setProteins(request.getProteins());
-                    nutritionalInformation.setTotalFat(request.getTotalFat());
-                    nutritionalInformation.setCarbohydrates(request.getCarbohydrates());
-                    nutritionalInformation.setIsVegan(request.getIsVegan());
-                    nutritionalInformation.setIsVegetarian(request.getIsVegetarian());
-                    nutritionalInformation.setIsLowCalories(request.getIsLowCalories());
-                    nutritionalInformation.setIsHighProtein(request.getIsHighProtein());
-                    nutritionalInformation.setIsWithoutGluten(request.getIsWithoutGluten());
-                    nutritionalInformation.setIsWithoutNut(request.getIsWithoutNut());
-                    nutritionalInformation.setIsWithoutLactose(request.getIsWithoutLactose());
-                    nutritionalInformation.setIsWithoutEggs(request.getIsWithoutEggs());
-                    nutritionalInformation.setIsWithoutSeafood(request.getIsWithoutSeafood());
-                    nutritionalInformation.setIsWithoutPig(request.getIsWithoutPig());
+                            nutritionalInformation.setCalories(request.getCalories());
+                            nutritionalInformation.setProteins(request.getProteins());
+                            nutritionalInformation.setTotalFat(request.getTotalFat());
+                            nutritionalInformation.setCarbohydrates(request.getCarbohydrates());
+                            nutritionalInformation.setIsVegan(request.getIsVegan());
+                            nutritionalInformation.setIsVegetarian(request.getIsVegetarian());
+                            nutritionalInformation.setIsLowCalories(request.getIsLowCalories());
+                            nutritionalInformation.setIsHighProtein(request.getIsHighProtein());
+                            nutritionalInformation.setIsWithoutGluten(request.getIsWithoutGluten());
+                            nutritionalInformation.setIsWithoutNut(request.getIsWithoutNut());
+                            nutritionalInformation.setIsWithoutLactose(request.getIsWithoutLactose());
+                            nutritionalInformation.setIsWithoutEggs(request.getIsWithoutEggs());
+                            nutritionalInformation.setIsWithoutSeafood(request.getIsWithoutSeafood());
+                            nutritionalInformation.setIsWithoutPig(request.getIsWithoutPig());
 
-                    return nutritionalInformationRepository.save(nutritionalInformation).map(updatedNutritionalInformation -> GeneralResponse.<String>builder()
-                            .code(SuccessCode.UPDATED.name())
-                            .data(NUTRITIONAL_INFORMATION_ENTITY).build());
-                }
-        );
+                            return nutritionalInformationRepository.save(nutritionalInformation).map(updatedNutritionalInformation -> GeneralResponse.<String>builder()
+                                    .code(SuccessCode.UPDATED.name())
+                                    .data(NUTRITIONAL_INFORMATION_ENTITY).build());
+                        }
+                );
     }
 }

@@ -23,6 +23,6 @@ public interface ComplementRepository extends ReactiveCrudRepository<Complement,
             + "and pc.complement_id = c.complement_id  "
             + "and cc.complement_id = c.complement_id  "
             + "and cc.is_available = true "
-            + "and p.product_id = :productId " )
+            + "and p.product_id = :productId ")
     Flux<Complement> getComplementByProductId(UUID productId);
 }

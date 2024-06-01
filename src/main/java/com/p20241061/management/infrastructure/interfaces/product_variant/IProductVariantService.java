@@ -10,7 +10,10 @@ import java.util.UUID;
 
 public interface IProductVariantService {
     Mono<GeneralResponse<GetProductDetailResponse>> getProductDetailResponse(UUID productId);
+
     Mono<GeneralResponse<String>> create(CreateProductVariantRequest request);
+
     Mono<GeneralResponse<String>> update(UpdateProductVariantRequest request, UUID productVariantId);
+
     Mono<GeneralResponse<String>> delete(UUID productVariantId);
 }

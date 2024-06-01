@@ -38,31 +38,31 @@ public class RestaurantService implements IRestaurantService {
                 .collectList()
                 .flatMap(restaurants -> {
 
-                    List<RestaurantResponse> restaurantResponses = restaurants.stream()
-                            .map(restaurantMapper::modelToResponse)
-                            .toList();
+                            List<RestaurantResponse> restaurantResponses = restaurants.stream()
+                                    .map(restaurantMapper::modelToResponse)
+                                    .toList();
 
-                    return Mono.just(GeneralResponse.<List<RestaurantResponse>>builder()
-                            .code(SuccessCode.SUCCESS.name())
-                            .data(restaurantResponses)
-                            .build());
-                }
-        );
+                            return Mono.just(GeneralResponse.<List<RestaurantResponse>>builder()
+                                    .code(SuccessCode.SUCCESS.name())
+                                    .data(restaurantResponses)
+                                    .build());
+                        }
+                );
     }
 
     @Override
     public Mono<GeneralResponse<String>> create(CreateRestaurantRequest request) {
 
         return restaurantRepository.existsByName(request.getName())
-                        .flatMap(exists -> {
-                            if (exists) {
-                                return Mono.error(new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.ALREADY_EXISTS.name(), RESTAURANT_ENTITY));
-                            }
-                            return restaurantRepository.save(restaurantMapper.createRequestToModel(request)).flatMap(createdRestaurant -> Mono.just(GeneralResponse.<String>builder()
-                                    .code(SuccessCode.CREATED.name())
-                                    .data(RESTAURANT_ENTITY)
-                                    .build()));
-                        });
+                .flatMap(exists -> {
+                    if (exists) {
+                        return Mono.error(new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.ALREADY_EXISTS.name(), RESTAURANT_ENTITY));
+                    }
+                    return restaurantRepository.save(restaurantMapper.createRequestToModel(request)).flatMap(createdRestaurant -> Mono.just(GeneralResponse.<String>builder()
+                            .code(SuccessCode.CREATED.name())
+                            .data(RESTAURANT_ENTITY)
+                            .build()));
+                });
     }
 
     @Override

@@ -34,6 +34,7 @@ public class ManagementRouter {
                 .DELETE(PATH_CAMPUS + "/{campusId}", handler::delete)
                 .build();
     }
+
     @Bean
     RouterFunction<ServerResponse> categoryRtr(CategoryHandler handler) {
         return RouterFunctions.route()
@@ -43,6 +44,7 @@ public class ManagementRouter {
                 .DELETE(PATH_CATEGORY + "/{categoryId}", handler::delete)
                 .build();
     }
+
     @Bean
     RouterFunction<ServerResponse> complementRtr(ComplementHandler handler) {
         return RouterFunctions.route()

@@ -16,7 +16,7 @@ public class Product {
     @Id
     private UUID productId;
     private String name;
-    private Integer  minCookingTime;
+    private Integer minCookingTime;
     private Integer maxCookingTime;
     private String unitOfTimeCookingTime;
     private String description;

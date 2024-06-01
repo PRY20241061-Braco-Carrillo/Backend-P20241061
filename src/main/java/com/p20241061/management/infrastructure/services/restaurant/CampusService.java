@@ -43,7 +43,7 @@ public class CampusService implements ICampusService {
     public Mono<GeneralResponse<CampusResponse>> getById(UUID campusId) {
         return campusRepository.findById(campusId)
                 .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), CAMPUS_ENTITY)))
-                .flatMap(campus ->  Mono.zip(Mono.just(campus), restaurantRepository.findById(campus.getRestaurantId())))
+                .flatMap(campus -> Mono.zip(Mono.just(campus), restaurantRepository.findById(campus.getRestaurantId())))
                 .flatMap(campus -> {
                     try {
 
@@ -97,7 +97,7 @@ public class CampusService implements ICampusService {
                                 .data(CAMPUS_ENTITY)
                                 .build()));
                     } catch (JsonProcessingException e) {
-                        return Mono.error(new CustomException(HttpStatus.CONFLICT,ErrorCode.CONFLICT.name(), e.getMessage()));
+                        return Mono.error(new CustomException(HttpStatus.CONFLICT, ErrorCode.CONFLICT.name(), e.getMessage()));
                     }
                 });
     }
@@ -130,7 +130,7 @@ public class CampusService implements ICampusService {
                                     .build()));
                         }));
 
-       }
+    }
 
     @Override
     public Mono<GeneralResponse<String>> delete(UUID campusId) {

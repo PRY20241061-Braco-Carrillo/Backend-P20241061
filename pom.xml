@@ -35,7 +35,7 @@
         </dependency>
         <!--*******************-->
 
-        <!-- Database Dependencies -->
+        <!-- Mapper Dependencies -->
         <dependency>
             <groupId>org.modelmapper</groupId>
             <artifactId>modelmapper</artifactId>

@@ -5,9 +5,9 @@ import com.p20241061.management.api.mapping.ProductMapper;
 import com.p20241061.management.api.model.request.product.create.CreateProductRequest;
 import com.p20241061.management.api.model.request.product.update.UpdateProductRequest;
 import com.p20241061.management.api.model.response.product.GetProductByCategoryResponse;
+import com.p20241061.management.core.repositories.category.CampusCategoryRepository;
 import com.p20241061.management.core.repositories.product.NutritionalInformationRepository;
 import com.p20241061.management.core.repositories.product.ProductRepository;
-import com.p20241061.management.core.repositories.category.CampusCategoryRepository;
 import com.p20241061.management.infrastructure.interfaces.product.IProductService;
 import com.p20241061.shared.exceptions.CustomException;
 import com.p20241061.shared.models.enums.ErrorCode;
@@ -75,12 +75,12 @@ public class ProductService implements IProductService {
                             product.setIsAvailable(request.getIsAvailable());
 
                             return productRepository.save(product)
-                                .flatMap(updatedProduct -> nutritionalInformationRepository.findById(updatedProduct.getNutritionalInformationId())
-                                        .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), NUTRITIONAL_INFORMATION_ENTITY)))
-                                        .flatMap(nutritionalInformation -> Mono.just(GeneralResponse.<String>builder()
-                                                .code(SuccessCode.UPDATED.name())
-                                                .data(PRODUCT_ENTITY)
-                                                .build())));
+                                    .flatMap(updatedProduct -> nutritionalInformationRepository.findById(updatedProduct.getNutritionalInformationId())
+                                            .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), NUTRITIONAL_INFORMATION_ENTITY)))
+                                            .flatMap(nutritionalInformation -> Mono.just(GeneralResponse.<String>builder()
+                                                    .code(SuccessCode.UPDATED.name())
+                                                    .data(PRODUCT_ENTITY)
+                                                    .build())));
 
                         }));
     }

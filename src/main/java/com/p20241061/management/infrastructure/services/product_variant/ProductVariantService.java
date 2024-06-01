@@ -48,47 +48,47 @@ public class ProductVariantService implements IProductVariantService {
                 .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), PRODUCT_ENTITY)))
                 .flatMap(product -> nutritionalInformationRepository.findById(product.getNutritionalInformationId())
                         .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), NUTRITIONAL_INFORMATION_ENTITY)))
-                .flatMap(nutritionalInformation -> complementRepository.getComplementByProductId(product.getProductId())
-                        .collectList()
-                        .flatMap(complements -> productVariantRepository.getProductVariantByProductId(productId)
+                        .flatMap(nutritionalInformation -> complementRepository.getComplementByProductId(product.getProductId())
                                 .collectList()
-                                .flatMap(productVariant -> Mono.just(GeneralResponse.<GetProductDetailResponse>builder()
-                                        .code(SuccessCode.SUCCESS.name())
-                                        .data(GetProductDetailResponse.builder()
-                                                .productVariants(productVariant)
-                                                .product(productMapper.modelToResponse(product, nutritionalInformationMapper.modelToResponse(nutritionalInformation)))
-                                                .complements(complementMapper.modelToListResponse(complements))
-                                                .build())
-                                        .build())))
-                ));
+                                .flatMap(complements -> productVariantRepository.getProductVariantByProductId(productId)
+                                        .collectList()
+                                        .flatMap(productVariant -> Mono.just(GeneralResponse.<GetProductDetailResponse>builder()
+                                                .code(SuccessCode.SUCCESS.name())
+                                                .data(GetProductDetailResponse.builder()
+                                                        .productVariants(productVariant)
+                                                        .product(productMapper.modelToResponse(product, nutritionalInformationMapper.modelToResponse(nutritionalInformation)))
+                                                        .complements(complementMapper.modelToListResponse(complements))
+                                                        .build())
+                                                .build())))
+                        ));
     }
 
     @Override
     public Mono<GeneralResponse<String>> create(CreateProductVariantRequest request) {
         return productRepository.findById(request.getProductId())
-                                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), PRODUCT_ENTITY)))
-                                .flatMap(product -> productVariantRepository.save(productVariantMapper.createRequestToModel(request,product.getProductId()))
-                                        .flatMap(createdProductVariant -> Mono.just(GeneralResponse.<String>builder()
-                                                .code(SuccessCode.CREATED.name())
-                                                .data(PRODUCT_VARIANT_ENTITY)
-                                                .build())));
+                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), PRODUCT_ENTITY)))
+                .flatMap(product -> productVariantRepository.save(productVariantMapper.createRequestToModel(request, product.getProductId()))
+                        .flatMap(createdProductVariant -> Mono.just(GeneralResponse.<String>builder()
+                                .code(SuccessCode.CREATED.name())
+                                .data(PRODUCT_VARIANT_ENTITY)
+                                .build())));
     }
 
     @Override
     public Mono<GeneralResponse<String>> update(UpdateProductVariantRequest request, UUID productVariantId) {
         return productVariantRepository.findById(productVariantId)
                 .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), PRODUCT_VARIANT_ENTITY)))
-                                .flatMap(productVariant -> productRepository.findById(request.getProductId())
-                                        .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), PRODUCT_ENTITY)))
-                                        .flatMap(product -> {
-                                            productVariant.setProductId(product.getProductId());
+                .flatMap(productVariant -> productRepository.findById(request.getProductId())
+                        .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), PRODUCT_ENTITY)))
+                        .flatMap(product -> {
+                            productVariant.setProductId(product.getProductId());
 
-                                            return productVariantRepository.save(productVariant).flatMap(updatedProductVariant -> Mono.just(GeneralResponse.<String>builder()
-                                                    .code(SuccessCode.UPDATED.name())
-                                                    .data(PRODUCT_VARIANT_ENTITY)
-                                                    .build()));
-                                        })
-                                );
+                            return productVariantRepository.save(productVariant).flatMap(updatedProductVariant -> Mono.just(GeneralResponse.<String>builder()
+                                    .code(SuccessCode.UPDATED.name())
+                                    .data(PRODUCT_VARIANT_ENTITY)
+                                    .build()));
+                        })
+                );
     }
 
     @Override

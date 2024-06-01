@@ -11,7 +11,10 @@ import java.util.UUID;
 
 public interface IProductService {
     Mono<GeneralResponse<List<GetProductByCategoryResponse>>> getAllByCampusCategory(UUID campusCategoryId, Boolean available);
+
     Mono<GeneralResponse<String>> create(CreateProductRequest request);
+
     Mono<GeneralResponse<String>> update(UpdateProductRequest request, UUID productId);
+
     Mono<GeneralResponse<String>> delete(UUID productId);
 }
