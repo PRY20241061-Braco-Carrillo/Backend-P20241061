@@ -25,9 +25,9 @@ public class MenuHandler {
         UUID campusId = UUID.fromString(request.pathVariable("campusId"));
 
         return menuService.getAllByCampus(campusId)
-                        .flatMap(response -> ServerResponse.ok()
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .bodyValue(response)
+                .flatMap(response -> ServerResponse.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(response)
                 );
     }
 

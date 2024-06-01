@@ -20,15 +20,15 @@ public class JwtFilter implements WebFilter {
         ServerHttpRequest request = exchange.getRequest();
         String path = request.getPath().value();
 
-        if(path.contains("auth"))
+        if (path.contains("auth"))
             return chain.filter(exchange);
 
         String auth = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
 
-        if(auth == null)
+        if (auth == null)
             return Mono.error(new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.BAD_REQUEST.name(), "Token wasn't found"));
 
-        if(!auth.startsWith("Bearer ")) {
+        if (!auth.startsWith("Bearer ")) {
             return Mono.error(new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.BAD_REQUEST.name(), "Token is not valid"));
         }
 

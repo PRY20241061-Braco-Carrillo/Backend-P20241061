@@ -3,8 +3,8 @@ package com.p20241061.management.infrastructure.services.menu;
 import com.p20241061.management.api.mapping.MenuMapper;
 import com.p20241061.management.api.model.request.menu.create.CreateMenuRequest;
 import com.p20241061.management.api.model.request.menu.update.UpdateMenuRequest;
-import com.p20241061.management.api.model.response.menu.MenuResponse;
 import com.p20241061.management.api.model.response.menu.GetMenuDetailsResponse;
+import com.p20241061.management.api.model.response.menu.MenuResponse;
 import com.p20241061.management.core.repositories.menu.MenuRepository;
 import com.p20241061.management.infrastructure.interfaces.menu.IMenuService;
 import com.p20241061.shared.exceptions.CustomException;
@@ -59,38 +59,38 @@ public class MenuService implements IMenuService {
                                             return drink;
                                         }))
                                 .flatMap(finalDrink -> menuRepository.getInitialDishToMenuDetail(menuId)
-                                                .flatMap(initialDish -> menuRepository.getProductVariantByProductToMenu(initialDish.getProductMenuId())
+                                        .flatMap(initialDish -> menuRepository.getProductVariantByProductToMenu(initialDish.getProductMenuId())
+                                                .collectList()
+                                                .map(productVariants -> {
+                                                    initialDish.setVariants(productVariants);
+                                                    return initialDish;
+                                                }))
+                                        .flatMap(finalInitialDishes -> menuRepository.getPrincipalDishToMenuDetail(menuId)
+                                                .flatMap(principalDish -> menuRepository.getProductVariantByProductToMenu(principalDish.getProductMenuId())
                                                         .collectList()
                                                         .map(productVariants -> {
-                                                            initialDish.setVariants(productVariants);
-                                                            return initialDish;
+                                                            principalDish.setVariants(productVariants);
+                                                            return principalDish;
                                                         }))
-                                                .flatMap(finalInitialDishes -> menuRepository.getPrincipalDishToMenuDetail(menuId)
-                                                        .flatMap(principalDish -> menuRepository.getProductVariantByProductToMenu(principalDish.getProductMenuId())
-                                                                .collectList()
-                                                                .map(productVariants -> {
-                                                                    principalDish.setVariants(productVariants);
-                                                                    return principalDish;
-                                                                }))
-                .flatMap(finalPrincipalDish -> Mono.just(GeneralResponse.<GetMenuDetailsResponse>builder()
-                        .code(SuccessCode.SUCCESS.name())
-                        .data(GetMenuDetailsResponse
-                                .builder()
-                                .menuId(menu.getMenuId())
-                                .name(menu.getName())
-                                .amountPrice(menu.getAmountPrice())
-                                .currencyPrice(menu.getCurrencyPrice())
-                                .minCookingTime(menu.getMinCookingTime())
-                                .maxCookingTime(menu.getMaxCookingTime())
-                                .unitOfTimeCookingTime(menu.getUnitOfTimeCookingTime())
-                                .urlImage(menu.getUrlImage())
-                                .desserts(finalDessert)
-                                .drinks(finalDrink)
-                                .initialDishes(finalInitialDishes)
-                                .principalDishes(finalPrincipalDish)
-                                .build())
-                        .build()))
-                ))));
+                                                .flatMap(finalPrincipalDish -> Mono.just(GeneralResponse.<GetMenuDetailsResponse>builder()
+                                                        .code(SuccessCode.SUCCESS.name())
+                                                        .data(GetMenuDetailsResponse
+                                                                .builder()
+                                                                .menuId(menu.getMenuId())
+                                                                .name(menu.getName())
+                                                                .amountPrice(menu.getAmountPrice())
+                                                                .currencyPrice(menu.getCurrencyPrice())
+                                                                .minCookingTime(menu.getMinCookingTime())
+                                                                .maxCookingTime(menu.getMaxCookingTime())
+                                                                .unitOfTimeCookingTime(menu.getUnitOfTimeCookingTime())
+                                                                .urlImage(menu.getUrlImage())
+                                                                .desserts(finalDessert)
+                                                                .drinks(finalDrink)
+                                                                .initialDishes(finalInitialDishes)
+                                                                .principalDishes(finalPrincipalDish)
+                                                                .build())
+                                                        .build()))
+                                        ))));
     }
 
     @Override
@@ -107,15 +107,15 @@ public class MenuService implements IMenuService {
         return menuRepository.findById(menuId)
                 .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), MENU_ENTITY)))
                 .flatMap(menu -> {
-                    menu.setName(request.getName());
-                    menu.setUrlImage(request.getUrlImage());
+                            menu.setName(request.getName());
+                            menu.setUrlImage(request.getUrlImage());
 
-                    return menuRepository.save(menu).flatMap(updatedMenu -> Mono.just(GeneralResponse.<String>builder()
-                            .code(SuccessCode.UPDATED.name())
-                            .data(MENU_ENTITY)
-                            .build()));
-                }
-        );
+                            return menuRepository.save(menu).flatMap(updatedMenu -> Mono.just(GeneralResponse.<String>builder()
+                                    .code(SuccessCode.UPDATED.name())
+                                    .data(MENU_ENTITY)
+                                    .build()));
+                        }
+                );
     }
 
     @Override
@@ -126,6 +126,6 @@ public class MenuService implements IMenuService {
                         .code(SuccessCode.DELETED.name())
                         .data(MENU_ENTITY)
                         .build()))
-        );
+                );
     }
 }

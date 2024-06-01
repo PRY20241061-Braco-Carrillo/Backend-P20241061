@@ -12,5 +12,8 @@ import java.util.UUID;
 public class GetCategoriesByCampusResponse {
     private UUID campusCategoryId;
     private String name;
+    private Boolean isPromotion;
+    private Boolean isCombo;
+    private Boolean isMenu;
     private String urlImage;
 }

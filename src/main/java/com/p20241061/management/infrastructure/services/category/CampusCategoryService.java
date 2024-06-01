@@ -2,9 +2,9 @@ package com.p20241061.management.infrastructure.services.category;
 
 import com.p20241061.management.api.model.request.category.create.CreateCampusCategoryRequest;
 import com.p20241061.management.core.entities.category.CampusCategory;
-import com.p20241061.management.core.repositories.restaurant.CampusRepository;
-import com.p20241061.management.core.repositories.category.CategoryRepository;
 import com.p20241061.management.core.repositories.category.CampusCategoryRepository;
+import com.p20241061.management.core.repositories.category.CategoryRepository;
+import com.p20241061.management.core.repositories.restaurant.CampusRepository;
 import com.p20241061.management.infrastructure.interfaces.category.ICampusCategoryService;
 import com.p20241061.shared.exceptions.CustomException;
 import com.p20241061.shared.models.enums.ErrorCode;

@@ -8,7 +8,7 @@ import lombok.*;
 @Builder
 @Getter
 @Setter
-public class GeneralResponse <T> {
+public class GeneralResponse<T> {
 
     private String code;
     private T data;

@@ -15,7 +15,7 @@ public interface CategoryRepository extends ReactiveCrudRepository<Category, UUI
     Mono<Boolean> existsByNameAndRestaurantId(String name, UUID restaurantId);
 
     @Query(
-            "SELECT cc.campus_category_id, c.name, c.url_image FROM category c, campus_category cc " +
+            "SELECT cc.campus_category_id, c.name, c.url_image, c.is_promotion , c.is_combo, c.is_menu FROM category c, campus_category cc " +
                     "WHERE c.category_id = cc.category_id " +
                     "AND cc.campus_id = :campusId"
     )

@@ -12,7 +12,10 @@ import java.util.UUID;
 
 public interface ICategoryService {
     Mono<GeneralResponse<List<GetCategoriesByCampusResponse>>> getCategoryByCampusId(PaginatedRequest paginatedRequest, UUID campusId);
+
     Mono<GeneralResponse<String>> create(CreateCategoryRequest request);
+
     Mono<GeneralResponse<String>> update(UpdateCategoryRequest request, UUID categoryId);
+
     Mono<GeneralResponse<String>> delete(UUID categoryId);
 }

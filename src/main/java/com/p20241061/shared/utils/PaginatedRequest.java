@@ -11,7 +11,7 @@ public class PaginatedRequest {
     private Integer pageSize = 5;
     private String sortBy = "";
     private Boolean isAscending = Boolean.TRUE;
-    private PageRequest pageRequest;
+    private final PageRequest pageRequest;
     private long offset;
     private Integer limit;
 

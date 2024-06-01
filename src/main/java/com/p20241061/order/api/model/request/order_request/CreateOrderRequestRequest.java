@@ -19,8 +19,8 @@ import java.util.List;
 @Builder
 public class CreateOrderRequestRequest {
     List<OrderProductRequest> products;
-    List<OrderComboRequest> combos;
     List<OrderComplementRequest> complements;
+    List<OrderComboRequest> combos;
     List<OrderComboPromotionRequest> comboPromotions;
     List<OrderProductPromotionRequest> productPromotions;
     List<OrderMenuRequest> menus;

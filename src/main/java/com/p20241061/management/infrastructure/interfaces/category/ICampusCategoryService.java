@@ -8,5 +8,6 @@ import java.util.UUID;
 
 public interface ICampusCategoryService {
     Mono<GeneralResponse<String>> create(CreateCampusCategoryRequest request);
+
     Mono<GeneralResponse<String>> delete(UUID campusCategoryId);
 }

@@ -7,10 +7,7 @@ import com.p20241061.management.api.model.request.promotion.create.CreatePromoti
 import com.p20241061.management.api.model.request.promotion.update.UpdatePromotionRequest;
 import com.p20241061.management.api.model.response.combo.GetComboDetailResponse;
 import com.p20241061.management.api.model.response.combo.GetComboProductDetailResponse;
-import com.p20241061.management.api.model.response.promotion.GetComboPromotionDetailResponse;
-import com.p20241061.management.api.model.response.promotion.GetComboPromotionResponse;
-import com.p20241061.management.api.model.response.promotion.GetProductVariantPromotionResponse;
-import com.p20241061.management.api.model.response.promotion.GetPromotionByCampusCategoryResponse;
+import com.p20241061.management.api.model.response.promotion.*;
 import com.p20241061.management.core.repositories.combo.ComboRepository;
 import com.p20241061.management.core.repositories.complement.ComplementRepository;
 import com.p20241061.management.core.repositories.product.NutritionalInformationRepository;
@@ -43,6 +40,18 @@ public class PromotionService implements IPromotionService {
     private final ComplementRepository complementRepository;
     private final ComplementMapper complementMapper;
     private final ComboRepository comboRepository;
+
+    @Override
+    public Mono<GeneralResponse<List<GetPromotionByCampusResponse>>> getAllByCampus(UUID campusId) {
+        return promotionRepository.getAllByCampus(campusId)
+                .collectList()
+                .flatMap(promotions -> Mono.just(GeneralResponse.<List<GetPromotionByCampusResponse>>builder()
+                        .code(SuccessCode.SUCCESS.name())
+                        .data(promotions)
+                        .build())
+                );
+
+    }
 
     @Override
     public Mono<GeneralResponse<GetProductVariantPromotionResponse>> getProductVariantPromotionById(UUID promotionId) {
@@ -140,21 +149,21 @@ public class PromotionService implements IPromotionService {
                                         )
                                 )
                         )
-                .flatMap(comboDetail -> Mono.just(GeneralResponse.<GetComboPromotionDetailResponse>builder()
-                        .code(SuccessCode.SUCCESS.name())
-                        .data(GetComboPromotionDetailResponse.builder()
-                                .promotionId(promotion.getPromotionId())
-                                .name(promotion.getName())
-                                .discount(promotion.getDiscount())
-                                .discountType(promotion.getDiscountType())
-                                .detail(promotion.getDetail())
-                                .urlImage(promotion.getUrlImage())
-                                .freeSauce(promotion.getFreeSauce())
-                                .comboId(promotion.getComboId())
-                                .comboDetail(comboDetail)
+                        .flatMap(comboDetail -> Mono.just(GeneralResponse.<GetComboPromotionDetailResponse>builder()
+                                .code(SuccessCode.SUCCESS.name())
+                                .data(GetComboPromotionDetailResponse.builder()
+                                        .promotionId(promotion.getPromotionId())
+                                        .name(promotion.getName())
+                                        .discount(promotion.getDiscount())
+                                        .discountType(promotion.getDiscountType())
+                                        .detail(promotion.getDetail())
+                                        .urlImage(promotion.getUrlImage())
+                                        .freeSauce(promotion.getFreeSauce())
+                                        .comboId(promotion.getComboId())
+                                        .comboDetail(comboDetail)
+                                        .build())
                                 .build())
-                        .build())
-                ));
+                        ));
     }
 
     @Override

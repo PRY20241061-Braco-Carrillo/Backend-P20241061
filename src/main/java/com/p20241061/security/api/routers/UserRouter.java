@@ -19,6 +19,7 @@ public class UserRouter {
         return RouterFunctions.route()
                 .POST(PATH_USER + "/auth/login", handler::login)
                 .POST(PATH_USER + "/auth/register", handler::create)
+                .POST(PATH_USER + "/auth/invite-access", handler::inviteAccess)
                 .build();
     }
 }

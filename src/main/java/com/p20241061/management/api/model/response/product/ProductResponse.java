@@ -16,7 +16,7 @@ import java.util.UUID;
 public class ProductResponse {
     private UUID productId;
     private String name;
-    private Integer  minCookingTime;
+    private Integer minCookingTime;
     private Integer maxCookingTime;
     private String unitOfTimeCookingTime;
     private String description;
