@@ -21,6 +21,16 @@ public class PromotionHandler {
     private final IPromotionService promotionService;
     private final ObjectValidator objectValidator;
 
+    public Mono<ServerResponse> getAllByCampus(ServerRequest request) {
+
+        UUID campusId = UUID.fromString(request.pathVariable("campusId"));
+
+        return promotionService.getAllByCampus(campusId)
+                .flatMap(response -> ServerResponse.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(response));
+    }
+
     public Mono<ServerResponse> getProductVariantPromotionById(ServerRequest request) {
         UUID promotionId = UUID.fromString(request.pathVariable("promotionId"));
 

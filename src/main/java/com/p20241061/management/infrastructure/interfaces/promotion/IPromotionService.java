@@ -2,10 +2,7 @@ package com.p20241061.management.infrastructure.interfaces.promotion;
 
 import com.p20241061.management.api.model.request.promotion.create.CreatePromotionRequest;
 import com.p20241061.management.api.model.request.promotion.update.UpdatePromotionRequest;
-import com.p20241061.management.api.model.response.promotion.GetComboPromotionDetailResponse;
-import com.p20241061.management.api.model.response.promotion.GetComboPromotionResponse;
-import com.p20241061.management.api.model.response.promotion.GetProductVariantPromotionResponse;
-import com.p20241061.management.api.model.response.promotion.GetPromotionByCampusCategoryResponse;
+import com.p20241061.management.api.model.response.promotion.*;
 import com.p20241061.shared.models.response.GeneralResponse;
 import reactor.core.publisher.Mono;
 
@@ -13,6 +10,8 @@ import java.util.List;
 import java.util.UUID;
 
 public interface IPromotionService {
+
+    Mono<GeneralResponse<List<GetPromotionByCampusResponse>>> getAllByCampus(UUID campusId);
 
     Mono<GeneralResponse<GetProductVariantPromotionResponse>> getProductVariantPromotionById(UUID promotionId);
 

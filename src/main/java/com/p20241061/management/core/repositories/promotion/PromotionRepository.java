@@ -3,6 +3,7 @@ package com.p20241061.management.core.repositories.promotion;
 import com.p20241061.management.api.model.response.promotion.GetComboPromotionResponse;
 import com.p20241061.management.api.model.response.promotion.GetProductVariantPromotionDetailResponse;
 import com.p20241061.management.api.model.response.promotion.GetPromotionByCampusCategoryResponse;
+import com.p20241061.management.api.model.response.promotion.GetPromotionByCampusResponse;
 import com.p20241061.management.core.entities.promotion.Promotion;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
@@ -13,6 +14,13 @@ import java.util.UUID;
 
 @Repository
 public interface PromotionRepository extends ReactiveCrudRepository<Promotion, UUID> {
+
+    @Query("select p.promotion_id, p.name, p.discount, p.discount_type, p.url_image, p.has_variant, p.combo_id " +
+            "from campus_combo_promotion ccp,  promotion p " +
+            "where ccp.promotion_id = p.promotion_id " +
+            "and ccp.campus_id = :campusId " +
+            "and p.is_available = true ")
+    Flux<GetPromotionByCampusResponse>getAllByCampus(UUID campusId);
 
     @Query("select p.promotion_id , p.name , pv.detail , p2.min_cooking_time, p2.max_cooking_time, p2.unit_of_time_cooking_time, pv.amount_price , pv.currency_price , p.discount , p.discount_type , p.url_image " +
             "from promotion p " +

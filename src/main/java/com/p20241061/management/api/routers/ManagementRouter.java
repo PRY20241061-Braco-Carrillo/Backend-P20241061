@@ -96,6 +96,7 @@ public class ManagementRouter {
     @Bean
     RouterFunction<ServerResponse> promotionRtr(PromotionHandler handler) {
         return RouterFunctions.route()
+                .GET(PATH_PROMOTION + "/campus/{campusId}", handler::getAllByCampus)
                 .GET(PATH_PROMOTION + "/campus-category/{campusCategoryId}", handler::getAllByCampusCategoryId)
                 .GET(PATH_PROMOTION + "/productVariant/{promotionId}", handler::getProductVariantPromotionById)
                 .GET(PATH_PROMOTION + "/combo/campus/{campusId}", handler::getAllComboPromotion)
