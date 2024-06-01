@@ -32,7 +32,7 @@ CREATE TABLE campus
     is_available     bool         NOT NULL,
     url_image        varchar(255),
     CONSTRAINT campus_pk PRIMARY KEY (campus_id),
-    CONSTRAINT campus_restaurant FOREIGN KEY (restaurant_id) REFERENCES restaurant (restaurant_id)
+    CONSTRAINT campus_restaurant FOREIGN KEY (restaurant_id) REFERENCES restaurant (restaurant_id) ON DELETE Cascade
 );
 
 -- Table: category
@@ -46,7 +46,7 @@ CREATE TABLE category
     is_menu       bool         NOT NULL,
     restaurant_id uuid         NOT NULL,
     CONSTRAINT category_pk PRIMARY KEY (category_id),
-    CONSTRAINT category_restaurant FOREIGN KEY (restaurant_id) REFERENCES restaurant (restaurant_id)
+    CONSTRAINT category_restaurant FOREIGN KEY (restaurant_id) REFERENCES restaurant (restaurant_id) ON DELETE Cascade
 );
 
 -- Table: campus_category
@@ -56,9 +56,11 @@ CREATE TABLE campus_category
     category_id        uuid NOT NULL,
     campus_id          uuid NOT NULL,
     CONSTRAINT campus_category_pk PRIMARY KEY (campus_category_id),
-    CONSTRAINT campus_category_category FOREIGN KEY (category_id) REFERENCES category (category_id),
-    CONSTRAINT campus_category_campus FOREIGN KEY (campus_id) REFERENCES campus (campus_id)
+    CONSTRAINT campus_category_category FOREIGN KEY (category_id) REFERENCES category (category_id) ON DELETE Cascade,
+    CONSTRAINT campus_category_campus FOREIGN KEY (campus_id) REFERENCES campus (campus_id) ON DELETE Cascade
 );
+
+
 
 -- Table: nutritional_information
 CREATE TABLE nutritional_information
@@ -100,7 +102,7 @@ CREATE TABLE product
     has_variant                bool         NOT NULL,
     nutritional_information_id uuid         NOT NULL,
     CONSTRAINT product_pk PRIMARY KEY (product_id),
-    CONSTRAINT product_nutritional_information FOREIGN KEY (nutritional_information_id) REFERENCES nutritional_information (nutritional_information_id)
+    CONSTRAINT product_nutritional_information FOREIGN KEY (nutritional_information_id) REFERENCES nutritional_information (nutritional_information_id) ON DELETE Cascade
 );
 
 -- Table: "variant_type"
@@ -124,8 +126,8 @@ CREATE TABLE product_variant
     campus_category_id uuid           NOT NULL,
     product_id         uuid           NOT NULL,
     CONSTRAINT product_variant_pk PRIMARY KEY (product_variant_id),
-    CONSTRAINT product_variant_product FOREIGN KEY (product_id) REFERENCES product (product_id),
-    CONSTRAINT product_variant_campus_category FOREIGN KEY (campus_category_id) REFERENCES campus_category (campus_category_id)
+    CONSTRAINT product_variant_product FOREIGN KEY (product_id) REFERENCES product (product_id) ON DELETE Cascade,
+    CONSTRAINT product_variant_campus_category FOREIGN KEY (campus_category_id) REFERENCES campus_category (campus_category_id) ON DELETE Cascade
 );
 
 -- Table: product_variant_type
@@ -135,8 +137,8 @@ CREATE TABLE product_variant_type
     product_variant_id      uuid NOT NULL,
     variant_type_id         uuid NOT NULL,
     CONSTRAINT product_variant_type_pk PRIMARY KEY (product_variant_type_id),
-    CONSTRAINT product_variant_product_variant FOREIGN KEY (product_variant_id) REFERENCES product_variant (product_variant_id),
-    CONSTRAINT product_variant_variant_type FOREIGN KEY (variant_type_id) REFERENCES variant_type (variant_type_id)
+    CONSTRAINT product_variant_product_variant FOREIGN KEY (product_variant_id) REFERENCES product_variant (product_variant_id) ON DELETE Cascade,
+    CONSTRAINT product_variant_variant_type FOREIGN KEY (variant_type_id) REFERENCES variant_type (variant_type_id) ON DELETE Cascade
 );
 
 -- Table: menu
@@ -153,7 +155,7 @@ CREATE TABLE menu
     is_available              bool           NOT NULL,
     campus_id                 uuid           NOT NULL,
     CONSTRAINT menu_pk PRIMARY KEY (menu_id),
-    CONSTRAINT menu_campus FOREIGN KEY (campus_id) REFERENCES campus (campus_id)
+    CONSTRAINT menu_campus FOREIGN KEY (campus_id) REFERENCES campus (campus_id) ON DELETE Cascade
 );
 
 -- Table: product_menu
@@ -168,8 +170,8 @@ CREATE TABLE product_menu
     product_id        uuid NOT NULL,
     menu_id           uuid NOT NULL,
     CONSTRAINT product_menu_pk PRIMARY KEY (product_menu_id),
-    CONSTRAINT product_menu_product FOREIGN KEY (product_id) REFERENCES product (product_id),
-    CONSTRAINT product_menu_menu FOREIGN KEY (menu_id) REFERENCES menu (menu_id)
+    CONSTRAINT product_menu_product FOREIGN KEY (product_id) REFERENCES product (product_id) ON DELETE Cascade,
+    CONSTRAINT product_menu_menu FOREIGN KEY (menu_id) REFERENCES menu (menu_id) ON DELETE Cascade
 );
 
 -- Table: menu_product_variant
@@ -179,8 +181,8 @@ CREATE TABLE menu_product_variant
     product_variant_id      uuid NOT NULL,
     product_menu_id         uuid NOT NULL,
     CONSTRAINT menu_product_variant_pk PRIMARY KEY (menu_product_variant_id),
-    CONSTRAINT menu_product_variant_product_variant FOREIGN KEY (product_variant_id) REFERENCES product_variant (product_variant_id),
-    CONSTRAINT menu_product_variant_product_menu FOREIGN KEY (product_menu_id) REFERENCES product_menu (product_menu_id)
+    CONSTRAINT menu_product_variant_product_variant FOREIGN KEY (product_variant_id) REFERENCES product_variant (product_variant_id) ON DELETE Cascade,
+    CONSTRAINT menu_product_variant_product_menu FOREIGN KEY (product_menu_id) REFERENCES product_menu (product_menu_id) ON DELETE Cascade
 );
 
 -- Table: combo
@@ -215,8 +217,8 @@ CREATE TABLE combo_product_variant
     combo_product_id         uuid NOT NULL,
     product_variant_id       uuid NOT NULL,
     CONSTRAINT combo_product_variant_pk PRIMARY KEY (combo_product_variant_id),
-    CONSTRAINT combo_product_variant_combo_product FOREIGN KEY (combo_product_id) REFERENCES combo_product (combo_product_id),
-    CONSTRAINT combo_product_variant_product_variant FOREIGN KEY (product_variant_id) REFERENCES product_variant (product_variant_id)
+    CONSTRAINT combo_product_variant_combo_product FOREIGN KEY (combo_product_id) REFERENCES combo_product (combo_product_id) ON DELETE Cascade,
+    CONSTRAINT combo_product_variant_product_variant FOREIGN KEY (product_variant_id) REFERENCES product_variant (product_variant_id) ON DELETE Cascade
 );
 
 -- Table: complement
@@ -239,8 +241,8 @@ CREATE TABLE combo_complement
     combo_id            uuid NOT NULL,
     free_amount         int  NOT NULL,
     CONSTRAINT combo_complement_pk PRIMARY KEY (combo_complement_id),
-    CONSTRAINT combo_complement_complement FOREIGN KEY (complement_id) REFERENCES complement (complement_id),
-    CONSTRAINT combo_complement_combo FOREIGN KEY (combo_id) REFERENCES combo (combo_id)
+    CONSTRAINT combo_complement_complement FOREIGN KEY (complement_id) REFERENCES complement (complement_id) ON DELETE Cascade,
+    CONSTRAINT combo_complement_combo FOREIGN KEY (combo_id) REFERENCES combo (combo_id) ON DELETE Cascade
 );
 
 -- Table: product_complement
@@ -251,8 +253,8 @@ CREATE TABLE product_complement
     product_id            uuid NOT NULL,
     complement_id         uuid NOT NULL,
     CONSTRAINT product_complement_pk PRIMARY KEY (product_complement_id),
-    CONSTRAINT product_complement_product FOREIGN KEY (product_id) REFERENCES product (product_id),
-    CONSTRAINT product_complement_complement FOREIGN KEY (complement_id) REFERENCES complement (complement_id)
+    CONSTRAINT product_complement_product FOREIGN KEY (product_id) REFERENCES product (product_id) ON DELETE Cascade,
+    CONSTRAINT product_complement_complement FOREIGN KEY (complement_id) REFERENCES complement (complement_id) ON DELETE Cascade
 );
 
 -- Table: promotion
@@ -270,7 +272,7 @@ CREATE TABLE promotion
     has_variant      bool           NOT NULL,
     combo_id         uuid,
     CONSTRAINT promotion_pk PRIMARY KEY (promotion_id),
-    CONSTRAINT promotion_combo FOREIGN KEY (combo_id) REFERENCES combo (combo_id)
+    CONSTRAINT promotion_combo FOREIGN KEY (combo_id) REFERENCES combo (combo_id) ON DELETE Cascade
 );
 
 -- Table: product_variant_promotion
@@ -280,8 +282,8 @@ CREATE TABLE product_variant_promotion
     product_variant_id           uuid NOT NULL,
     promotion_id                 uuid NOT NULL,
     CONSTRAINT product_variant_promotion_pk PRIMARY KEY (product_variant_promotion_id),
-    CONSTRAINT product_variant_promotion_product_variant FOREIGN KEY (product_variant_id) REFERENCES product_variant (product_variant_id),
-    CONSTRAINT product_variant_promotion_promotion FOREIGN KEY (promotion_id) REFERENCES promotion (promotion_id)
+    CONSTRAINT product_variant_promotion_product_variant FOREIGN KEY (product_variant_id) REFERENCES product_variant (product_variant_id) ON DELETE Cascade,
+    CONSTRAINT product_variant_promotion_promotion FOREIGN KEY (promotion_id) REFERENCES promotion (promotion_id) ON DELETE Cascade
 );
 
 -- Table: complement_promotion
@@ -291,8 +293,8 @@ CREATE TABLE complement_promotion
     complement_id           uuid NOT NULL,
     promotion_id            uuid NOT NULL,
     CONSTRAINT complement_promotion_p PRIMARY KEY (complement_promotion_id),
-    CONSTRAINT complement_promotion_complement FOREIGN KEY (complement_id) REFERENCES complement (complement_id),
-    CONSTRAINT complement_promotion_promotion FOREIGN KEY (promotion_id) REFERENCES promotion (promotion_id)
+    CONSTRAINT complement_promotion_complement FOREIGN KEY (complement_id) REFERENCES complement (complement_id) ON DELETE Cascade,
+    CONSTRAINT complement_promotion_promotion FOREIGN KEY (promotion_id) REFERENCES promotion (promotion_id) ON DELETE Cascade
 );
 
 -- Table: "user"
@@ -317,8 +319,8 @@ CREATE TABLE campus_combo_promotion
     campus_id           uuid NOT NULL,
     promotion_id        uuid NOT NULL,
     CONSTRAINT campus_combo_promotion_p PRIMARY KEY (campus_promotion_id),
-    CONSTRAINT campus_combo_promotion_campus FOREIGN KEY (campus_id) REFERENCES campus (campus_id),
-    CONSTRAINT campus_combo_promotion_promotion FOREIGN KEY (promotion_id) REFERENCES promotion (promotion_id)
+    CONSTRAINT campus_combo_promotion_campus FOREIGN KEY (campus_id) REFERENCES campus (campus_id) ON DELETE Cascade,
+    CONSTRAINT campus_combo_promotion_promotion FOREIGN KEY (promotion_id) REFERENCES promotion (promotion_id) ON DELETE Cascade
 );
 
 -- Table: campus_complement
@@ -329,8 +331,8 @@ CREATE TABLE campus_complement
     complement_id        uuid NOT NULL,
     campus_id            uuid NOT NULL,
     CONSTRAINT campus_complement_p PRIMARY KEY (campus_complement_id),
-    CONSTRAINT campus_complement_campus FOREIGN KEY (campus_id) REFERENCES campus (campus_id),
-    CONSTRAINT campus_complement_complement FOREIGN KEY (complement_id) REFERENCES complement (complement_id)
+    CONSTRAINT campus_complement_campus FOREIGN KEY (campus_id) REFERENCES campus (campus_id) ON DELETE Cascade,
+    CONSTRAINT campus_complement_complement FOREIGN KEY (complement_id) REFERENCES complement (complement_id) ON DELETE Cascade
 );
 
 -- Table: campus_combo
@@ -341,15 +343,15 @@ CREATE TABLE campus_combo
     combo_id        uuid NOT NULL,
     campus_id       uuid NOT NULL,
     CONSTRAINT campus_combo_p PRIMARY KEY (campus_combo_id),
-    CONSTRAINT campus_combo_campus FOREIGN KEY (campus_id) REFERENCES campus (campus_id),
-    CONSTRAINT campus_combo_combo FOREIGN KEY (combo_id) REFERENCES combo (combo_id)
+    CONSTRAINT campus_combo_campus FOREIGN KEY (campus_id) REFERENCES campus (campus_id) ON DELETE Cascade,
+    CONSTRAINT campus_combo_combo FOREIGN KEY (combo_id) REFERENCES combo (combo_id) ON DELETE Cascade
 );
 
 -- Table: order_request
 CREATE TABLE order_request
 (
     order_request_id   uuid           NOT NULL DEFAULT gen_random_uuid(),
-    order_request_date date           NOT NULL,
+    order_request_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     confirmation_token varchar(25)    NOT NULL,
     total_price        decimal(12, 2) NOT NULL,
     CONSTRAINT order_request_p PRIMARY KEY (order_request_id)
@@ -365,8 +367,8 @@ CREATE TABLE "order"
     user_id          uuid NULL,
     order_request_id uuid        NOT NULL,
     CONSTRAINT order_p PRIMARY KEY (order_id),
-    CONSTRAINT order_user FOREIGN KEY (user_id) REFERENCES "user" (user_id),
-    CONSTRAINT order_order_request FOREIGN KEY (order_request_id) REFERENCES order_request (order_request_id)
+    CONSTRAINT order_user FOREIGN KEY (user_id) REFERENCES "user" (user_id) ON DELETE Cascade,
+    CONSTRAINT order_order_request FOREIGN KEY (order_request_id) REFERENCES order_request (order_request_id) ON DELETE Cascade
 );
 
 -- Table: order_combo
@@ -378,8 +380,8 @@ CREATE TABLE order_combo
     combo_id         uuid NULL,
     order_request_id uuid           NOT NULL,
     CONSTRAINT order_combo_p PRIMARY KEY (order_combo_id),
-    CONSTRAINT order_combo_combo FOREIGN KEY (combo_id) REFERENCES combo (combo_id),
-    CONSTRAINT order_combo_order_request FOREIGN KEY (order_request_id) REFERENCES order_request (order_request_id)
+    CONSTRAINT order_combo_combo FOREIGN KEY (combo_id) REFERENCES combo (combo_id) ON DELETE Cascade,
+    CONSTRAINT order_combo_order_request FOREIGN KEY (order_request_id) REFERENCES order_request (order_request_id) ON DELETE Cascade
 );
 
 -- Table: order_combo_complement
@@ -390,8 +392,8 @@ CREATE TABLE order_combo_complement
     combo_complement_id       uuid NULL,
     order_combo_id            uuid NOT NULL,
     CONSTRAINT order_combo_complement_p PRIMARY KEY (order_combo_complement_id),
-    CONSTRAINT order_combo_complement_combo FOREIGN KEY (combo_complement_id) REFERENCES combo_complement (combo_complement_id),
-    CONSTRAINT order_combo_complement_order_combo FOREIGN KEY (order_combo_id) REFERENCES order_combo (order_combo_id)
+    CONSTRAINT order_combo_complement_combo FOREIGN KEY (combo_complement_id) REFERENCES combo_complement (combo_complement_id) ON DELETE Cascade,
+    CONSTRAINT order_combo_complement_order_combo FOREIGN KEY (order_combo_id) REFERENCES order_combo (order_combo_id) ON DELETE Cascade
 );
 
 -- Table: order_combo_product
@@ -402,8 +404,8 @@ CREATE TABLE order_combo_product
     order_combo_id         uuid NULL,
     product_variant_id     uuid NOT NULL,
     CONSTRAINT order_combo_product_p PRIMARY KEY (order_combo_product_id),
-    CONSTRAINT order_combo_product_product_variant FOREIGN KEY (product_variant_id) REFERENCES product_variant (product_variant_id),
-    CONSTRAINT order_combo_product_order_combo FOREIGN KEY (order_combo_id) REFERENCES order_combo (order_combo_id)
+    CONSTRAINT order_combo_product_product_variant FOREIGN KEY (product_variant_id) REFERENCES product_variant (product_variant_id) ON DELETE Cascade,
+    CONSTRAINT order_combo_product_order_combo FOREIGN KEY (order_combo_id) REFERENCES order_combo (order_combo_id) ON DELETE Cascade
 );
 
 -- Table: order_complement
@@ -415,8 +417,8 @@ CREATE TABLE order_complement
     complement_id       uuid NULL,
     order_request_id    uuid           NOT NULL,
     CONSTRAINT order_complement_p PRIMARY KEY (order_complement_id),
-    CONSTRAINT order_complement_complement FOREIGN KEY (complement_id) REFERENCES complement (complement_id),
-    CONSTRAINT order_complement_order_request FOREIGN KEY (order_request_id) REFERENCES order_request (order_request_id)
+    CONSTRAINT order_complement_complement FOREIGN KEY (complement_id) REFERENCES complement (complement_id) ON DELETE Cascade,
+    CONSTRAINT order_complement_order_request FOREIGN KEY (order_request_id) REFERENCES order_request (order_request_id) ON DELETE Cascade
 );
 
 -- Table: order_menu
@@ -428,8 +430,8 @@ CREATE TABLE order_menu
     menu_id          uuid NULL,
     order_request_id uuid           NOT NULL,
     CONSTRAINT order_menu_p PRIMARY KEY (order_menu_id),
-    CONSTRAINT order_menu_menu FOREIGN KEY (menu_id) REFERENCES menu (menu_id),
-    CONSTRAINT order_menu_order_request FOREIGN KEY (order_request_id) REFERENCES order_request (order_request_id)
+    CONSTRAINT order_menu_menu FOREIGN KEY (menu_id) REFERENCES menu (menu_id) ON DELETE Cascade,
+    CONSTRAINT order_menu_order_request FOREIGN KEY (order_request_id) REFERENCES order_request (order_request_id) ON DELETE Cascade
 );
 
 -- Table: order_menu_product
@@ -439,8 +441,8 @@ CREATE TABLE order_menu_product
     order_menu_id         uuid NULL,
     product_variant_id    uuid NOT NULL,
     CONSTRAINT order_menu_product_p PRIMARY KEY (order_menu_product_id),
-    CONSTRAINT order_menu_product_order_menu FOREIGN KEY (order_menu_id) REFERENCES order_menu (order_menu_id),
-    CONSTRAINT order_menu_product_product_variant FOREIGN KEY (product_variant_id) REFERENCES product_variant (product_variant_id)
+    CONSTRAINT order_menu_product_order_menu FOREIGN KEY (order_menu_id) REFERENCES order_menu (order_menu_id) ON DELETE Cascade,
+    CONSTRAINT order_menu_product_product_variant FOREIGN KEY (product_variant_id) REFERENCES product_variant (product_variant_id) ON DELETE Cascade
 );
 
 -- Table: order_product
@@ -452,8 +454,8 @@ CREATE TABLE order_product
     order_request_id   uuid           NOT NULL,
     product_variant_id uuid NULL,
     CONSTRAINT order_product_p PRIMARY KEY (order_product_id),
-    CONSTRAINT order_product_order_request FOREIGN KEY (order_request_id) REFERENCES order_request (order_request_id),
-    CONSTRAINT order_product_product_variant FOREIGN KEY (product_variant_id) REFERENCES product_variant (product_variant_id)
+    CONSTRAINT order_product_order_request FOREIGN KEY (order_request_id) REFERENCES order_request (order_request_id) ON DELETE Cascade,
+    CONSTRAINT order_product_product_variant FOREIGN KEY (product_variant_id) REFERENCES product_variant (product_variant_id) ON DELETE Cascade
 );
 
 -- Table: order_promotion
@@ -465,8 +467,8 @@ CREATE TABLE order_promotion
     order_request_id   uuid           NOT NULL,
     promotion_id       uuid NULL,
     CONSTRAINT order_promotion_p PRIMARY KEY (order_promotion_id),
-    CONSTRAINT order_promotion_order_request FOREIGN KEY (order_request_id) REFERENCES order_request (order_request_id),
-    CONSTRAINT order_promotion_promotion FOREIGN KEY (promotion_id) REFERENCES promotion (promotion_id)
+    CONSTRAINT order_promotion_order_request FOREIGN KEY (order_request_id) REFERENCES order_request (order_request_id) ON DELETE Cascade,
+    CONSTRAINT order_promotion_promotion FOREIGN KEY (promotion_id) REFERENCES promotion (promotion_id) ON DELETE Cascade
 );
 
 -- Table: order_promotion_combo
@@ -476,8 +478,8 @@ CREATE TABLE order_promotion_combo
     order_combo_id           uuid NOT NULL,
     order_promotion_id       uuid NULL,
     CONSTRAINT order_promotion_combo_p PRIMARY KEY (order_promotion_id),
-    CONSTRAINT order_promotion_combo_order_combo FOREIGN KEY (order_combo_id) REFERENCES order_combo (order_combo_id),
-    CONSTRAINT order_promotion_combo_order_promotion FOREIGN KEY (order_promotion_id) REFERENCES order_promotion (order_promotion_id)
+    CONSTRAINT order_promotion_combo_order_combo FOREIGN KEY (order_combo_id) REFERENCES order_combo (order_combo_id) ON DELETE Cascade,
+    CONSTRAINT order_promotion_combo_order_promotion FOREIGN KEY (order_promotion_id) REFERENCES order_promotion (order_promotion_id) ON DELETE Cascade
 );
 
 -- Table: order_promotion_complement
@@ -488,8 +490,8 @@ CREATE TABLE order_promotion_complement
     order_promotion_id            uuid NOT NULL,
     complement_promotion_id       uuid NULL,
     CONSTRAINT order_promotion_complement_p PRIMARY KEY (order_promotion_complement_id),
-    CONSTRAINT order_promotion_complement_order_promotion FOREIGN KEY (order_promotion_id) REFERENCES order_promotion (order_promotion_id),
-    CONSTRAINT order_promotion_complement_complement_promotion FOREIGN KEY (complement_promotion_id) REFERENCES complement_promotion (complement_promotion_id)
+    CONSTRAINT order_promotion_complement_order_promotion FOREIGN KEY (order_promotion_id) REFERENCES order_promotion (order_promotion_id) ON DELETE Cascade,
+    CONSTRAINT order_promotion_complement_complement_promotion FOREIGN KEY (complement_promotion_id) REFERENCES complement_promotion (complement_promotion_id) ON DELETE Cascade
 );
 
 -- Table: order_promotion_product
@@ -499,8 +501,8 @@ CREATE TABLE order_promotion_product
     product_variant_id         uuid NOT NULL,
     order_promotion_id         uuid NULL,
     CONSTRAINT order_promotion_product_p PRIMARY KEY (order_promotion_product_id),
-    CONSTRAINT order_promotion_product_order_promotion FOREIGN KEY (order_promotion_id) REFERENCES order_promotion (order_promotion_id),
-    CONSTRAINT order_promotion_product_product_variant FOREIGN KEY (product_variant_id) REFERENCES product_variant (product_variant_id)
+    CONSTRAINT order_promotion_product_order_promotion FOREIGN KEY (order_promotion_id) REFERENCES order_promotion (order_promotion_id) ON DELETE Cascade,
+    CONSTRAINT order_promotion_product_product_variant FOREIGN KEY (product_variant_id) REFERENCES product_variant (product_variant_id) ON DELETE Cascade
 );
 
 INSERT INTO restaurant (restaurant_id, name, is_available, logo_url)

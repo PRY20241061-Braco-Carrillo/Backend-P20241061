@@ -33,10 +33,13 @@ import com.p20241061.order.core.repositories.order_request.promotion.OrderPromot
 import com.p20241061.order.core.repositories.order_request.promotion.OrderPromotionProductRepository;
 import com.p20241061.order.core.repositories.order_request.promotion.OrderPromotionRepository;
 import com.p20241061.order.infrastructure.interfaces.IOrderRequestService;
+import com.p20241061.shared.exceptions.CustomException;
+import com.p20241061.shared.models.enums.ErrorCode;
 import com.p20241061.shared.models.enums.SuccessCode;
 import com.p20241061.shared.models.response.GeneralResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
@@ -90,15 +93,24 @@ public class OrderRequestService implements IOrderRequestService {
                                 .then(Mono.just(GeneralResponse.<CreateOrderRequestResponse>builder()
                                         .code(SuccessCode.CREATED.name())
                                         .data(CreateOrderRequestResponse.builder()
-                                                .orderRequestDate(orderRequest.getOrderRequestDate())
                                                 .orderRequestId(orderRequest.getOrderRequestId())
-                                                .orderRequestDate(orderRequest.getOrderRequestDate())
                                                 .confirmationToken(orderRequest.getConfirmationToken())
                                                 .totalPrice(orderRequest.getTotalPrice())
                                                 .build())
                                         .build())
                                 )
                 );
+    }
+
+    @Override
+    public Mono<GeneralResponse<String>> deleteOrderRequest(UUID orderRequestId) {
+        return orderRequestRepository.findById(orderRequestId)
+                        .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), "Order Request not found")))
+                .flatMap(orderRequest -> orderRequestRepository.deleteById(orderRequestId)
+                .then(Mono.just(GeneralResponse.<String>builder()
+                        .code(SuccessCode.DELETED.name())
+                        .data("Order Request deleted")
+                        .build())));
     }
 
     private Flux<String> saveOrderProduct(List<OrderProductRequest> products, UUID orderRequestId) {

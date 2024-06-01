@@ -27,6 +27,7 @@ public class OrderRouter {
     RouterFunction<ServerResponse> orderRequestRtr(OrderRequestHandler handler) {
         return RouterFunctions.route()
                 .POST(PATH_ORDER_REQUEST, handler::create)
+                .DELETE(PATH_ORDER_REQUEST + "/{orderRequestId}", handler::deleteOrderRequest)
                 .build();
     }
 

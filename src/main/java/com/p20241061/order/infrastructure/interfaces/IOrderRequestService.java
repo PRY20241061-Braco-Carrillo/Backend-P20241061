@@ -5,7 +5,10 @@ import com.p20241061.order.api.model.response.CreateOrderRequestResponse;
 import com.p20241061.shared.models.response.GeneralResponse;
 import reactor.core.publisher.Mono;
 
+import java.util.UUID;
+
 public interface IOrderRequestService {
     Mono<GeneralResponse<CreateOrderRequestResponse>> create(CreateOrderRequestRequest request);
+    Mono<GeneralResponse<String>> deleteOrderRequest(UUID orderRequestId);
 
 }
