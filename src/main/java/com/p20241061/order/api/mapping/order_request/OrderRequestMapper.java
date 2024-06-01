@@ -5,11 +5,14 @@ import com.p20241061.order.core.entities.order_request.OrderRequest;
 import com.p20241061.shared.utils.EnhancedModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class OrderRequestMapper {
     @Autowired
     EnhancedModelMapper mapper;
+    private static final AtomicInteger counter = new AtomicInteger(0);
 
     public OrderRequest createRequestToModel(CreateOrderRequestRequest request) {
         return OrderRequest.builder()
@@ -49,7 +52,12 @@ public class OrderRequestMapper {
     }
 
     private String generateToken() {
-        return "ORD-" + System.currentTimeMillis();
+        long timestamp = Instant.now().toEpochMilli();
+        int count = counter.getAndIncrement();
+
+        String key = String.format("%d%05d", timestamp, count);
+
+        return key.substring(key.length() - 6);
     }
 
 }
