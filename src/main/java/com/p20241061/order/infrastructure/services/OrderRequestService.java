@@ -19,6 +19,7 @@ import com.p20241061.order.api.model.request.order_request.menu.create.OrderMenu
 import com.p20241061.order.api.model.request.order_request.product.create.OrderProductRequest;
 import com.p20241061.order.api.model.request.order_request.promotion.create.OrderComboPromotionRequest;
 import com.p20241061.order.api.model.request.order_request.promotion.create.OrderProductPromotionRequest;
+import com.p20241061.order.api.model.response.CreateOrderRequestResponse;
 import com.p20241061.order.core.repositories.order_request.OrderRequestRepository;
 import com.p20241061.order.core.repositories.order_request.combo.OrderComboComplementRepository;
 import com.p20241061.order.core.repositories.order_request.combo.OrderComboProductRepository;
@@ -77,7 +78,7 @@ public class OrderRequestService implements IOrderRequestService {
     private final OrderMenuProductMapper orderMenuProductMapper;
 
     @Override
-    public Mono<GeneralResponse<String>> create(CreateOrderRequestRequest request) {
+    public Mono<GeneralResponse<CreateOrderRequestResponse>> create(CreateOrderRequestRequest request) {
         return orderRequestRepository.save(orderRequestMapper.createRequestToModel(request))
                 .flatMap(orderRequest ->
                         saveOrderProduct(request.getProducts(), orderRequest.getOrderRequestId())
@@ -86,9 +87,15 @@ public class OrderRequestService implements IOrderRequestService {
                                 .thenMany(saveOrderComboPromotion(request.getComboPromotions(), orderRequest.getOrderRequestId()))
                                 .thenMany(saveOrderProductPromotion(request.getProductPromotions(), orderRequest.getOrderRequestId()))
                                 .thenMany(saveOrderMenu(request.getMenus(), orderRequest.getOrderRequestId()))
-                                .then(Mono.just(GeneralResponse.<String>builder()
+                                .then(Mono.just(GeneralResponse.<CreateOrderRequestResponse>builder()
                                         .code(SuccessCode.CREATED.name())
-                                        .data("Order request created successfully")
+                                        .data(CreateOrderRequestResponse.builder()
+                                                .orderRequestDate(orderRequest.getOrderRequestDate())
+                                                .orderRequestId(orderRequest.getOrderRequestId())
+                                                .orderRequestDate(orderRequest.getOrderRequestDate())
+                                                .confirmationToken(orderRequest.getConfirmationToken())
+                                                .totalPrice(orderRequest.getTotalPrice())
+                                                .build())
                                         .build())
                                 )
                 );
