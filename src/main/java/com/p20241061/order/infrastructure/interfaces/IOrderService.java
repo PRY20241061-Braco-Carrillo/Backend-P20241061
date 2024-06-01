@@ -7,7 +7,8 @@ import reactor.core.publisher.Mono;
 import java.util.UUID;
 
 public interface IOrderService {
-
+    Mono<GeneralResponse<String>> getAllOrderByCampus(UUID campusId);
+    Mono<GeneralResponse<String>> getOrderDetail(UUID orderId);
     Mono<GeneralResponse<String>> create(CreateOrderRequest request);
     Mono<GeneralResponse<String>> deleteOrder(UUID orderId);
 }

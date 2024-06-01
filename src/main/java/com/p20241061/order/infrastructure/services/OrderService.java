@@ -1,5 +1,6 @@
 package com.p20241061.order.infrastructure.services;
 
+import com.p20241061.management.core.repositories.restaurant.CampusRepository;
 import com.p20241061.order.api.mapping.order.OrderMapper;
 import com.p20241061.order.api.model.request.order.CreateOrderRequest;
 import com.p20241061.order.core.repositories.order.OrderRepository;
@@ -25,7 +26,18 @@ public class OrderService implements IOrderService {
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
     private final OrderRequestRepository orderRequestRepository;
+    private final CampusRepository campusRepository;
     private final OrderMapper orderMapper;
+
+    @Override
+    public Mono<GeneralResponse<String>> getAllOrderByCampus(UUID campusId) {
+        return null;
+    }
+
+    @Override
+    public Mono<GeneralResponse<String>> getOrderDetail(UUID orderId) {
+        return null;
+    }
 
     @Override
     public Mono<GeneralResponse<String>> create(CreateOrderRequest request) {
@@ -35,15 +47,31 @@ public class OrderService implements IOrderService {
                     if (existOrder) {
                         return Mono.error(new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.ALREADY_EXISTS.name(), "Order already exists"));
                     }
-                    return userRepository.findById(request.getUserId())
-                            .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), "User not found")))
-                            .flatMap(user -> orderRequestRepository.existsById(request.getOrderRequestId()))
-                            .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), "Order request not found")))
-                            .flatMap(orderRequest -> orderRepository.save(orderMapper.createRequestToModel(request))
-                                    .map(order -> GeneralResponse.<String>builder()
-                                            .code(HttpStatus.CREATED.name())
-                                            .data("Order created successfully")
-                                            .build()));
+
+                    if (request.getUserId() != null) {
+                        return userRepository.findById(request.getUserId())
+                                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), "User not found")))
+                                .flatMap(user -> campusRepository.findById(request.getCampusId())
+                                        .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), "Campus not found")))
+                                        .flatMap(campus -> orderRequestRepository.existsById(request.getOrderRequestId()))
+                                        .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), "Order request not found")))
+                                        .flatMap(orderRequest -> orderRepository.save(orderMapper.createRequestToModel(request))
+                                                .map(order -> GeneralResponse.<String>builder()
+                                                        .code(HttpStatus.CREATED.name())
+                                                        .data("Order created successfully")
+                                                        .build())));
+                    } else {
+                        return campusRepository.findById(request.getCampusId())
+                                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), "Campus not found")))
+                                .flatMap(campus -> orderRequestRepository.existsById(request.getOrderRequestId()))
+                                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), "Order request not found")))
+                                .flatMap(orderRequest -> orderRepository.save(orderMapper.createRequestToModel(request))
+                                        .map(order -> GeneralResponse.<String>builder()
+                                                .code(HttpStatus.CREATED.name())
+                                                .data("Order created successfully")
+                                                .build()));
+                    }
+
                 });
     }
 

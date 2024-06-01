@@ -365,10 +365,12 @@ CREATE TABLE "order"
     table_number     varchar(25) NULL,
     for_table        bool NULL,
     user_id          uuid NULL,
+    campus_id        uuid NULL,
     order_request_id uuid        NOT NULL,
     CONSTRAINT order_p PRIMARY KEY (order_id),
     CONSTRAINT order_user FOREIGN KEY (user_id) REFERENCES "user" (user_id) ON DELETE Cascade,
-    CONSTRAINT order_order_request FOREIGN KEY (order_request_id) REFERENCES order_request (order_request_id) ON DELETE Cascade
+    CONSTRAINT order_order_request FOREIGN KEY (order_request_id) REFERENCES order_request (order_request_id) ON DELETE Cascade,
+    CONSTRAINT order_campus FOREIGN KEY (campus_id) REFERENCES campus (campus_id) ON DELETE Cascade
 );
 
 -- Table: order_combo

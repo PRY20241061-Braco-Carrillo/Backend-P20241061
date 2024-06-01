@@ -16,4 +16,5 @@ public class CreateOrderRequest {
     private Boolean forTable;
     private UUID userId;
     private UUID orderRequestId;
+    private UUID campusId;
 }

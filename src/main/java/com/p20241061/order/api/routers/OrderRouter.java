@@ -19,6 +19,8 @@ public class OrderRouter {
     @Bean
     RouterFunction<ServerResponse> orderRtr(OrderHandler handler) {
         return RouterFunctions.route()
+                .GET(PATH_ORDER + "/{campusId}", handler::getAllOrderByCampus)
+                .GET(PATH_ORDER + "/{orderId}", handler::getOrderDetail)
                 .POST(PATH_ORDER, handler::create)
                 .DELETE(PATH_ORDER + "/{orderId}", handler::deleteOrder)
                 .build();
