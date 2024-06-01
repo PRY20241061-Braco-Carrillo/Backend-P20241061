@@ -42,4 +42,12 @@ public class UserHandler {
                 );
     }
 
+    public Mono<ServerResponse> inviteAccess(ServerRequest request) {
+
+        return userService.inviteAccess()
+                .flatMap(response -> ServerResponse.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(response));
+    }
+
 }
