@@ -32,6 +32,14 @@ public class OrderRequestHandler {
                 );
     }
 
+    public Mono<ServerResponse> validateOrderRequestCode(ServerRequest request) {
+        String confirmationToken = request.pathVariable("confirmationToken");
+        return orderRequestService.validateOrderRequestCode(confirmationToken)
+                .flatMap(response -> ServerResponse.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(response));
+    }
+
     public Mono<ServerResponse> deleteOrderRequest(ServerRequest request) {
         UUID orderRequestId = UUID.fromString(request.pathVariable("orderRequestId"));
         return orderRequestService.deleteOrderRequest(orderRequestId)

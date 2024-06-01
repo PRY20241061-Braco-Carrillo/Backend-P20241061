@@ -20,6 +20,7 @@ import com.p20241061.order.api.model.request.order_request.product.create.OrderP
 import com.p20241061.order.api.model.request.order_request.promotion.create.OrderComboPromotionRequest;
 import com.p20241061.order.api.model.request.order_request.promotion.create.OrderProductPromotionRequest;
 import com.p20241061.order.api.model.response.CreateOrderRequestResponse;
+import com.p20241061.order.api.model.response.ValidateOrderRequestCodeResponse;
 import com.p20241061.order.core.repositories.order_request.OrderRequestRepository;
 import com.p20241061.order.core.repositories.order_request.combo.OrderComboComplementRepository;
 import com.p20241061.order.core.repositories.order_request.combo.OrderComboProductRepository;
@@ -99,6 +100,19 @@ public class OrderRequestService implements IOrderRequestService {
                                                 .build())
                                         .build())
                                 )
+                );
+    }
+
+    @Override
+    public Mono<GeneralResponse<ValidateOrderRequestCodeResponse>> validateOrderRequestCode(String confirmationToken) {
+        return orderRequestRepository.findByConfirmationToken(confirmationToken)
+                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), "Confirmation token invalid")))
+                .flatMap(orderRequest -> Mono.just(GeneralResponse.<ValidateOrderRequestCodeResponse>builder()
+                        .code(SuccessCode.SUCCESS.name())
+                        .data(ValidateOrderRequestCodeResponse.builder()
+                                .orderRequestId(orderRequest.getOrderRequestId())
+                                .build())
+                        .build())
                 );
     }
 
