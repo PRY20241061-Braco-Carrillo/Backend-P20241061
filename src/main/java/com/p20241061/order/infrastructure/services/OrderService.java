@@ -3,6 +3,7 @@ package com.p20241061.order.infrastructure.services;
 import com.p20241061.management.core.repositories.restaurant.CampusRepository;
 import com.p20241061.order.api.mapping.order.OrderMapper;
 import com.p20241061.order.api.model.request.order.CreateOrderRequest;
+import com.p20241061.order.api.model.response.GetAllOrderByCampusResponse;
 import com.p20241061.order.core.repositories.order.OrderRepository;
 import com.p20241061.order.core.repositories.order_request.OrderRequestRepository;
 import com.p20241061.order.infrastructure.interfaces.IOrderService;
@@ -17,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -30,8 +32,13 @@ public class OrderService implements IOrderService {
     private final OrderMapper orderMapper;
 
     @Override
-    public Mono<GeneralResponse<String>> getAllOrderByCampus(UUID campusId) {
-        return null;
+    public Mono<GeneralResponse<List<GetAllOrderByCampusResponse>>> getAllOrderByCampus(UUID campusId) {
+        return orderRepository.getAllOrderByCampus(campusId)
+                .collectList()
+                .flatMap(orders -> Mono.just(GeneralResponse.<List<GetAllOrderByCampusResponse>>builder()
+                        .code(HttpStatus.OK.name())
+                        .data(orders)
+                        .build()));
     }
 
     @Override
