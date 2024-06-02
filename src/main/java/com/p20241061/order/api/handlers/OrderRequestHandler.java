@@ -11,6 +11,8 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
+import java.util.UUID;
+
 @Component
 @Slf4j
 @RequiredArgsConstructor
@@ -28,6 +30,22 @@ public class OrderRequestHandler {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .bodyValue(response))
                 );
+    }
+
+    public Mono<ServerResponse> validateOrderRequestCode(ServerRequest request) {
+        String confirmationToken = request.pathVariable("confirmationToken");
+        return orderRequestService.validateOrderRequestCode(confirmationToken)
+                .flatMap(response -> ServerResponse.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(response));
+    }
+
+    public Mono<ServerResponse> deleteOrderRequest(ServerRequest request) {
+        UUID orderRequestId = UUID.fromString(request.pathVariable("orderRequestId"));
+        return orderRequestService.deleteOrderRequest(orderRequestId)
+                .flatMap(response -> ServerResponse.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(response));
     }
 
 }

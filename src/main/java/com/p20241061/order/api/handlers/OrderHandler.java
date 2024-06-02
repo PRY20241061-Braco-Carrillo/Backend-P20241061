@@ -11,6 +11,8 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
+import java.util.UUID;
+
 @Component
 @Slf4j
 @RequiredArgsConstructor
@@ -18,6 +20,23 @@ public class OrderHandler {
     private final IOrderService orderService;
     private final ObjectValidator objectValidator;
 
+    public Mono<ServerResponse> getAllOrderByCampus(ServerRequest request) {
+        UUID campusId = UUID.fromString(request.pathVariable("campusId"));
+
+        return orderService.getAllOrderByCampus(campusId)
+                .flatMap(response -> ServerResponse.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(response));
+    }
+
+    public Mono<ServerResponse> getOrderDetail(ServerRequest request) {
+        UUID orderId = UUID.fromString(request.pathVariable("orderId"));
+
+        return orderService.getOrderDetail(orderId)
+                .flatMap(response -> ServerResponse.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(response));
+    }
 
     public Mono<ServerResponse> create(ServerRequest request) {
         Mono<CreateOrderRequest> orderRequest = request.bodyToMono(CreateOrderRequest.class)
@@ -29,5 +48,14 @@ public class OrderHandler {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .bodyValue(response))
                 );
+    }
+
+    public Mono<ServerResponse> deleteOrder(ServerRequest request) {
+        UUID orderId = UUID.fromString(request.pathVariable("orderId"));
+
+        return orderService.deleteOrder(orderId)
+                .flatMap(response -> ServerResponse.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(response));
     }
 }

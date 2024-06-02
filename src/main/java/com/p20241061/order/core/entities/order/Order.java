@@ -19,5 +19,6 @@ public class Order {
     private String orderStatus;
     private String tableNumber;
     private Boolean forTable;
+    private UUID campusId;
     private UUID userId;
 }

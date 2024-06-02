@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
@@ -14,7 +13,6 @@ import java.util.UUID;
 @Builder
 public class CreateOrderRequestResponse {
     private UUID orderRequestId;
-    private LocalDateTime orderRequestDate;
     private String confirmationToken;
     private Double totalPrice;
 }
