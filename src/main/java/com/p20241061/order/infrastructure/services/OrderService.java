@@ -3,6 +3,7 @@ package com.p20241061.order.infrastructure.services;
 import com.p20241061.management.core.repositories.restaurant.CampusRepository;
 import com.p20241061.order.api.mapping.order.OrderMapper;
 import com.p20241061.order.api.model.request.order.CreateOrderRequest;
+import com.p20241061.order.api.model.request.order.UpdateOrderStatusRequest;
 import com.p20241061.order.api.model.response.get.GetAllOrderByCampusResponse;
 import com.p20241061.order.api.model.response.get.GetOrderDetailResponse;
 import com.p20241061.order.core.repositories.order.OrderRepository;
@@ -11,6 +12,7 @@ import com.p20241061.order.infrastructure.interfaces.IOrderService;
 import com.p20241061.security.core.repositories.UserRepository;
 import com.p20241061.shared.exceptions.CustomException;
 import com.p20241061.shared.models.enums.ErrorCode;
+import com.p20241061.shared.models.enums.OrderStatus;
 import com.p20241061.shared.models.enums.SuccessCode;
 import com.p20241061.shared.models.response.GeneralResponse;
 import lombok.RequiredArgsConstructor;
@@ -99,6 +101,15 @@ public class OrderService implements IOrderService {
     }
 
     @Override
+    public Mono<GeneralResponse<GetAllOrderByCampusResponse>> getOrderByTableNumber(String tableNumber) {
+        return orderRepository.getOrderByTableNumber(tableNumber)
+                .map(order -> GeneralResponse.<GetAllOrderByCampusResponse>builder()
+                        .code(SuccessCode.SUCCESS.name())
+                        .data(order)
+                        .build());
+    }
+
+    @Override
     public Mono<GeneralResponse<String>> create(CreateOrderRequest request) {
 
         return orderRepository.existsByOrderRequestId(request.getOrderRequestId())
@@ -131,6 +142,25 @@ public class OrderService implements IOrderService {
                                                 .build()));
                     }
 
+                });
+    }
+
+    @Override
+    public Mono<GeneralResponse<String>> updateOrderStatus(UpdateOrderStatusRequest orderStatusRequest) {
+        return orderRepository.findById(orderStatusRequest.getOrderId())
+                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), "Order not found")))
+                .flatMap(order -> {
+                    try {
+                        OrderStatus status = OrderStatus.valueOf(orderStatusRequest.getOrderStatus());
+                        order.setOrderStatus(status.name());
+                        return orderRepository.save(order)
+                                .thenReturn(GeneralResponse.<String>builder()
+                                        .code(SuccessCode.UPDATED.name())
+                                        .data("Order Status updated successfully")
+                                        .build());
+                    } catch (IllegalArgumentException e) {
+                        return Mono.error(new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.BAD_REQUEST.name(), "Order Status is not valid"));
+                    }
                 });
     }
 
