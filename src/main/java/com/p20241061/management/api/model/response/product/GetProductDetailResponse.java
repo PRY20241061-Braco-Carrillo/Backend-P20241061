@@ -12,7 +12,6 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Builder
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class GetProductDetailResponse {
     private ProductResponse product;
     private List<GetProductVariantByProductResponse> productVariants;

@@ -30,9 +30,9 @@ public class OrderHandler {
     }
 
     public Mono<ServerResponse> getOrderDetail(ServerRequest request) {
-        UUID orderId = UUID.fromString(request.pathVariable("orderId"));
+        UUID orderRequestId = UUID.fromString(request.pathVariable("orderRequestId"));
 
-        return orderService.getOrderDetail(orderId)
+        return orderService.getOrderDetail(orderRequestId)
                 .flatMap(response -> ServerResponse.ok()
                         .contentType(MediaType.APPLICATION_JSON)
                         .bodyValue(response));
