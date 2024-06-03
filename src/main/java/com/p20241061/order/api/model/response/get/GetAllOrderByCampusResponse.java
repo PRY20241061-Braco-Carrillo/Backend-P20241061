@@ -12,7 +12,6 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
 @Builder
 public class GetAllOrderByCampusResponse {
     private UUID orderId;

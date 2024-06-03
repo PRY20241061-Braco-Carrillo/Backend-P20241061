@@ -14,7 +14,6 @@ import java.util.UUID;
 @Getter
 @Setter
 @Builder
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class GetComboPromotionResponse {
     private UUID promotionId;
     private UUID comboId;

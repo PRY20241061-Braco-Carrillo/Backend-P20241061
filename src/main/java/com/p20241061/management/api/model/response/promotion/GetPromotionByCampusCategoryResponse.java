@@ -8,7 +8,6 @@ import java.util.UUID;
 
 @AllArgsConstructor
 @Getter
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class GetPromotionByCampusCategoryResponse {
     private UUID promotionId;
     private UUID comboId;
