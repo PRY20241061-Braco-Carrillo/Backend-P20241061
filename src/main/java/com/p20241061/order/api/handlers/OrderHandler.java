@@ -1,6 +1,7 @@
 package com.p20241061.order.api.handlers;
 
 import com.p20241061.order.api.model.request.order.CreateOrderRequest;
+import com.p20241061.order.api.model.request.order.UpdateOrderStatusRequest;
 import com.p20241061.order.infrastructure.interfaces.IOrderService;
 import com.p20241061.shared.validation.ObjectValidator;
 import lombok.RequiredArgsConstructor;
@@ -58,6 +59,17 @@ public class OrderHandler {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .bodyValue(response))
                 );
+    }
+
+    public Mono<ServerResponse> updateOrderStatus(ServerRequest request) {
+        Mono<UpdateOrderStatusRequest> orderStatusRequest = request.bodyToMono(UpdateOrderStatusRequest.class)
+                .doOnNext(objectValidator::validate);
+
+        return orderStatusRequest
+                .flatMap(res -> orderService.updateOrderStatus(res)
+                        .flatMap(response -> ServerResponse.ok()
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .bodyValue(response)));
     }
 
     public Mono<ServerResponse> deleteOrder(ServerRequest request) {

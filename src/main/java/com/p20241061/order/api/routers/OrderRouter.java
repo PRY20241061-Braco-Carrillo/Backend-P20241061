@@ -23,6 +23,7 @@ public class OrderRouter {
                 .GET(PATH_ORDER + "/order-request/{orderRequestId}", handler::getOrderDetail)
                 .GET(PATH_ORDER + "/table-number/{tableNumber}", handler::getOrderByTableNumber)
                 .POST(PATH_ORDER, handler::create)
+                .PATCH(PATH_ORDER + "/change-status", handler::updateOrderStatus)
                 .DELETE(PATH_ORDER + "/{orderId}", handler::deleteOrder)
                 .build();
     }
