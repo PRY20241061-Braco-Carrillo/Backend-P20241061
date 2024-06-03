@@ -99,6 +99,15 @@ public class OrderService implements IOrderService {
     }
 
     @Override
+    public Mono<GeneralResponse<GetAllOrderByCampusResponse>> getOrderByTableNumber(String tableNumber) {
+        return orderRepository.getOrderByTableNumber(tableNumber)
+                .map(order -> GeneralResponse.<GetAllOrderByCampusResponse>builder()
+                        .code(SuccessCode.SUCCESS.name())
+                        .data(order)
+                        .build());
+    }
+
+    @Override
     public Mono<GeneralResponse<String>> create(CreateOrderRequest request) {
 
         return orderRepository.existsByOrderRequestId(request.getOrderRequestId())

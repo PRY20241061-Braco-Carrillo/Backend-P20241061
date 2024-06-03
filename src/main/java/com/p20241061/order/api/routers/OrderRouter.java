@@ -21,6 +21,7 @@ public class OrderRouter {
         return RouterFunctions.route()
                 .GET(PATH_ORDER + "/campus/{campusId}", handler::getAllOrderByCampus)
                 .GET(PATH_ORDER + "/order-request/{orderRequestId}", handler::getOrderDetail)
+                .GET(PATH_ORDER + "/table-number/{tableNumber}", handler::getOrderByTableNumber)
                 .POST(PATH_ORDER, handler::create)
                 .DELETE(PATH_ORDER + "/{orderId}", handler::deleteOrder)
                 .build();

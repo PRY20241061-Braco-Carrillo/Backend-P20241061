@@ -95,5 +95,12 @@ public interface OrderRepository extends ReactiveCrudRepository<Order, UUID> {
             "and pv.product_id = p.product_id " +
             "and omp.order_menu_id = :orderMenuId")
     Flux<GetOrderProductDetailResponse> getMenuProductDetailByMenuId(UUID orderMenuId);
+
+    @Query("select o.order_id, o.order_status, o.table_number, o.for_table, or2.order_request_date, or2.total_price, or2.order_request_id " +
+            "from \"order\" o, order_request or2 " +
+            "where  o.order_request_id = or2.order_request_id " +
+            "and o.table_number = :tableNumber " +
+            "and o.order_status in ('CONFIRMADO', 'EN_PREPARACION', 'MODIFICADO') ")
+    Mono<GetAllOrderByCampusResponse> getOrderByTableNumber(String tableNumber);
 }
 

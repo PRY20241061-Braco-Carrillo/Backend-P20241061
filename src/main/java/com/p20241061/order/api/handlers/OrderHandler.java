@@ -38,6 +38,16 @@ public class OrderHandler {
                         .bodyValue(response));
     }
 
+    public Mono<ServerResponse> getOrderByTableNumber(ServerRequest request) {
+        String tableNumber = request.pathVariable("tableNumber");
+
+        return orderService.getOrderByTableNumber(tableNumber)
+                .flatMap(response -> ServerResponse.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(response));
+
+    }
+
     public Mono<ServerResponse> create(ServerRequest request) {
         Mono<CreateOrderRequest> orderRequest = request.bodyToMono(CreateOrderRequest.class)
                 .doOnNext(objectValidator::validate);

@@ -12,6 +12,7 @@ import java.util.UUID;
 public interface IOrderService {
     Mono<GeneralResponse<List<GetAllOrderByCampusResponse>>> getAllOrderByCampus(UUID campusId);
     Mono<GeneralResponse<GetOrderDetailResponse>> getOrderDetail(UUID orderRequest);
+    Mono<GeneralResponse<GetAllOrderByCampusResponse>> getOrderByTableNumber(String tableNumber);
     Mono<GeneralResponse<String>> create(CreateOrderRequest request);
     Mono<GeneralResponse<String>> deleteOrder(UUID orderId);
 }
