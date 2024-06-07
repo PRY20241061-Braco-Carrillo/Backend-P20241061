@@ -15,12 +15,12 @@ public class OrderRequestMapper {
 
     public OrderRequest  createRequestToModel(CreateOrderRequestRequest request) {
         return OrderRequest.builder()
-                .totalPrice(getOrderRequestTotalPrice(request))
+                .totalPrice(request != null ? getOrderRequestTotalPrice(request) : null)
                 .confirmationToken(generateToken())
                 .build();
     }
 
-    private Double getOrderRequestTotalPrice(CreateOrderRequestRequest request) {
+    public Double getOrderRequestTotalPrice(CreateOrderRequestRequest request) {
         Double productTotalPrice = request.getProducts().stream()
                 .mapToDouble(product -> product.getUnitPrice() * product.getProductAmount())
                 .sum();
