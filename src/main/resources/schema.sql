@@ -353,7 +353,7 @@ CREATE TABLE order_request
     order_request_id   uuid           NOT NULL DEFAULT gen_random_uuid(),
     order_request_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     confirmation_token varchar(25)    NOT NULL,
-    total_price        decimal(12, 2) NOT NULL,
+    total_price        decimal(12, 2) NULL,
     CONSTRAINT order_request_p PRIMARY KEY (order_request_id)
 );
 

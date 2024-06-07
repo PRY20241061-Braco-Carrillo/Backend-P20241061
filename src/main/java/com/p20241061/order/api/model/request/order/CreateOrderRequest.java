@@ -1,5 +1,6 @@
 package com.p20241061.order.api.model.request.order;
 
+import com.p20241061.order.api.model.request.order_request.CreateOrderRequestRequest;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,4 +18,5 @@ public class CreateOrderRequest {
     private UUID userId;
     private UUID orderRequestId;
     private UUID campusId;
+    private CreateOrderRequestRequest orderRequest;
 }

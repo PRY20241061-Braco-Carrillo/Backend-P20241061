@@ -82,7 +82,20 @@ public class OrderRequestService implements IOrderRequestService {
     private final OrderMenuProductMapper orderMenuProductMapper;
 
     @Override
-    public Mono<GeneralResponse<CreateOrderRequestResponse>> create(CreateOrderRequestRequest request) {
+    public Mono<GeneralResponse<CreateOrderRequestResponse>> create() {
+        return orderRequestRepository.save(orderRequestMapper.createRequestToModel(null))
+                .flatMap(orderRequest -> Mono.just(GeneralResponse.<CreateOrderRequestResponse>builder()
+                        .code(SuccessCode.CREATED.name())
+                        .data(CreateOrderRequestResponse.builder()
+                                .orderRequestId(orderRequest.getOrderRequestId())
+                                .confirmationToken(orderRequest.getConfirmationToken())
+                                .totalPrice(orderRequest.getTotalPrice())
+                                .build())
+                        .build())
+                );
+    }
+
+    public Mono<GeneralResponse<CreateOrderRequestResponse>> createOrderRequestInReservation(CreateOrderRequestRequest request) {
         return orderRequestRepository.save(orderRequestMapper.createRequestToModel(request))
                 .flatMap(orderRequest ->
                         saveOrderProduct(request.getProducts(), orderRequest.getOrderRequestId())
@@ -119,28 +132,28 @@ public class OrderRequestService implements IOrderRequestService {
     @Override
     public Mono<GeneralResponse<String>> deleteOrderRequest(UUID orderRequestId) {
         return orderRequestRepository.findById(orderRequestId)
-                        .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), "Order Request not found")))
+                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), "Order Request not found")))
                 .flatMap(orderRequest -> orderRequestRepository.deleteById(orderRequestId)
-                .then(Mono.just(GeneralResponse.<String>builder()
-                        .code(SuccessCode.DELETED.name())
-                        .data("Order Request deleted")
-                        .build())));
+                        .then(Mono.just(GeneralResponse.<String>builder()
+                                .code(SuccessCode.DELETED.name())
+                                .data("Order Request deleted")
+                                .build())));
     }
 
-    private Flux<String> saveOrderProduct(List<OrderProductRequest> products, UUID orderRequestId) {
+    public Flux<String> saveOrderProduct(List<OrderProductRequest> products, UUID orderRequestId) {
         return Flux.fromIterable(products)
                 .flatMap(product -> orderProductRepository.save(orderProductMapper.createRequestToModel(product, orderRequestId))
                         .flatMap(orderProduct -> Mono.just("Order Product created")));
     }
 
-    private Flux<String> saveOrderComplement(List<OrderComplementRequest> complements, UUID orderRequestId) {
+    public Flux<String> saveOrderComplement(List<OrderComplementRequest> complements, UUID orderRequestId) {
         return Flux.fromIterable(complements)
                 .flatMap(complement -> orderComplementRepository.save(orderComplementMapper.createRequestToModel(complement, orderRequestId))
                         .flatMap(orderComplement -> Mono.just("Order Complement created")));
 
     }
 
-    private Flux<String> saveOrderCombo(List<OrderComboRequest> combos, UUID orderRequestId) {
+    public Flux<String> saveOrderCombo(List<OrderComboRequest> combos, UUID orderRequestId) {
         return Flux.fromIterable(combos)
                 .flatMap(combo -> orderComboRepository.save(orderComboMapper.createRequestToModel(combo, orderRequestId))
                         .flatMap(orderCombo ->
@@ -155,7 +168,7 @@ public class OrderRequestService implements IOrderRequestService {
                 );
     }
 
-    private Flux<String> saveOrderComboPromotion(List<OrderComboPromotionRequest> comboPromotions, UUID orderRequestId) {
+    public Flux<String> saveOrderComboPromotion(List<OrderComboPromotionRequest> comboPromotions, UUID orderRequestId) {
         return Flux.fromIterable(comboPromotions)
                 .flatMapSequential(comboPromotion ->
                         orderPromotionRepository.save(orderPromotionMapper.createRequestToModel(comboPromotion, null, orderRequestId))
@@ -177,7 +190,7 @@ public class OrderRequestService implements IOrderRequestService {
                 );
     }
 
-    private Flux<String> saveOrderProductPromotion(List<OrderProductPromotionRequest> productPromotions, UUID orderRequestId) {
+    public Flux<String> saveOrderProductPromotion(List<OrderProductPromotionRequest> productPromotions, UUID orderRequestId) {
         return Flux.fromIterable(productPromotions)
                 .flatMap(productPromotion ->
                         orderPromotionRepository.save(orderPromotionMapper.createRequestToModel(null, productPromotion, orderRequestId))
@@ -193,7 +206,7 @@ public class OrderRequestService implements IOrderRequestService {
                 );
     }
 
-    private Flux<String> saveOrderMenu(List<OrderMenuRequest> menus, UUID orderRequestId) {
+    public Flux<String> saveOrderMenu(List<OrderMenuRequest> menus, UUID orderRequestId) {
         return Flux.fromIterable(menus)
                 .flatMap(menu -> orderMenuRepository.save(orderMenuMapper.createRequestToModel(menu, orderRequestId))
                         .flatMap(orderMenu ->

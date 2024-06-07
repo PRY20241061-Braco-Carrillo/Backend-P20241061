@@ -3,6 +3,7 @@ package com.p20241061.reservation.infrastructure.services;
 import com.p20241061.order.core.repositories.order.OrderRepository;
 import com.p20241061.order.core.repositories.order_request.OrderRequestRepository;
 import com.p20241061.order.infrastructure.interfaces.IOrderRequestService;
+import com.p20241061.order.infrastructure.services.OrderRequestService;
 import com.p20241061.reservation.api.mapping.ReservationMapper;
 import com.p20241061.reservation.api.model.request.ChangeReservationStatusRequest;
 import com.p20241061.reservation.api.model.request.CreateReservationRequest;
@@ -31,7 +32,7 @@ import java.util.UUID;
 public class ReservationService implements IReservationService {
 
     private final ReservationRepository reservationRepository;
-    private final IOrderRequestService orderRequestService;
+    private final OrderRequestService orderRequestService;
     private final ReservationMapper reservationMapper;
     private final OrderRequestRepository orderRequestRepository;
     private final UserRepository userRepository;
@@ -42,7 +43,7 @@ public class ReservationService implements IReservationService {
 
         return userRepository.findById(createReservationRequest.getUserId())
                 .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), "User not found")))
-                .flatMap(user -> orderRequestService.create(createReservationRequest.getOrder())
+                .flatMap(user -> orderRequestService.createOrderRequestInReservation(createReservationRequest.getOrder())
                         .flatMap(order -> reservationRepository.save(reservationMapper.createRequestToModel(createReservationRequest, order.getData(), user))
                                 .flatMap(reservation -> Mono.just(GeneralResponse.<String>builder()
                                         .code(SuccessCode.CREATED.name())

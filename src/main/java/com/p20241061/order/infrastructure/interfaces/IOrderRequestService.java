@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono;
 import java.util.UUID;
 
 public interface IOrderRequestService {
-    Mono<GeneralResponse<CreateOrderRequestResponse>> create(CreateOrderRequestRequest request);
+    Mono<GeneralResponse<CreateOrderRequestResponse>> create();
     Mono<GeneralResponse<ValidateOrderRequestCodeResponse>> validateOrderRequestCode(String confirmationToken);
     Mono<GeneralResponse<String>> deleteOrderRequest(UUID orderRequestId);
 }
