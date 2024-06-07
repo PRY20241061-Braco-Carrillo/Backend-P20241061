@@ -8,6 +8,7 @@ import com.p20241061.reservation.api.model.request.CreateReservationRequest;
 import com.p20241061.reservation.api.model.response.GetReservationResponseByCampus;
 import com.p20241061.reservation.core.repositories.ReservationRepository;
 import com.p20241061.reservation.infrastructure.interfaces.IReservationService;
+import com.p20241061.security.core.repositories.UserRepository;
 import com.p20241061.shared.exceptions.CustomException;
 import com.p20241061.shared.models.enums.ErrorCode;
 import com.p20241061.shared.models.enums.SuccessCode;
@@ -30,21 +31,29 @@ public class ReservationService implements IReservationService {
     private final IOrderRequestService orderRequestService;
     private final ReservationMapper reservationMapper;
     private final OrderRequestRepository orderRequestRepository;
+    private final UserRepository userRepository;
 
     @Override
     public Mono<GeneralResponse<String>> createReservation(CreateReservationRequest createReservationRequest) {
 
-        return orderRequestService.create(createReservationRequest.getOrder())
-                .flatMap(order -> reservationRepository.save(reservationMapper.createRequestToModel(createReservationRequest, order.getData()))
+        return userRepository.findById(createReservationRequest.getUserId())
+                        .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), "User not found")))
+                .flatMap(user -> orderRequestService.create(createReservationRequest.getOrder())
+                .flatMap(order -> reservationRepository.save(reservationMapper.createRequestToModel(createReservationRequest, order.getData(), user))
                         .flatMap(reservation -> Mono.just(GeneralResponse.<String>builder()
                                 .code(SuccessCode.CREATED.name())
                                 .data("Reservation created successfully")
-                                .build())));
+                                .build()))));
     }
 
     @Override
     public Mono<GeneralResponse<List<GetReservationResponseByCampus>>> getReservationByCampus(UUID campusId) {
-        return null;
+        return reservationRepository.getReservationByCampusId(campusId)
+                .collectList()
+                .flatMap(reservations -> Mono.just(GeneralResponse.<List<GetReservationResponseByCampus>>builder()
+                                .code(SuccessCode.SUCCESS.name())
+                                .data(reservationMapper.modelListToResponseList(reservations))
+                        .build()));
     }
 
     @Override

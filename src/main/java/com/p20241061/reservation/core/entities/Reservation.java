@@ -19,6 +19,7 @@ public class Reservation {
     private String reservationStatus;
     private LocalDateTime reservationDate;
     private String message;
+    private String userQualification;
     private UUID userId;
     private UUID orderRequestId;
     private UUID campusId;

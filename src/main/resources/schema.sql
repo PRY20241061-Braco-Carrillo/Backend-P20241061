@@ -364,6 +364,7 @@ CREATE TABLE reservation
     reservation_status VARCHAR(25) NOT NULL,
     reservation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     message varchar(250)  NULL,
+    user_qualification varchar(25) NOT NULL,
     user_id uuid NOT NULL,
     order_request_id uuid NOT NULL,
     campus_id        uuid NOT NULL,
