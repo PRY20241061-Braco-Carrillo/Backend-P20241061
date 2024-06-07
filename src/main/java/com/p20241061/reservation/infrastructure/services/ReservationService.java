@@ -12,8 +12,7 @@ import com.p20241061.reservation.core.repositories.ReservationRepository;
 import com.p20241061.reservation.infrastructure.interfaces.IReservationService;
 import com.p20241061.security.core.repositories.UserRepository;
 import com.p20241061.shared.exceptions.CustomException;
-import com.p20241061.shared.models.enums.ErrorCode;
-import com.p20241061.shared.models.enums.SuccessCode;
+import com.p20241061.shared.models.enums.*;
 import com.p20241061.shared.models.response.GeneralResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -115,7 +114,23 @@ public class ReservationService implements IReservationService {
 
     @Override
     public Mono<GeneralResponse<String>> changeReservationStatus(ChangeReservationStatusRequest changeReservationStatusRequest) {
-        return null;
+        return reservationRepository.findById(changeReservationStatusRequest.getReservationId())
+                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), "Reservation not found")))
+                .flatMap(reservation -> {
+                    try {
+                        ReservationStatus status = ReservationStatus.valueOf(changeReservationStatusRequest.getStatus());
+                        reservation.setReservationStatus(status.name());
+                        reservation.setMessage(changeReservationStatusRequest.getMessage());
+
+                        return reservationRepository.save(reservation)
+                                .flatMap(updatedReservation -> Mono.just(GeneralResponse.<String>builder()
+                                        .code(SuccessCode.UPDATED.name())
+                                        .data("Status changed successfully")
+                                        .build()));
+                    } catch (IllegalArgumentException e) {
+                        return Mono.error(new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.BAD_REQUEST.name(), "Reservation Status is not valid"));
+                    }
+                });
     }
 
     @Override
