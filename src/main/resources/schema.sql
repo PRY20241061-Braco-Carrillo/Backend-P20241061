@@ -357,6 +357,22 @@ CREATE TABLE order_request
     CONSTRAINT order_request_p PRIMARY KEY (order_request_id)
 );
 
+-- Table: reservation
+CREATE TABLE reservation
+(
+    reservation_id   uuid           NOT NULL DEFAULT gen_random_uuid(),
+    reservation_status VARCHAR(25) NOT NULL,
+    reservation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    message varchar(250)  NULL,
+    user_id uuid NOT NULL,
+    order_request_id uuid NOT NULL,
+    campus_id        uuid NOT NULL,
+    CONSTRAINT reservation_p PRIMARY KEY (reservation_id),
+    CONSTRAINT reservation_user  FOREIGN KEY (user_id) REFERENCES "user" (user_id) ON DELETE Cascade,
+    CONSTRAINT reservation_order_request FOREIGN KEY (order_request_id) REFERENCES order_request (order_request_id) ON DELETE Cascade,
+    CONSTRAINT reservation_campus FOREIGN KEY (campus_id) REFERENCES campus (campus_id) ON DELETE Cascade
+);
+
 -- Table: "order"
 CREATE TABLE "order"
 (

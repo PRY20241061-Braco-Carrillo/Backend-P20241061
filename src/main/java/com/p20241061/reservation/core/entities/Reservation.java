@@ -4,6 +4,7 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Table("reservation")
@@ -16,6 +17,9 @@ public class Reservation {
     @Id
     private UUID reservationId;
     private String reservationStatus;
-    private UUID reservationRequestId;
+    private LocalDateTime reservationDate;
+    private String message;
     private UUID userId;
+    private UUID orderRequestId;
+    private UUID campusId;
 }
