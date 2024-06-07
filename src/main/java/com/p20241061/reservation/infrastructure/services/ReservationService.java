@@ -12,7 +12,9 @@ import com.p20241061.reservation.core.repositories.ReservationRepository;
 import com.p20241061.reservation.infrastructure.interfaces.IReservationService;
 import com.p20241061.security.core.repositories.UserRepository;
 import com.p20241061.shared.exceptions.CustomException;
-import com.p20241061.shared.models.enums.*;
+import com.p20241061.shared.models.enums.ErrorCode;
+import com.p20241061.shared.models.enums.ReservationStatus;
+import com.p20241061.shared.models.enums.SuccessCode;
 import com.p20241061.shared.models.response.GeneralResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -121,6 +123,32 @@ public class ReservationService implements IReservationService {
                         ReservationStatus status = ReservationStatus.valueOf(changeReservationStatusRequest.getStatus());
                         reservation.setReservationStatus(status.name());
                         reservation.setMessage(changeReservationStatusRequest.getMessage());
+
+                        if (status == ReservationStatus.CANCELADO_USUARIO) {
+                            return userRepository.findById(reservation.getUserId())
+                                    .flatMap(user -> {
+                                        user.setCancelReservation(user.getCancelReservation() + 1);
+                                        return userRepository.save(user)
+                                                .flatMap(updateUser -> reservationRepository.save(reservation)
+                                                        .flatMap(updatedReservation -> Mono.just(GeneralResponse.<String>builder()
+                                                                .code(SuccessCode.UPDATED.name())
+                                                                .data("Status changed successfully")
+                                                                .build())));
+                                    });
+                        }
+
+                        if (status == ReservationStatus.CONFIRMADO) {
+                            return userRepository.findById(reservation.getUserId())
+                                    .flatMap(user -> {
+                                        user.setAcceptReservation(user.getAcceptReservation() + 1);
+                                        return userRepository.save(user)
+                                                .flatMap(updateUser -> reservationRepository.save(reservation)
+                                                        .flatMap(updatedReservation -> Mono.just(GeneralResponse.<String>builder()
+                                                                .code(SuccessCode.UPDATED.name())
+                                                                .data("Status changed successfully")
+                                                                .build())));
+                                    });
+                        }
 
                         return reservationRepository.save(reservation)
                                 .flatMap(updatedReservation -> Mono.just(GeneralResponse.<String>builder()

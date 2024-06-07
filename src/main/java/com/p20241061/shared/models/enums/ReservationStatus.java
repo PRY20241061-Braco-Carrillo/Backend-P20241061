@@ -5,6 +5,7 @@ public enum ReservationStatus {
     CONFIRMADO,
     DENEGADO,
     EN_PREPARACION,
-    CANCELADO,
+    CANCELADO_ADMIN,
+    CANCELADO_USUARIO,
     ENTREGADO
 }
