@@ -1,26 +1,22 @@
-package com.p20241061.reservation.core.entities;
+package com.p20241061.reservation.api.model.response;
 
-import lombok.*;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-@Table("reservation")
-@Getter
-@Setter
+@Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class Reservation {
-    @Id
+public class GetReservationResponseByCampus {
     private UUID reservationId;
     private String reservationStatus;
     private LocalDateTime reservationDate;
     private String message;
     private String userQualification;
-    private UUID userId;
     private UUID orderRequestId;
-    private UUID campusId;
 }
