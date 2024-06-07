@@ -42,6 +42,15 @@ public class ReservationHandler {
                         .bodyValue(response));
     }
 
+    public Mono<ServerResponse> getReservationDetail(ServerRequest request) {
+        UUID reservationId = UUID.fromString(request.pathVariable("reservationId"));
+
+        return reservationService.getReservationDetail(reservationId)
+                .flatMap(response -> ServerResponse.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(response));
+    }
+
     public Mono<ServerResponse> changeReservationStatus(ServerRequest request) {
         Mono<ChangeReservationStatusRequest> changeReservationStatusRequest = request.bodyToMono(ChangeReservationStatusRequest.class)
                 .doOnNext(objectValidator::validate);
