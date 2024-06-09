@@ -757,6 +757,10 @@ VALUES ('8f98373a-cb7d-43ad-99ec-30f5baf3db7a', false, true, false, false, true,
        ('865ac6e9-aa2c-4ef2-ba86-5a2e8f3616f0', false, true, false, false, true, 'f076b7e2-3f28-4b86-a244-56ca274ee3c9',
         '5d1e125a-3a12-4c3a-8610-365bb4f11895'),
        ('651110d9-ba32-49e1-b920-4b78b1a5e7e3', false, false, true, false, true, 'a2018f48-3db0-41ff-9c34-dd9d72021041',
+        '5d1e125a-3a12-4c3a-8610-365bb4f11895'),
+       ('d90c64f0-16a8-476e-a40c-a681955b2b6c', true, false, false, false, true, '86a1e63a-95a3-4540-95c8-dfe7b3b48a4b',
+        '5d1e125a-3a12-4c3a-8610-365bb4f11895'),
+       ('7acc3a31-9550-4c62-9c0b-3fa7bbc89fcb', false, true, false, false, true, '7c4a43f1-1077-4cb2-b6e1-8f2b100c1cf2',
         '5d1e125a-3a12-4c3a-8610-365bb4f11895');
 
 INSERT INTO menu_product_variant (menu_product_variant_id, product_variant_id, product_menu_id)
@@ -775,7 +779,11 @@ VALUES ('f4265c6b-86e9-4c82-92ec-96bc5ec52b68', 'b00b545a-7a38-47e0-83b5-f66504c
        ('af0771a0-9219-4419-8ef9-3c80d36af181', '56f2ec6d-ac2e-4846-842b-84a82673eaf5',
         '865ac6e9-aa2c-4ef2-ba86-5a2e8f3616f0'),
        ('1fbefa77-69cc-418c-a6b6-45a92060c429', '38a2f128-80e4-40ae-9c2e-09fa23f149b0',
-        '651110d9-ba32-49e1-b920-4b78b1a5e7e3');
+        '651110d9-ba32-49e1-b920-4b78b1a5e7e3'),
+       ('fbe264d5-3d17-4ef0-87c0-63384e822290', 'a482c179-12c0-4a58-bdc2-4d4f8eef64cf',
+        'd90c64f0-16a8-476e-a40c-a681955b2b6c'),
+       ('2b738633-a82f-48b9-8d37-0e30d68a3064', 'e5682c21-1fbf-4e78-893e-14636e2c3f9a',
+        '7acc3a31-9550-4c62-9c0b-3fa7bbc89fcb');
 
 
 INSERT INTO combo (combo_id, name, amount_price, currency_price, free_sauce, min_cooking_time, max_cooking_time,
