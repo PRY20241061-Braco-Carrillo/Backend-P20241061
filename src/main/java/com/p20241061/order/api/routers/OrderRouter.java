@@ -19,7 +19,13 @@ public class OrderRouter {
     @Bean
     RouterFunction<ServerResponse> orderRtr(OrderHandler handler) {
         return RouterFunctions.route()
+                .GET(PATH_ORDER + "/order-request/{orderRequestId}/hasValidate", handler::hasTokenBeenValidated)
+                .GET(PATH_ORDER + "/campus/{campusId}", handler::getAllOrderByCampus)
+                .GET(PATH_ORDER + "/order-request/{orderRequestId}", handler::getOrderDetail)
+                .GET(PATH_ORDER + "/table-number/{tableNumber}", handler::getOrderByTableNumber)
                 .POST(PATH_ORDER, handler::create)
+                .PATCH(PATH_ORDER + "/change-status", handler::updateOrderStatus)
+                .DELETE(PATH_ORDER + "/{orderId}", handler::deleteOrder)
                 .build();
     }
 
@@ -27,6 +33,8 @@ public class OrderRouter {
     RouterFunction<ServerResponse> orderRequestRtr(OrderRequestHandler handler) {
         return RouterFunctions.route()
                 .POST(PATH_ORDER_REQUEST, handler::create)
+                .POST(PATH_ORDER_REQUEST + "/confirmation-token/{confirmationToken}", handler::validateOrderRequestCode)
+                .DELETE(PATH_ORDER_REQUEST + "/{orderRequestId}", handler::deleteOrderRequest)
                 .build();
     }
 

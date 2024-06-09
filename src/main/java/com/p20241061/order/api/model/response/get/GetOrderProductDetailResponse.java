@@ -1,4 +1,4 @@
-package com.p20241061.management.api.model.response.category;
+package com.p20241061.order.api.model.response.get;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -6,15 +6,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.UUID;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CategoryResponse {
-    private UUID categoryId;
+public class GetOrderProductDetailResponse {
+    private Integer productAmount;
     private String name;
-    private String urlImage;
-    private UUID restaurantId;
+    private String detail;
 }

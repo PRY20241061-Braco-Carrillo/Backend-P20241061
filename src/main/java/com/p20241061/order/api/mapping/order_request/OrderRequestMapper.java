@@ -6,7 +6,6 @@ import com.p20241061.shared.utils.EnhancedModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class OrderRequestMapper {
@@ -16,13 +15,12 @@ public class OrderRequestMapper {
 
     public OrderRequest  createRequestToModel(CreateOrderRequestRequest request) {
         return OrderRequest.builder()
-                .totalPrice(getOrderRequestTotalPrice(request))
-                .orderRequestDate(LocalDateTime.now())
+                .totalPrice(request != null ? getOrderRequestTotalPrice(request) : null)
                 .confirmationToken(generateToken())
                 .build();
     }
 
-    private Double getOrderRequestTotalPrice(CreateOrderRequestRequest request) {
+    public Double getOrderRequestTotalPrice(CreateOrderRequestRequest request) {
         Double productTotalPrice = request.getProducts().stream()
                 .mapToDouble(product -> product.getUnitPrice() * product.getProductAmount())
                 .sum();

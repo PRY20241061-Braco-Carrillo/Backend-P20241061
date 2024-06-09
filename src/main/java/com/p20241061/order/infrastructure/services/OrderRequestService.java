@@ -20,6 +20,7 @@ import com.p20241061.order.api.model.request.order_request.product.create.OrderP
 import com.p20241061.order.api.model.request.order_request.promotion.create.OrderComboPromotionRequest;
 import com.p20241061.order.api.model.request.order_request.promotion.create.OrderProductPromotionRequest;
 import com.p20241061.order.api.model.response.CreateOrderRequestResponse;
+import com.p20241061.order.api.model.response.ValidateOrderRequestCodeResponse;
 import com.p20241061.order.core.repositories.order_request.OrderRequestRepository;
 import com.p20241061.order.core.repositories.order_request.combo.OrderComboComplementRepository;
 import com.p20241061.order.core.repositories.order_request.combo.OrderComboProductRepository;
@@ -33,10 +34,13 @@ import com.p20241061.order.core.repositories.order_request.promotion.OrderPromot
 import com.p20241061.order.core.repositories.order_request.promotion.OrderPromotionProductRepository;
 import com.p20241061.order.core.repositories.order_request.promotion.OrderPromotionRepository;
 import com.p20241061.order.infrastructure.interfaces.IOrderRequestService;
+import com.p20241061.shared.exceptions.CustomException;
+import com.p20241061.shared.models.enums.ErrorCode;
 import com.p20241061.shared.models.enums.SuccessCode;
 import com.p20241061.shared.models.response.GeneralResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
@@ -78,7 +82,20 @@ public class OrderRequestService implements IOrderRequestService {
     private final OrderMenuProductMapper orderMenuProductMapper;
 
     @Override
-    public Mono<GeneralResponse<CreateOrderRequestResponse>> create(CreateOrderRequestRequest request) {
+    public Mono<GeneralResponse<CreateOrderRequestResponse>> create() {
+        return orderRequestRepository.save(orderRequestMapper.createRequestToModel(null))
+                .flatMap(orderRequest -> Mono.just(GeneralResponse.<CreateOrderRequestResponse>builder()
+                        .code(SuccessCode.CREATED.name())
+                        .data(CreateOrderRequestResponse.builder()
+                                .orderRequestId(orderRequest.getOrderRequestId())
+                                .confirmationToken(orderRequest.getConfirmationToken())
+                                .totalPrice(orderRequest.getTotalPrice())
+                                .build())
+                        .build())
+                );
+    }
+
+    public Mono<GeneralResponse<CreateOrderRequestResponse>> createOrderRequestInReservation(CreateOrderRequestRequest request) {
         return orderRequestRepository.save(orderRequestMapper.createRequestToModel(request))
                 .flatMap(orderRequest ->
                         saveOrderProduct(request.getProducts(), orderRequest.getOrderRequestId())
@@ -90,9 +107,7 @@ public class OrderRequestService implements IOrderRequestService {
                                 .then(Mono.just(GeneralResponse.<CreateOrderRequestResponse>builder()
                                         .code(SuccessCode.CREATED.name())
                                         .data(CreateOrderRequestResponse.builder()
-                                                .orderRequestDate(orderRequest.getOrderRequestDate())
                                                 .orderRequestId(orderRequest.getOrderRequestId())
-                                                .orderRequestDate(orderRequest.getOrderRequestDate())
                                                 .confirmationToken(orderRequest.getConfirmationToken())
                                                 .totalPrice(orderRequest.getTotalPrice())
                                                 .build())
@@ -101,20 +116,44 @@ public class OrderRequestService implements IOrderRequestService {
                 );
     }
 
-    private Flux<String> saveOrderProduct(List<OrderProductRequest> products, UUID orderRequestId) {
+    @Override
+    public Mono<GeneralResponse<ValidateOrderRequestCodeResponse>> validateOrderRequestCode(String confirmationToken) {
+        return orderRequestRepository.findByConfirmationToken(confirmationToken)
+                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), "Confirmation token invalid")))
+                .flatMap(orderRequest -> Mono.just(GeneralResponse.<ValidateOrderRequestCodeResponse>builder()
+                        .code(SuccessCode.SUCCESS.name())
+                        .data(ValidateOrderRequestCodeResponse.builder()
+                                .orderRequestId(orderRequest.getOrderRequestId())
+                                .build())
+                        .build())
+                );
+    }
+
+    @Override
+    public Mono<GeneralResponse<String>> deleteOrderRequest(UUID orderRequestId) {
+        return orderRequestRepository.findById(orderRequestId)
+                .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), "Order Request not found")))
+                .flatMap(orderRequest -> orderRequestRepository.deleteById(orderRequestId)
+                        .then(Mono.just(GeneralResponse.<String>builder()
+                                .code(SuccessCode.DELETED.name())
+                                .data("Order Request deleted")
+                                .build())));
+    }
+
+    public Flux<String> saveOrderProduct(List<OrderProductRequest> products, UUID orderRequestId) {
         return Flux.fromIterable(products)
                 .flatMap(product -> orderProductRepository.save(orderProductMapper.createRequestToModel(product, orderRequestId))
                         .flatMap(orderProduct -> Mono.just("Order Product created")));
     }
 
-    private Flux<String> saveOrderComplement(List<OrderComplementRequest> complements, UUID orderRequestId) {
+    public Flux<String> saveOrderComplement(List<OrderComplementRequest> complements, UUID orderRequestId) {
         return Flux.fromIterable(complements)
                 .flatMap(complement -> orderComplementRepository.save(orderComplementMapper.createRequestToModel(complement, orderRequestId))
                         .flatMap(orderComplement -> Mono.just("Order Complement created")));
 
     }
 
-    private Flux<String> saveOrderCombo(List<OrderComboRequest> combos, UUID orderRequestId) {
+    public Flux<String> saveOrderCombo(List<OrderComboRequest> combos, UUID orderRequestId) {
         return Flux.fromIterable(combos)
                 .flatMap(combo -> orderComboRepository.save(orderComboMapper.createRequestToModel(combo, orderRequestId))
                         .flatMap(orderCombo ->
@@ -129,7 +168,7 @@ public class OrderRequestService implements IOrderRequestService {
                 );
     }
 
-    private Flux<String> saveOrderComboPromotion(List<OrderComboPromotionRequest> comboPromotions, UUID orderRequestId) {
+    public Flux<String> saveOrderComboPromotion(List<OrderComboPromotionRequest> comboPromotions, UUID orderRequestId) {
         return Flux.fromIterable(comboPromotions)
                 .flatMapSequential(comboPromotion ->
                         orderPromotionRepository.save(orderPromotionMapper.createRequestToModel(comboPromotion, null, orderRequestId))
@@ -151,7 +190,7 @@ public class OrderRequestService implements IOrderRequestService {
                 );
     }
 
-    private Flux<String> saveOrderProductPromotion(List<OrderProductPromotionRequest> productPromotions, UUID orderRequestId) {
+    public Flux<String> saveOrderProductPromotion(List<OrderProductPromotionRequest> productPromotions, UUID orderRequestId) {
         return Flux.fromIterable(productPromotions)
                 .flatMap(productPromotion ->
                         orderPromotionRepository.save(orderPromotionMapper.createRequestToModel(null, productPromotion, orderRequestId))
@@ -167,7 +206,7 @@ public class OrderRequestService implements IOrderRequestService {
                 );
     }
 
-    private Flux<String> saveOrderMenu(List<OrderMenuRequest> menus, UUID orderRequestId) {
+    public Flux<String> saveOrderMenu(List<OrderMenuRequest> menus, UUID orderRequestId) {
         return Flux.fromIterable(menus)
                 .flatMap(menu -> orderMenuRepository.save(orderMenuMapper.createRequestToModel(menu, orderRequestId))
                         .flatMap(orderMenu ->

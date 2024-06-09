@@ -11,8 +11,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CreateOrderRequestResponse {
+public class ValidateOrderRequestCodeResponse {
     private UUID orderRequestId;
-    private String confirmationToken;
-    private Double totalPrice;
 }

@@ -10,7 +10,6 @@ import java.util.UUID;
 @AllArgsConstructor
 @Getter
 @Builder
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class GetProductVariantByProductResponse {
     private UUID productVariantId;
     private Double amountPrice;

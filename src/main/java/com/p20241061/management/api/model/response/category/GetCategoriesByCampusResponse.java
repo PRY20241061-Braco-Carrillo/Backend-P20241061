@@ -8,7 +8,6 @@ import java.util.UUID;
 
 @AllArgsConstructor
 @Getter
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class GetCategoriesByCampusResponse {
     private UUID campusCategoryId;
     private String name;

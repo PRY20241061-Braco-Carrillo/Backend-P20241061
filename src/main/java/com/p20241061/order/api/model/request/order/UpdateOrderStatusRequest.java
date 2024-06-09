@@ -1,4 +1,4 @@
-package com.p20241061.order.api.model.response;
+package com.p20241061.order.api.model.request.order;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,8 +11,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CreateOrderRequestResponse {
-    private UUID orderRequestId;
-    private String confirmationToken;
-    private Double totalPrice;
+public class UpdateOrderStatusRequest {
+    private String orderStatus;
+    private UUID orderId;
 }
