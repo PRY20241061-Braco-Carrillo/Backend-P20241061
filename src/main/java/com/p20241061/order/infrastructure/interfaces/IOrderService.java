@@ -14,6 +14,7 @@ public interface IOrderService {
     Mono<GeneralResponse<List<GetAllOrderByCampusResponse>>> getAllOrderByCampus(UUID campusId);
     Mono<GeneralResponse<GetOrderDetailResponse>> getOrderDetail(UUID orderRequest);
     Mono<GeneralResponse<GetAllOrderByCampusResponse>> getOrderByTableNumber(String tableNumber);
+    Mono<GeneralResponse<String>> hasTokenBeenValidated(UUID orderRequestId);
     Mono<GeneralResponse<String>> create(CreateOrderRequest request);
     Mono<GeneralResponse<String>> updateOrderStatus(UpdateOrderStatusRequest orderStatusRequest);
     Mono<GeneralResponse<String>> deleteOrder(UUID orderId);

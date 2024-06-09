@@ -39,6 +39,15 @@ public class OrderHandler {
                         .bodyValue(response));
     }
 
+    public Mono<ServerResponse> hasTokenBeenValidated(ServerRequest request) {
+        UUID orderRequestId = UUID.fromString(request.pathVariable("orderRequestId"));
+
+        return orderService.hasTokenBeenValidated(orderRequestId)
+                .flatMap(response -> ServerResponse.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(response));
+    }
+
     public Mono<ServerResponse> getOrderByTableNumber(ServerRequest request) {
         String tableNumber = request.pathVariable("tableNumber");
 

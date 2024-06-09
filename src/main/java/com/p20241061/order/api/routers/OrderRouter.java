@@ -19,6 +19,7 @@ public class OrderRouter {
     @Bean
     RouterFunction<ServerResponse> orderRtr(OrderHandler handler) {
         return RouterFunctions.route()
+                .GET(PATH_ORDER + "/order-request/{orderRequestId}/hasValidate", handler::hasTokenBeenValidated)
                 .GET(PATH_ORDER + "/campus/{campusId}", handler::getAllOrderByCampus)
                 .GET(PATH_ORDER + "/order-request/{orderRequestId}", handler::getOrderDetail)
                 .GET(PATH_ORDER + "/table-number/{tableNumber}", handler::getOrderByTableNumber)
