@@ -116,10 +116,10 @@ public class OrderService implements IOrderService {
 
     @Override
     public Mono<GeneralResponse<String>> hasTokenBeenValidated(UUID orderRequestId) {
-        return orderRepository.existsByOrderRequestId(orderRequestId)
-                .flatMap(existOrder -> Mono.just(GeneralResponse.<String>builder()
+        return orderRequestRepository.findById(orderRequestId)
+                .flatMap(orderRequest -> Mono.just(GeneralResponse.<String>builder()
                         .code(SuccessCode.SUCCESS.name())
-                        .data(Boolean.TRUE.equals(existOrder) ? "VALIDATED" : "NOT_VALIDATED")
+                        .data(orderRequest.getIsConfirmation() ? "VALIDATED" : "NOT_VALIDATED")
                         .build()));
     }
 

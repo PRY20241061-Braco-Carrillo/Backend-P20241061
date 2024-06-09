@@ -17,6 +17,7 @@ public class OrderRequestMapper {
         return OrderRequest.builder()
                 .totalPrice(request != null ? getOrderRequestTotalPrice(request) : null)
                 .confirmationToken(generateToken())
+                .isConfirmation(false)
                 .build();
     }
 

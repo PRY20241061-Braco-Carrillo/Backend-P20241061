@@ -120,12 +120,16 @@ public class OrderRequestService implements IOrderRequestService {
     public Mono<GeneralResponse<ValidateOrderRequestCodeResponse>> validateOrderRequestCode(String confirmationToken) {
         return orderRequestRepository.findByConfirmationToken(confirmationToken)
                 .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), "Confirmation token invalid")))
-                .flatMap(orderRequest -> Mono.just(GeneralResponse.<ValidateOrderRequestCodeResponse>builder()
-                        .code(SuccessCode.SUCCESS.name())
-                        .data(ValidateOrderRequestCodeResponse.builder()
-                                .orderRequestId(orderRequest.getOrderRequestId())
-                                .build())
-                        .build())
+                .flatMap(orderRequest -> {
+                            orderRequest.setIsConfirmation(true);
+                            return orderRequestRepository.save(orderRequest)
+                                    .flatMap(updatedOrderRequest -> Mono.just(GeneralResponse.<ValidateOrderRequestCodeResponse>builder()
+                                            .code(SuccessCode.SUCCESS.name())
+                                            .data(ValidateOrderRequestCodeResponse.builder()
+                                                    .orderRequestId(orderRequest.getOrderRequestId())
+                                                    .build())
+                                            .build()));
+                        }
                 );
     }
 

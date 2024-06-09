@@ -20,4 +20,5 @@ public class OrderRequest {
     private LocalDateTime orderRequestDate;
     private String confirmationToken;
     private Double totalPrice;
+    private Boolean isConfirmation;
 }
