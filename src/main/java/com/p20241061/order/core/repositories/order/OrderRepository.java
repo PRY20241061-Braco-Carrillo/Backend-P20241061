@@ -13,8 +13,6 @@ import java.util.UUID;
 @Repository
 public interface OrderRepository extends ReactiveCrudRepository<Order, UUID> {
 
-    Mono<Boolean> existsByOrderRequestId(UUID orderRequestId);
-
     @Query("select o.order_id, o.order_status, o.table_number, o.for_table, or2.order_request_date, or2.total_price, or2.order_request_id " +
             "from \"order\" o, order_request or2 " +
             "where  o.order_request_id = or2.order_request_id " +
