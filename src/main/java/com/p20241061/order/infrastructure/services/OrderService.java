@@ -12,6 +12,7 @@ import com.p20241061.order.core.repositories.order.OrderRepository;
 import com.p20241061.order.core.repositories.order_request.OrderRequestRepository;
 import com.p20241061.order.infrastructure.interfaces.IOrderService;
 import com.p20241061.security.core.repositories.UserRepository;
+import com.p20241061.shared.config.SignalRClient;
 import com.p20241061.shared.exceptions.CustomException;
 import com.p20241061.shared.models.enums.ErrorCode;
 import com.p20241061.shared.models.enums.OrderStatus;
@@ -38,6 +39,7 @@ public class OrderService implements IOrderService {
     private final OrderMapper orderMapper;
     private final OrderRequestService orderRequestService;
     private final OrderRequestMapper orderRequestMapper;
+    private final SignalRClient signalRClient;
 
     @Override
     public Mono<GeneralResponse<List<GetAllOrderByCampusResponse>>> getAllOrderByCampus(UUID campusId) {
@@ -151,19 +153,29 @@ public class OrderService implements IOrderService {
                                             .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), "User not found")))
                                             .flatMap(user -> findCampus
                                                     .flatMap(campus -> orderRepository.save(orderMapper.createRequestToModel(request))
-                                                            .map(order -> GeneralResponse.<String>builder()
-                                                                    .code(HttpStatus.CREATED.name())
-                                                                    .data("Order created successfully")
-                                                                    .build())
+                                                            .map(order -> {
+                                                                        signalRClient.sendMessage(campus.getCampusId().toString(), "ORDER_CREATED");
+
+                                                                        return GeneralResponse.<String>builder()
+                                                                                .code(HttpStatus.CREATED.name())
+                                                                                .data("Order created successfully")
+                                                                                .build();
+                                                                    }
+                                                            )
                                                     )
                                             );
                                 } else {
                                     return findCampus
                                             .flatMap(campus -> orderRepository.save(orderMapper.createRequestToModel(request))
-                                                    .map(order -> GeneralResponse.<String>builder()
-                                                            .code(HttpStatus.CREATED.name())
-                                                            .data("Order created successfully")
-                                                            .build())
+                                                    .map(order -> {
+                                                                signalRClient.sendMessage(campus.getCampusId().toString(), "ORDER_CREATED");
+
+                                                                return GeneralResponse.<String>builder()
+                                                                        .code(HttpStatus.CREATED.name())
+                                                                        .data("Order created successfully")
+                                                                        .build();
+                                                            }
+                                                    )
                                             );
                                 }
                             });
