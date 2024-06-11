@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import java.util.UUID;
 
 @Data
 @NoArgsConstructor
@@ -27,4 +28,8 @@ public class CreateUserRequest {
 
     @NotBlank(message = "Password is required")
     private String role;
+
+    private UUID campusId;
+
+    private UUID restaurantId;
 }

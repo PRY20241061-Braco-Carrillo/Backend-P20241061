@@ -308,7 +308,11 @@ CREATE TABLE "user"
     roles              varchar(255) NOT NULL,
     cancel_reservation int,
     accept_reservation int,
-    CONSTRAINT user_pk PRIMARY KEY (user_id)
+    campus_id uuid null,
+    restaurant_id uuid null,
+    CONSTRAINT user_pk PRIMARY KEY (user_id),
+    CONSTRAINT user_campus FOREIGN KEY (campus_id) REFERENCES campus (campus_id),
+    CONSTRAINT user_restaurant FOREIGN KEY (restaurant_id) REFERENCES restaurant (restaurant_id)
 );
 
 -- Table: campus_combo_promotion
