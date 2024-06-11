@@ -13,4 +13,5 @@ public interface RestaurantRepository extends ReactiveCrudRepository<Restaurant,
     Flux<Restaurant> findByIsAvailable(Boolean isAvailable);
 
     Mono<Boolean> existsByName(String name);
+    Mono<Boolean> existsByRestaurantId(UUID restaurantId);
 }

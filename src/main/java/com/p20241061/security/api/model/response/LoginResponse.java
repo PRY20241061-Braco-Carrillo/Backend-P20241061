@@ -17,4 +17,6 @@ public class LoginResponse {
     private Integer cancelReservation;
     private Integer acceptReservation;
     private String token;
+    private UUID campusId;
+    private UUID restaurantId;
 }

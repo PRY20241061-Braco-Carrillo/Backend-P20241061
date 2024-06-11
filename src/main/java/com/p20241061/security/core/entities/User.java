@@ -28,6 +28,8 @@ public class User implements UserDetails {
     private String roles;
     private Integer cancelReservation;
     private Integer acceptReservation;
+    private UUID campusId;
+    private UUID restaurantId;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
