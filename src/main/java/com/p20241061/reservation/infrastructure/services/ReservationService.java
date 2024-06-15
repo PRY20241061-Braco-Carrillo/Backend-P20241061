@@ -62,6 +62,16 @@ public class ReservationService implements IReservationService {
     }
 
     @Override
+    public Mono<GeneralResponse<List<GetReservationResponseByCampus>>> getReservationByUser(UUID userId) {
+        return reservationRepository.getReservationByUserId(userId)
+                .collectList()
+                .flatMap(reservations -> Mono.just(GeneralResponse.<List<GetReservationResponseByCampus>>builder()
+                        .code(SuccessCode.SUCCESS.name())
+                        .data(reservationMapper.modelListToResponseList(reservations))
+                        .build()));
+    }
+
+    @Override
     public Mono<GeneralResponse<GetReservationDetailResponse>> getReservationDetail(UUID reservationId) {
         return reservationRepository.findById(reservationId)
                 .flatMap(reservation -> orderRepository.getProductDetailByOrder(reservation.getOrderRequestId())

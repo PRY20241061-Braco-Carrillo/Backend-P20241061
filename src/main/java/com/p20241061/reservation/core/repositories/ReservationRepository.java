@@ -11,4 +11,5 @@ import java.util.UUID;
 public interface ReservationRepository extends ReactiveCrudRepository<Reservation, UUID> {
 
     Flux<Reservation> getReservationByCampusId(UUID campusId);
+    Flux<Reservation> getReservationByUserId(UUID userId);
 }
