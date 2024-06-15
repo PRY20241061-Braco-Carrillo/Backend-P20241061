@@ -42,6 +42,17 @@ public class ReservationHandler {
                         .bodyValue(response));
     }
 
+    public Mono<ServerResponse> getReservationByUser(ServerRequest request) {
+        UUID userId = UUID.fromString(request.pathVariable("userId"));
+
+        return reservationService.getReservationByUser(userId)
+                .flatMap(response -> ServerResponse.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(response));
+    }
+
+
+
     public Mono<ServerResponse> getReservationDetail(ServerRequest request) {
         UUID reservationId = UUID.fromString(request.pathVariable("reservationId"));
 
