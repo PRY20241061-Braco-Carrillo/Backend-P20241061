@@ -32,8 +32,8 @@ public class JwtFilter implements WebFilter {
             return Mono.error(new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.BAD_REQUEST.name(), "Token is not valid"));
         }
 
-        String token = auth.replace("Bearer ", "");
-        exchange.getAttributes().put("token", token);
+        //String token = auth.replace("Bearer ", "");
+        //exchange.getAttributes().put("token", token);
 
         return chain.filter(exchange);
 
