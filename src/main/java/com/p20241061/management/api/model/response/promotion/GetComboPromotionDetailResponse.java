@@ -1,6 +1,5 @@
 package com.p20241061.management.api.model.response.promotion;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.p20241061.management.api.model.response.combo.GetComboDetailResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

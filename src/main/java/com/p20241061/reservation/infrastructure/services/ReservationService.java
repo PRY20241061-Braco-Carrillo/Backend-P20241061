@@ -2,7 +2,6 @@ package com.p20241061.reservation.infrastructure.services;
 
 import com.p20241061.order.core.repositories.order.OrderRepository;
 import com.p20241061.order.core.repositories.order_request.OrderRequestRepository;
-import com.p20241061.order.infrastructure.interfaces.IOrderRequestService;
 import com.p20241061.order.infrastructure.services.OrderRequestService;
 import com.p20241061.reservation.api.mapping.ReservationMapper;
 import com.p20241061.reservation.api.model.request.ChangeReservationStatusRequest;

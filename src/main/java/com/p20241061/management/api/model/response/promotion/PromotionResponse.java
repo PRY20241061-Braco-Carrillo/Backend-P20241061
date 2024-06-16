@@ -1,6 +1,5 @@
 package com.p20241061.management.api.model.response.promotion;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

@@ -1,6 +1,5 @@
 package com.p20241061.management.api.model.response.restaurant;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.p20241061.management.core.entities.restaurant.Restaurant;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

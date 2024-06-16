@@ -1,6 +1,5 @@
 package com.p20241061.management.api.model.response.promotion;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.p20241061.management.api.model.response.complement.ComplementResponse;
 import com.p20241061.management.api.model.response.product.NutritionalInformationResponse;
 import lombok.AllArgsConstructor;
