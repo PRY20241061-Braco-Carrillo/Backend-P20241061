@@ -17,7 +17,6 @@ public interface OrderRepository extends ReactiveCrudRepository<Order, UUID> {
             "from \"order\" o, order_request or2 " +
             "where  o.order_request_id = or2.order_request_id " +
             "and o.campus_id = :campusId " +
-            "and o.order_status in ('CONFIRMADO', 'EN_PREPARACION', 'MODIFICADO') " +
             "order by or2.order_request_date  asc")
     Flux<GetAllOrderByCampusResponse> getAllOrderByCampus(UUID campusId);
 

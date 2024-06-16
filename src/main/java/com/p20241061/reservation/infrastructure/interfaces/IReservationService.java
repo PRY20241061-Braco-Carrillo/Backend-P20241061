@@ -14,6 +14,7 @@ public interface IReservationService {
 
     Mono<GeneralResponse<String>> createReservation(CreateReservationRequest createReservationRequest);
     Mono<GeneralResponse<List<GetReservationResponseByCampus>>> getReservationByCampus(UUID campusId);
+    Mono<GeneralResponse<List<GetReservationResponseByCampus>>> getReservationByUser(UUID campusId);
     Mono<GeneralResponse<GetReservationDetailResponse>> getReservationDetail(UUID reservationId);
     Mono<GeneralResponse<String>> changeReservationStatus(ChangeReservationStatusRequest changeReservationStatusRequest);
     Mono<GeneralResponse<String>> deleteReservation(UUID reservationId);

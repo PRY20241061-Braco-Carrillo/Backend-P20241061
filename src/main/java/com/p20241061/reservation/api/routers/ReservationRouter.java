@@ -17,6 +17,7 @@ public class ReservationRouter {
     RouterFunction<ServerResponse> reservationRtr(ReservationHandler handler) {
         return RouterFunctions.route()
                 .GET(PATH_RESERVATION + "/campus/{campusId}", handler::getReservationByCampus)
+                .GET(PATH_RESERVATION + "/user/{userId}", handler::getReservationByUser)
                 .GET(PATH_RESERVATION + "/{reservationId}", handler::getReservationDetail)
                 .POST(PATH_RESERVATION, handler::createReservation)
                 .PATCH(PATH_RESERVATION + "/change-status", handler::changeReservationStatus)
