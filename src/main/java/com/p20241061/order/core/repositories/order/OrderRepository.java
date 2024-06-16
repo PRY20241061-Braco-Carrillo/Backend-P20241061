@@ -101,5 +101,7 @@ public interface OrderRepository extends ReactiveCrudRepository<Order, UUID> {
             "and o.order_status in ('CONFIRMADO', 'EN_PREPARACION', 'MODIFICADO') ")
     Mono<GetAllOrderByCampusResponse> getOrderByTableNumber(String tableNumber);
 
+    Mono<Boolean> existsByOrderRequestId(UUID orderRequestId);
+
 }
 

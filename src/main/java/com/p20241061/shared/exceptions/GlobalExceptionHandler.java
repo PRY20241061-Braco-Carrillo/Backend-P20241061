@@ -32,11 +32,26 @@ public class GlobalExceptionHandler extends AbstractErrorWebExceptionHandler {
     }
 
     private Mono<ServerResponse> customErrorResponse(ServerRequest serverRequest) {
+        Map<String, Object> errorMap = getErrorAttributes(serverRequest, ErrorAttributeOptions.defaults());
 
-        Map<String, Object> errorMap = this.getErrorAttributes(serverRequest, ErrorAttributeOptions.defaults());
-        HttpStatus status = Optional.of(HttpStatus.valueOf((Integer) errorMap.get("httpStatus"))).orElse(HttpStatus.INTERNAL_SERVER_ERROR);
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+        String message = "Unexpected error occurred";
 
-        return ServerResponse.status(status).contentType(MediaType.APPLICATION_JSON)
+        try {
+            status = HttpStatus.valueOf((Integer) errorMap.getOrDefault("httpStatus", 500));
+            message = (String) errorMap.getOrDefault("message", message);
+        } catch (Exception e) {
+            log.error("Error extracting error attributes", e);
+        }
+
+        errorMap.put("httpStatus", status.value());
+        errorMap.put("message", message);
+
+        return ServerResponse.status(status)
+                .contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromValue(errorMap));
     }
 }
+
+
+
