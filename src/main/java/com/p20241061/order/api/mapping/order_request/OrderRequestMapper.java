@@ -5,6 +5,7 @@ import com.p20241061.order.core.entities.order_request.OrderRequest;
 import com.p20241061.shared.utils.EnhancedModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.security.SecureRandom;
 import java.time.Instant;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -12,6 +13,8 @@ public class OrderRequestMapper {
     @Autowired
     EnhancedModelMapper mapper;
     private static final AtomicInteger counter = new AtomicInteger(0);
+    private static final SecureRandom random = new SecureRandom();
+
 
     public OrderRequest  createRequestToModel(CreateOrderRequestRequest request) {
         return OrderRequest.builder()
@@ -53,8 +56,9 @@ public class OrderRequestMapper {
     private String generateToken() {
         long timestamp = Instant.now().toEpochMilli();
         int count = counter.getAndIncrement();
+        int randomPart = random.nextInt(1000000);
 
-        String key = String.format("%d%05d", timestamp, count);
+        String key = String.format("%d%05d%05d", timestamp, count, randomPart);
 
         return key.substring(key.length() - 6);
     }

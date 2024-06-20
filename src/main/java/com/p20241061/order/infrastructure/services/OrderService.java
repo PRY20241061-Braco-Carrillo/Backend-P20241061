@@ -160,7 +160,7 @@ public class OrderService implements IOrderService {
                                                     .flatMap(user -> findCampus
                                                             .flatMap(campus -> orderRepository.save(orderMapper.createRequestToModel(request))
                                                                     .map(order -> {
-                                                                                signalRClient.sendMessage(campus.getCampusId().toString(), "ORDER_CREATED");
+                                                                                //signalRClient.sendMessage(campus.getCampusId().toString(), "ORDER_CREATED");
 
                                                                                 return GeneralResponse.<String>builder()
                                                                                         .code(HttpStatus.CREATED.name())
@@ -174,7 +174,7 @@ public class OrderService implements IOrderService {
                                             return findCampus
                                                     .flatMap(campus -> orderRepository.save(orderMapper.createRequestToModel(request))
                                                             .map(order -> {
-                                                                        signalRClient.sendMessage(campus.getCampusId().toString(), "ORDER_CREATED");
+                                                                        //signalRClient.sendMessage(campus.getCampusId().toString(), "ORDER_CREATED");
 
                                                                         return GeneralResponse.<String>builder()
                                                                                 .code(HttpStatus.CREATED.name())

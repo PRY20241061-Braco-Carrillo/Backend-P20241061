@@ -119,6 +119,7 @@ public class OrderRequestService implements IOrderRequestService {
     @Override
     public Mono<GeneralResponse<ValidateOrderRequestCodeResponse>> validateOrderRequestCode(String confirmationToken) {
         return orderRequestRepository.findByConfirmationToken(confirmationToken)
+                .next()
                 .switchIfEmpty(Mono.error(new CustomException(HttpStatus.NOT_FOUND, ErrorCode.NOT_FOUND.name(), "Confirmation token invalid")))
                 .flatMap(orderRequest -> {
                             orderRequest.setIsConfirmation(true);
