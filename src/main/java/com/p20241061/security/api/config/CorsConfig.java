@@ -12,7 +12,7 @@ public class CorsConfig implements WebFluxConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
-                .allowedOrigins("http://localhost:4200", "https://main--fe-smartaste.netlify.app")
+                .allowedOrigins("http://localhost:4200", "https://main--fe-smartaste.netlify.app", 'https://fe-smartaste.netlify.app')
                 .allowedHeaders("*")
                 .allowCredentials(true);
     }
